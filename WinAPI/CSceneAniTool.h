@@ -20,6 +20,7 @@ private:
 	CImage* m_pImage1;
 	CImage* m_pImage2;
 	CPanel* pPanel;
+	CAnimation* m_pAnimation;
 
 	AniFrame* aniArr1;
 	AniFrame* aniArr2;
@@ -30,6 +31,7 @@ private:
 
 	bool m_bSelectImg1;
 	bool m_bSelectImg2;
+	bool m_bPlay;
 
 	Vector m_vecFrameSize;
 
@@ -38,6 +40,11 @@ private:
 
 	float m_duration1;
 	float m_duration2;
+
+	float m_fAccTime1;
+	float m_fAccTime2;
+	UINT m_iCurFrame1;
+	UINT m_iCurFrame2;
 
 	void CreateFrame();
 
@@ -56,7 +63,8 @@ public:
 	bool GetSelectImg2() { return m_bSelectImg2; }
 	AniFrame& GetCurFrame1() { return m_curAniFrame1; }
 	AniFrame& GetCurFrame2() { return m_curAniFrame2; }
-	void AddAni(AniFrame aniFr, int index);
+	void PlayAni();
+	void RenderAni();
 	void SetCount1(int count) { m_iCount1 = count; }
 	void SetCount2(int count) { m_iCount2 = count; }
 	void SetCurIndex1(UINT index1) { m_curIndex1 = index1; }

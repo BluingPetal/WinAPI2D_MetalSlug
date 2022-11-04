@@ -23,6 +23,10 @@ CSceneAniTool::CSceneAniTool()
 	m_iCount2 = 0;
 	m_duration1 = 1;
 	m_duration2 = 1;
+	m_bPlay = false;
+	m_fAccTime1 = m_fAccTime2 = 0;
+	m_iCurFrame1 = m_iCurFrame2 = 0;
+	m_pAnimation = nullptr;
 
 	m_vecFrameSize = Vector(100, 100);
 }
@@ -126,23 +130,67 @@ void CSceneAniTool::ToolSaveAniData()
 	aniArr2 = nullptr;
 }
 
-void CSceneAniTool::AddAni(AniFrame aniFr, int index)
+void CSceneAniTool::PlayAni()
 {
-	//aniArr[index] = aniFr;
-	/*
-	if (m_bSelectImg1 && m_pImage1 != nullptr)
+	m_fAccTime1 += DT;
+	m_fAccTime2 += DT;
+	if (aniArr1 != nullptr)
 	{
-		if (m_curIndex1 == m_iCount/2)
-			return;
-		aniArr[m_curIndex1++] = aniFr;
+		if (m_duration1 < m_fAccTime1)
+		{
+			if (m_iCurFrame1 == m_iCount1-1)
+			{
+				m_iCurFrame1 = 0;
+			}
+			m_iCurFrame1++;	
+			m_fAccTime1 = 0;	
+		}
 	}
-	if (m_bSelectImg2 && m_pImage2 != nullptr)
+	if (aniArr2 != nullptr)
 	{
-		if (m_curIndex2 == m_iCount)
-			return;
-		aniArr[m_curIndex2++] = aniFr;
+		if (m_duration2 < m_fAccTime2)
+		{
+			if (m_iCurFrame2 == m_iCount2 - 1)
+			{
+				m_iCurFrame2 = 0;
+			}
+			m_iCurFrame2++;
+			m_fAccTime2 = 0;
+
+		}
 	}
-	*/
+}
+
+void CSceneAniTool::RenderAni()
+{
+	if (aniArr1 != nullptr)
+	{
+		RENDER->FrameImage(
+			m_pImage1,
+			100 - aniArr1[m_iCurFrame1].slice.x * 0.5f,
+			100 - aniArr1[m_iCurFrame1].slice.y * 0.5f,
+			100 + aniArr1[m_iCurFrame1].slice.x * 0.5f,
+			100 + aniArr1[m_iCurFrame1].slice.y * 0.5f,
+			aniArr1[m_iCurFrame1].lt.x,
+			aniArr1[m_iCurFrame1].lt.y,
+			aniArr1[m_iCurFrame1].lt.x + aniArr1[m_iCurFrame1].slice.x,
+			aniArr1[m_iCurFrame1].lt.y + aniArr1[m_iCurFrame1].slice.y
+		);
+	}
+	if (aniArr2 != nullptr)
+	{
+		RENDER->FrameImage(
+			m_pImage2,
+			100 - aniArr2[m_iCurFrame1].slice.x * 0.5f,
+			100 - aniArr2[m_iCurFrame1].slice.y * 0.5f,
+			100 + aniArr2[m_iCurFrame1].slice.x * 0.5f,
+			100 + aniArr2[m_iCurFrame1].slice.y * 0.5f,
+			aniArr2[m_iCurFrame1].lt.x,
+			aniArr2[m_iCurFrame1].lt.y,
+			aniArr2[m_iCurFrame1].lt.x + aniArr2[m_iCurFrame1].slice.x,
+			aniArr2[m_iCurFrame1].lt.y + aniArr2[m_iCurFrame1].slice.y
+		);
+	}
 }
 
 void CSceneAniTool::GoToPrevAni()
@@ -253,12 +301,12 @@ void CSceneAniTool::Update()
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.y > 0)
-				m_curAniFrame1.lt += Vector(0, -10) * DT;
+				m_curAniFrame1.lt += Vector(0, -20) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.y > 0)
-				m_curAniFrame2.lt += Vector(0, -10) * DT;
+				m_curAniFrame2.lt += Vector(0, -20) * DT;
 		}
 	}
 	if (BUTTONSTAY(VK_DOWN))
@@ -266,12 +314,12 @@ void CSceneAniTool::Update()
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.y + m_curAniFrame1.offset.y + m_curAniFrame1.slice.y < m_pImage1->GetHeight())
-				m_curAniFrame1.lt += Vector(0, 10) * DT;
+				m_curAniFrame1.lt += Vector(0, 20) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.y + m_curAniFrame2.offset.y + m_curAniFrame2.slice.y < m_pImage2->GetHeight())
-				m_curAniFrame2.lt += Vector(0, 10) * DT;
+				m_curAniFrame2.lt += Vector(0, 20) * DT;
 		}
 	}
 	if (BUTTONSTAY(VK_LEFT))
@@ -279,12 +327,12 @@ void CSceneAniTool::Update()
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.x > 0)
-				m_curAniFrame1.lt += Vector(-10, 0)*DT;
+				m_curAniFrame1.lt += Vector(-20, 0)*DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.x > 0)
-				m_curAniFrame2.lt += Vector(-10, 0)*DT;
+				m_curAniFrame2.lt += Vector(-20, 0)*DT;
 		}
 	}
 	if (BUTTONSTAY(VK_RIGHT))
@@ -292,12 +340,12 @@ void CSceneAniTool::Update()
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.x + m_curAniFrame1.offset.x + m_curAniFrame1.slice.x < m_pImage1->GetWidth())
-				m_curAniFrame1.lt += Vector(10, 0) * DT;
+				m_curAniFrame1.lt += Vector(20, 0) * DT;
 		}
 		else if (m_bSelectImg2 + m_curAniFrame2.offset.x + +m_curAniFrame2.slice.x && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.x < m_pImage2->GetWidth())
-				m_curAniFrame2.lt += Vector(10, 0) * DT;
+				m_curAniFrame2.lt += Vector(20, 0) * DT;
 		}
 	}
 	// Frame Á¶Àý
@@ -410,11 +458,24 @@ void CSceneAniTool::Update()
 		}
 	}
 #pragma endregion
+
+	if (BUTTONDOWN(VK_SPACE))
+	{
+		m_bPlay = !m_bPlay;
+	}
+
+	if (m_bPlay)
+	{
+		PlayAni();
+	}
 }
 
 void CSceneAniTool::Render()
 {
 	CreateFrame(); 
+
+	RENDER->FrameRect(0, 0, 200, 200);
+
 #pragma region Image Rendering
 	if (m_pImage1 != nullptr)
 	{
@@ -477,6 +538,11 @@ void CSceneAniTool::Render()
 		);
 	}
 #pragma endregion
+
+	if (m_bPlay)
+	{
+		RenderAni();
+	}
 
 	wstring description =	L"Frame1 Left Top : (" + to_wstring((int)m_curAniFrame1.lt.x) + L", " + to_wstring((int)m_curAniFrame1.lt.y) + L")\n" +
 							L"Frame1 Slice    : (" + to_wstring((int)m_curAniFrame1.slice.x) + L", " + to_wstring((int)m_curAniFrame1.slice.y) + L")\n" +
