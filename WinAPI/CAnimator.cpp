@@ -37,7 +37,7 @@ void CAnimator::Release()
 	m_mapAni.clear();
 }
 
-void CAnimator::CreateAnimation(const wstring& aniName, CImage* pImg, Vector lt, Vector slice, Vector step, float duration, UINT count, bool repeat)
+void CAnimator::CreateAnimation(const wstring& aniName, CImage* pImg, float duration, bool repeat)
 {
 	// 같은 이름의 애니메이션이 이미 있을 경우 프로그램 경고
 	CAnimation* pAni = FindAnimation(aniName);
@@ -46,7 +46,8 @@ void CAnimator::CreateAnimation(const wstring& aniName, CImage* pImg, Vector lt,
 	// 애니메이션의 이름과 생성 후 자료구조에 보관
 	pAni = new CAnimation;
 	pAni->SetName(aniName);
-	pAni->Create(pImg, lt, slice, step, duration, count, repeat);
+	pAni->LoadAni(aniName);
+	pAni->Create(pImg, duration, repeat);
 	pAni->m_pAnimator = this;
 
 	m_mapAni.insert(make_pair(aniName, pAni));

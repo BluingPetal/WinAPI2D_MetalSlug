@@ -74,6 +74,58 @@ CImage* CSceneAniTool::ToolLoadImage()
 	return nullptr;
 }
 
+void CSceneAniTool::ToolSaveAniData()
+{
+	OPENFILENAME ofn = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);  // 구조체 사이즈.
+	ofn.hwndOwner = hWnd;					// 부모 윈도우 지정.
+	wchar_t szName[256] = {};
+	ofn.lpstrFile = szName; // 나중에 완성된 경로가 채워질 버퍼 지정.
+	ofn.nMaxFile = sizeof(szName); // lpstrFile에 지정된 버퍼의 문자 수.
+	ofn.lpstrFilter = L"ALL\0*.*\0ani\0*.ani"; // 필터 설정
+	ofn.nFilterIndex = 0; // 기본 필터 세팅. 0는 all로 초기 세팅됨. 처음꺼.
+	ofn.lpstrFileTitle = nullptr; // 타이틀 바
+	ofn.nMaxFileTitle = 0; // 타이틀 바 문자열 크기. nullptr이면 0.
+	wstring strTileFolder = GETPATH;
+	strTileFolder += L"AniData";
+	ofn.lpstrInitialDir = strTileFolder.c_str(); // 초기경로. 우리는 타일 저장할거기 때문에, content->tile 경로로 해두자.
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST; // 스타일
+
+	if (GetSaveFileName(&ofn))
+	{
+		FILE* pFile = nullptr;
+
+		_wfopen_s(&pFile, wstring(szName).c_str(), L"wb");		// w : write, b : binary
+		assert(pFile);
+
+		fwrite(&(m_iCount1), sizeof(Vector), 1, pFile);
+		for (int i = 0; i < m_iCount1; i++)
+		{
+			fwrite(&(aniArr1[i].lt), sizeof(Vector), 1, pFile);
+			fwrite(&(aniArr1[i].slice), sizeof(Vector), 1, pFile);
+			fwrite(&(aniArr1[i].offset), sizeof(Vector), 1, pFile);
+		}
+
+		if (aniArr2 != nullptr)
+		{
+			fwrite(&(m_iCount2), sizeof(Vector), 1, pFile);
+			for (int i = 0; i < m_iCount2; i++)
+			{
+				fwrite(&(aniArr2[i].lt), sizeof(Vector), 1, pFile);
+				fwrite(&(aniArr2[i].slice), sizeof(Vector), 1, pFile);
+				fwrite(&(aniArr2[i].offset), sizeof(Vector), 1, pFile);
+			}
+		}
+
+		fclose(pFile);
+	}
+	delete[] aniArr1;
+	if (aniArr2 != nullptr) delete[] aniArr2;
+	aniArr1 = nullptr;
+	aniArr2 = nullptr;
+}
+
 void CSceneAniTool::AddAni(AniFrame aniFr, int index)
 {
 	//aniArr[index] = aniFr;
@@ -169,7 +221,6 @@ void CSceneAniTool::Enter()
 
 void CSceneAniTool::Update()
 {
-	Logger::Debug(to_wstring(m_curIndex1));
 	// 배열이 지정되지 않았을 경우 리턴
 	if (aniArr1 == nullptr && aniArr2 == nullptr) return;
 
@@ -553,6 +604,14 @@ LRESULT CALLBACK WinAniToolProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			assert(nullptr != pAniToolScene && L"AniTool Scene cast Failed");
 
 			pAniToolScene->GoToNextAni();
+		}
+		else if (LOWORD(wParam) == IDC_BUTTONSAVE)
+		{
+			CScene* pCurScene = SCENE->GetCurScene();
+			CSceneAniTool* pAniToolScene = dynamic_cast<CSceneAniTool*>(pCurScene);
+			assert(nullptr != pAniToolScene && L"AniTool Scene cast Failed");
+
+			pAniToolScene->ToolSaveAniData();
 		}
 		return (INT_PTR)TRUE;
 		break;

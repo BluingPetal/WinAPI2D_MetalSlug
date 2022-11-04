@@ -35,10 +35,12 @@ CPlayer::~CPlayer()
 void CPlayer::Init()
 {
 	m_pIdleImage = RESOURCE->LoadImg(L"PlayerIdle", L"Image\\PlayerIdle.png");
-	m_pMoveImage = RESOURCE->LoadImg(L"PlayerMove", L"Image\\PlayerMove.png");
+	
+	//m_pMoveImage = RESOURCE->LoadImg(L"PlayerMove", L"Image\\PlayerMove.png");
 
 	m_pAnimator = new CAnimator;
-	m_pAnimator->CreateAnimation(L"IdleUp", m_pIdleImage, Vector(8.f, 0.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
+	m_pAnimator->CreateAnimation(L"ani1", m_pIdleImage, 0.1f);
+	/*
 	m_pAnimator->CreateAnimation(L"IdleRightUp", m_pIdleImage, Vector(8.f, 70.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
 	m_pAnimator->CreateAnimation(L"IdleRight", m_pIdleImage, Vector(8.f, 140.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
 	m_pAnimator->CreateAnimation(L"IdleRightDown", m_pIdleImage, Vector(8.f, 210.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
@@ -55,7 +57,8 @@ void CPlayer::Init()
 	m_pAnimator->CreateAnimation(L"MoveLeftDown", m_pMoveImage, Vector(0.f, 395.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
 	m_pAnimator->CreateAnimation(L"MoveLeft", m_pMoveImage, Vector(0.f, 474.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
 	m_pAnimator->CreateAnimation(L"MoveLeftUp", m_pMoveImage, Vector(0.f, 553.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	m_pAnimator->Play(L"IdleDown", false);
+	*/
+	m_pAnimator->Play(L"ani1", false);
 	AddComponent(m_pAnimator);
 
 	AddCollider(ColliderType::Rect, Vector(90, 90), Vector(0, 0));
@@ -104,7 +107,7 @@ void CPlayer::Update()
 		CreateMissile();
 	}
 
-	AnimatorUpdate();
+	m_pAnimator->Play(L"ani1", false);
 }
 
 void CPlayer::Render()

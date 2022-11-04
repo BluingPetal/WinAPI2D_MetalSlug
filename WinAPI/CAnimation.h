@@ -27,14 +27,17 @@ private:
 	UINT				m_iCurFrame;	// 현재 플레이중인 프레임의 인덱스
 	float				m_fAccTime;		// 현재 플레이중인 프레임의 축적시간
 	bool				m_bRepeat;		// 애니메이션의 반복 여부
+	UINT				m_count;
 
+	Vector* m_vecReadAni;					// 읽어온 애니메이션
 public:
 	const wstring& GetName();
 
 private:
 	void SetName(const wstring& name);
+	void LoadAni(const wstring& aniName);
 
-	void Create(CImage* pImg, Vector lt, Vector slice, Vector step, float duration, UINT count, bool repeat);	// 애니메이션 생성
+	void Create(CImage* pImg, float duration, bool repeat);	// 애니메이션 생성
 	void Replay();	// 애니메이션 처음부터 다시 시작
 
 private:

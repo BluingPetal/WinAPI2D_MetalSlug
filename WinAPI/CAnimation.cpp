@@ -31,7 +31,36 @@ void CAnimation::SetName(const wstring& name)
 	m_strName = name;
 }
 
-void CAnimation::Create(CImage* pImg, Vector lt, Vector slice, Vector step, float duration, UINT count, bool repeat)
+void CAnimation::LoadAni(const wstring& aniName)
+{
+	FILE* pFile = nullptr;
+
+	wstring path = PATH->GetPath() + L"\\AniData\\" +aniName + L".ani";
+	_wfopen_s(&pFile, path.c_str(), L"rb");      // w : write, b : binary
+	assert(pFile);
+
+	int count;
+	Vector lt;
+	Vector slice;
+	Vector offset;
+
+	fread(&count, sizeof(UINT), 1, pFile);
+	m_vecReadAni = new Vector[count * 3];
+	m_count = count;
+	for (int i = 0; i < count * 3; i+=3)
+	{
+		fread(&lt, sizeof(Vector), 1, pFile);
+		fread(&slice, sizeof(Vector), 1, pFile);
+		fread(&offset, sizeof(Vector), 1, pFile);
+		m_vecReadAni[i] = lt;
+		m_vecReadAni[i + 1] = slice;
+		m_vecReadAni[i + 2] = offset;
+	}
+
+	fclose(pFile);
+}
+
+void CAnimation::Create(CImage* pImg, float duration, bool repeat)
 {
 	m_pImage = pImg;	// 프레임 이미지가 모여있는 이미지 파일
 	m_bRepeat = repeat;	// 반복여부
@@ -42,13 +71,19 @@ void CAnimation::Create(CImage* pImg, Vector lt, Vector slice, Vector step, floa
 	// slice	: 프레임 이미지의 크기
 	// duration : 프레임 이미지의 지속시간
 	AniFrame frame;
-	for (UINT i = 0; i < count; i++)
+	for (UINT i = 0; i < m_count * 3; i+=3)
 	{
-		frame.lt = lt + step * i;
-		frame.slice = slice;
+		frame.lt = m_vecReadAni[i];
+		frame.slice = m_vecReadAni[i+1];
+		frame.offset = m_vecReadAni[i + 2];
 		frame.duration = duration;
 
 		m_vecFrame.push_back(frame);
+	}
+	if (m_vecReadAni != nullptr)
+	{
+		delete[] m_vecReadAni;
+		m_vecReadAni = nullptr;
 	}
 }
 

@@ -22,7 +22,7 @@ private:
 
 public:
 	void CreateAnimation(const wstring& aniName, CImage* pImg,	// 애니메이션 생성
-		Vector lt, Vector slice, Vector step, float duration, UINT count, bool repeat = true);
+		 float duration, bool repeat = true);
 	void RemoveAnimation(const wstring& aniName);				// 애니메이션 삭제
 	CAnimation* FindAnimation(const wstring& aniName);			// 애니메이션 탐색
 

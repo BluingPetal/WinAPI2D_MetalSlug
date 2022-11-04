@@ -78,11 +78,6 @@ private:
 public:
 	void Create(CImage* pImg, Vector lt, Vector slice, Vector step, float duration, UINT count, bool repeat);
 	CImage* ToolLoadImage();
-	
-	void SaveTile(const wstring& strPath);
-	void SaveTileData();
-	void Load_img(const wstring& strPath);
-	void LoadTile(const wstring& strPath);
-	void LoadTileData();
+	void ToolSaveAniData();
 };
 
