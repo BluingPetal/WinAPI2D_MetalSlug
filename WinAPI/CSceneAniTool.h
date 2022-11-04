@@ -21,9 +21,11 @@ private:
 	CImage* m_pImage2;
 	CPanel* pPanel;
 
-	queue<AniFrame> m_queueAni;
+	AniFrame* aniArr;
 	AniFrame m_curAniFrame1;
 	AniFrame m_curAniFrame2;
+	UINT m_curIndex1;
+	UINT m_curIndex2;
 
 	bool m_bSelectImg1;
 	bool m_bSelectImg2;
@@ -39,14 +41,17 @@ public:
 	}
 	CImage* GetImage1();
 	CImage* GetImage2();
-	CImage* ToolLoadImage();
+	AniFrame* GetAniArr() { return aniArr; }
 	void SetImage1(CImage* img1) { m_pImage1 = img1; }
 	void SetImage2(CImage* img2) { m_pImage2 = img2; }
-	void AddAni(AniFrame aniFr) { m_queueAni.push(aniFr); }
 	bool GetSelectImg1() { return m_bSelectImg1; }
 	bool GetSelectImg2() { return m_bSelectImg2; }
 	AniFrame& GetCurFrame1() { return m_curAniFrame1; }
 	AniFrame& GetCurFrame2() { return m_curAniFrame2; }
+	CImage* ToolLoadImage();
+	void AddAni(AniFrame aniFr);
+
+	void GoToPrevAni();
 
 private:
 	void Init();

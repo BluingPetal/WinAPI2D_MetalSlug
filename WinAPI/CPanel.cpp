@@ -11,7 +11,7 @@ CPanel::CPanel()
 	m_bDraggable = true;
 
 	m_strText = L"";
-	m_iSizeText = 100;
+	m_iSizeText = 200;
 	m_colorText = Color(0, 0, 0, 1);
 }
 

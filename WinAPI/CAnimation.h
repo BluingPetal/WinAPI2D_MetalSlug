@@ -7,6 +7,7 @@ struct AniFrame
 {
 	Vector	lt;
 	Vector	slice;
+	Vector	offset;
 	float	duration;
 };
 
