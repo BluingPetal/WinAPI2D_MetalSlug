@@ -11,9 +11,15 @@ private:
 	bool	m_bIsDragging;
 	bool	m_bDraggable;
 
+	wstring			m_strText;
+	float			m_iSizeText;
+	Color			m_colorText;
+
 public:
 	bool GetDraggable();
 	void SetDraggable(bool draggable);
+
+	void SetText(const wstring& text, float fontSize = 12, Color color = Color(0, 0, 0, 1));
 
 private:
 	void Init() override;

@@ -9,6 +9,10 @@ CPanel::CPanel()
 	m_vecDragStartPos = Vector(0, 0);
 	m_bIsDragging = false;
 	m_bDraggable = true;
+
+	m_strText = L"";
+	m_iSizeText = 100;
+	m_colorText = Color(0, 0, 0, 1);
 }
 
 CPanel::~CPanel()
@@ -23,6 +27,13 @@ bool CPanel::GetDraggable()
 void CPanel::SetDraggable(bool draggable)
 {
 	m_bDraggable = draggable;
+}
+
+void CPanel::SetText(const wstring& text, float fontSize, Color color)
+{
+	m_strText = text;
+	m_iSizeText = fontSize;
+	m_colorText = color;
 }
 
 void CPanel::Init()
@@ -45,6 +56,16 @@ void CPanel::Render()
 		m_vecRenderPos.x + m_vecScale.x,
 		m_vecRenderPos.y + m_vecScale.y,
 		Color(0, 0, 0, 1)
+	);
+
+	RENDER->Text(
+		m_strText,
+		m_vecRenderPos.x,
+		m_vecRenderPos.y,
+		m_vecRenderPos.x + m_vecScale.x,
+		m_vecRenderPos.y + m_vecScale.y,
+		m_colorText,
+		m_iSizeText
 	);
 }
 

@@ -5,6 +5,7 @@ class CAnimator;
 class CAnimation;
 class CImage;
 struct AniFrame;
+class CPanel;
 
 class CSceneAniTool : public CScene
 {
@@ -18,6 +19,7 @@ private:
 	HWND m_hWndAniTool;
 	CImage* m_pImage1;
 	CImage* m_pImage2;
+	CPanel* pPanel;
 
 	queue<AniFrame> m_queueAni;
 	AniFrame m_curAniFrame1;
@@ -25,6 +27,8 @@ private:
 
 	bool m_bSelectImg1;
 	bool m_bSelectImg2;
+
+	Vector m_vecFrameSize;
 
 	void CreateFrame();
 
