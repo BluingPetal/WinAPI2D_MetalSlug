@@ -35,6 +35,8 @@
 #define IDC_EDIT_SY                     1013
 #define IDC_EDIT_SX                     1014
 #define IDC_EDIT_COUNT                  1015
+#define IDC_EDIT_COUNT2                 1016
+#define IDC_EDIT_DURATION               1016
 #define IDC_STATIC                      -1
 
 // Next default values for new objects

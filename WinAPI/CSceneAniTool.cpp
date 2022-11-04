@@ -3,6 +3,7 @@
 
 #include "CPanel.h"
 #include "CImage.h"
+#include "CPlayer.h"
 
 LRESULT CALLBACK    WinAniToolProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -14,9 +15,14 @@ CSceneAniTool::CSceneAniTool()
 	m_bSelectImg1 = false;
 	m_bSelectImg2 = false;
 	pPanel = nullptr;
-	aniArr = nullptr;
+	aniArr1 = nullptr;
+	aniArr2 = nullptr;
 	m_curIndex1 = 0;
 	m_curIndex2 = 0;
+	m_iCount1 = 0;
+	m_iCount2 = 0;
+	m_duration1 = 1;
+	m_duration2 = 1;
 
 	m_vecFrameSize = Vector(100, 100);
 }
@@ -68,35 +74,70 @@ CImage* CSceneAniTool::ToolLoadImage()
 	return nullptr;
 }
 
-void CSceneAniTool::AddAni(AniFrame aniFr)
+void CSceneAniTool::AddAni(AniFrame aniFr, int index)
 {
-	// TODO: 여기 고치기
+	//aniArr[index] = aniFr;
+	/*
 	if (m_bSelectImg1 && m_pImage1 != nullptr)
 	{
+		if (m_curIndex1 == m_iCount/2)
+			return;
 		aniArr[m_curIndex1++] = aniFr;
 	}
 	if (m_bSelectImg2 && m_pImage2 != nullptr)
 	{
+		if (m_curIndex2 == m_iCount)
+			return;
 		aniArr[m_curIndex2++] = aniFr;
 	}
+	*/
 }
 
 void CSceneAniTool::GoToPrevAni()
 {
-
-	int arraySize = sizeof(aniArr) / sizeof(AniFrame);
-	// aniArr에 ani1과 ani2 동시에 담기
 	if (m_bSelectImg1 && m_pImage1 != nullptr)
 	{
+		aniArr1[m_curIndex1] = m_curAniFrame1;
 		if (m_curIndex1 == 0)
-			m_curIndex1 = arraySize / 2;
+			m_curIndex1 = m_iCount1 - 1;
 		else
 			m_curIndex1--;
+		if (aniArr1[m_curIndex1].lt.x != NULL)
+			m_curAniFrame1 = aniArr1[m_curIndex1];
 	}
 	else if (m_bSelectImg2 && m_pImage2 != nullptr)
 	{
-		if (m_curIndex2 == arraySize / 2 + 1)
-			m_curIndex2 = arraySize - 1;
+		aniArr2[m_curIndex2] = m_curAniFrame2;
+		if (m_curIndex2 == 0)
+			m_curIndex2 = m_iCount2 - 1;
+		else
+			m_curIndex2--;
+		if (aniArr2[m_curIndex2].lt.x != NULL)
+			m_curAniFrame2 = aniArr2[m_curIndex2];
+	}
+}
+
+void CSceneAniTool::GoToNextAni()
+{
+	if (m_bSelectImg1 && m_pImage1 != nullptr)
+	{
+		aniArr1[m_curIndex1] = m_curAniFrame1;
+		if (m_curIndex1 == m_iCount1 - 1)
+			m_curIndex1 = 0;
+		else
+			m_curIndex1++;
+		if (aniArr1[m_curIndex1].lt.x != NULL)
+			m_curAniFrame1 = aniArr1[m_curIndex1];
+	}
+	else if (m_bSelectImg2 && m_pImage2 != nullptr)
+	{
+		aniArr2[m_curIndex2] = m_curAniFrame2;
+		if (m_curIndex2 == m_iCount2 - 1)
+			m_curIndex2 = 0;
+		else
+			m_curIndex2++;
+		if (aniArr2[m_curIndex2].lt.x != NULL)
+			m_curAniFrame2 = aniArr2[m_curIndex2];
 	}
 }
 
@@ -128,11 +169,11 @@ void CSceneAniTool::Enter()
 
 void CSceneAniTool::Update()
 {
+	Logger::Debug(to_wstring(m_curIndex1));
 	// 배열이 지정되지 않았을 경우 리턴
-	if (aniArr == nullptr) return;
+	if (aniArr1 == nullptr && aniArr2 == nullptr) return;
 
-	Logger::Debug(L"Here");
-
+#pragma region  SceneAniTool Key Setting
 	// Title 씬으로 돌아가기
 	if (BUTTONDOWN(VK_ESCAPE))
 	{
@@ -317,11 +358,13 @@ void CSceneAniTool::Update()
 				m_curAniFrame2.slice -= Vector(10, 0) * DT;
 		}
 	}
+#pragma endregion
 }
 
 void CSceneAniTool::Render()
 {
 	CreateFrame(); 
+#pragma region Image Rendering
 	if (m_pImage1 != nullptr)
 	{
 		RENDER->FrameRect(
@@ -382,14 +425,17 @@ void CSceneAniTool::Render()
 			m_curAniFrame1.lt.y + m_curAniFrame1.slice.y
 		);
 	}
+#pragma endregion
 
 	wstring description =	L"Frame1 Left Top : (" + to_wstring((int)m_curAniFrame1.lt.x) + L", " + to_wstring((int)m_curAniFrame1.lt.y) + L")\n" +
 							L"Frame1 Slice    : (" + to_wstring((int)m_curAniFrame1.slice.x) + L", " + to_wstring((int)m_curAniFrame1.slice.y) + L")\n" +
-							L"Frame1 Offset   : (" + to_wstring((int)m_curAniFrame1.offset.x) + L", " + to_wstring((int)m_curAniFrame1.offset.y) + L")\n\n" +
+							L"Frame1 Offset   : (" + to_wstring((int)m_curAniFrame1.offset.x) + L", " + to_wstring((int)m_curAniFrame1.offset.y) + L")\n" +
+							L"Frame1 Index    : (" + to_wstring((int)m_curIndex1+1) + L" / " + to_wstring((int)m_iCount1) + L")\n\n" +
 
 							L"Frame2 Left Top : (" + to_wstring((int)m_curAniFrame2.lt.x) + L", " + to_wstring((int)m_curAniFrame2.lt.y) + L")\n" +
 							L"Frame2 Slice    : (" + to_wstring((int)m_curAniFrame2.slice.x) + L", " + to_wstring((int)m_curAniFrame2.slice.y) + L")\n"+
-							L"Frame2 Offset   : (" + to_wstring((int)m_curAniFrame2.offset.x) + L", " + to_wstring((int)m_curAniFrame2.offset.y) + L")\n";
+							L"Frame2 Offset   : (" + to_wstring((int)m_curAniFrame2.offset.x) + L", " + to_wstring((int)m_curAniFrame2.offset.y) + L")\n"+
+							L"Frame2 Index    : (" + to_wstring((int)m_curIndex2+1) + L" / " + to_wstring((int)m_iCount2) + L")\n\n";
 
 	pPanel->SetText(description, 15);
 }
@@ -426,29 +472,48 @@ LRESULT CALLBACK WinAniToolProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			int iSliceY = GetDlgItemInt(hDlg, IDC_EDIT_SY, nullptr, false);
 
 			int iCount = GetDlgItemInt(hDlg, IDC_EDIT_COUNT, nullptr, false);
+			int iDur = GetDlgItemInt(hDlg, IDC_EDIT_DURATION, nullptr, false);
 
 			CScene* pCurScene = SCENE->GetCurScene();
 			CSceneAniTool* pAniToolScene = dynamic_cast<CSceneAniTool*>(pCurScene);
+
 			if (pAniToolScene->GetSelectImg1())
 			{
+				AniFrame* newAniFrame1 = new AniFrame[iCount];
 				pAniToolScene->SetAniFrame(pAniToolScene->GetCurFrame1(), Vector(iLtX, iLtY), Vector(iSliceX, iSliceY));
+				AniFrame* aniArr = pAniToolScene->GetAniArr1();
+				if (aniArr == nullptr)
+				{
+					// 생성된 애니메이션 배열이 없었을 경우 새로 생성된 aniframe 넣어주기
+					pAniToolScene->GetAniArr1() = newAniFrame1;
+					pAniToolScene->SetCount1(iCount);	// 크기 지정
+					pAniToolScene->SetCurIndex1(0);		// 인덱스 지정
+					pAniToolScene->SetDuration1(iDur);
+				}
+				else
+				{
+					// 아닐경우 생성했던 aniframe 지워주기
+					delete[] newAniFrame1;
+				}
 			}
 			else if (pAniToolScene->GetSelectImg2())
 			{
+				AniFrame* newAniFrame2 = new AniFrame[iCount];
 				pAniToolScene->SetAniFrame(pAniToolScene->GetCurFrame2(), Vector(iLtX, iLtY), Vector(iSliceX, iSliceY));
-			}
-
-			AniFrame* newAniFrame = new AniFrame[2 * iCount];
-			AniFrame* aniArr = pAniToolScene->GetAniArr();
-			if (aniArr == nullptr)
-			{
-				// 생성된 애니메이션 배열이 없었을 경우 새로 생성된 aniframe 넣어주기
-				pAniToolScene->GetAniArr() = newAniFrame;
-			}
-			else
-			{
-				// 아닐경우 생성했던 aniframe 지워주기
-				delete[] newAniFrame;
+				AniFrame* aniArr = pAniToolScene->GetAniArr2();
+				if (aniArr == nullptr)
+				{
+					// 생성된 애니메이션 배열이 없었을 경우 새로 생성된 aniframe 넣어주기
+					pAniToolScene->GetAniArr2() = newAniFrame2;
+					pAniToolScene->SetCount2(iCount);
+					pAniToolScene->SetCurIndex2(0);
+					pAniToolScene->SetDuration2(iDur);
+				}
+				else
+				{
+					// 아닐경우 생성했던 aniframe 지워주기
+					delete[] newAniFrame2;
+				}
 			}
 		}
 		else if (LOWORD(wParam) == IDC_BUTTONLOAD)
@@ -472,18 +537,23 @@ LRESULT CALLBACK WinAniToolProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			CSceneAniTool* pAniToolScene = dynamic_cast<CSceneAniTool*>(pCurScene);
 			assert(nullptr != pAniToolScene && L"AniTool Scene cast Failed");
 
-			pAniToolScene->GoToPrevAni();
+			if (pAniToolScene->GetSelectImg1())
+			{
+				pAniToolScene->GoToPrevAni();
+			}
+			else if (pAniToolScene->GetSelectImg2())
+			{
+				pAniToolScene->GoToPrevAni();
+			}
 		}
-		/*
-		else if (LOWORD(wParam) == IDC_BUTTONMAPLOAD)
+		else if (LOWORD(wParam) == IDC_BUTTONNEXT)
 		{
 			CScene* pCurScene = SCENE->GetCurScene();
-			CSceneTileTool* pTileToolScene = dynamic_cast<CSceneTileTool*>(pCurScene);
-			assert(nullptr != pTileToolScene && L"TileTool Scene cast Failed");
+			CSceneAniTool* pAniToolScene = dynamic_cast<CSceneAniTool*>(pCurScene);
+			assert(nullptr != pAniToolScene && L"AniTool Scene cast Failed");
 
-			pTileToolScene->LoadMapData();
+			pAniToolScene->GoToNextAni();
 		}
-		*/
 		return (INT_PTR)TRUE;
 		break;
 	}
