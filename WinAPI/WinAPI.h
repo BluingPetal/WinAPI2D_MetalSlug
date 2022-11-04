@@ -28,6 +28,7 @@ enum class GroupScene
 	Title,
 
 	TileTool,
+	AniTool,
 
 	Stage01,
 

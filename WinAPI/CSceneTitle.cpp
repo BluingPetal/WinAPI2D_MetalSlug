@@ -30,6 +30,10 @@ void CSceneTitle::Update()
 	{
 		CHANGESCENE(GroupScene::TileTool);
 	}
+	if (BUTTONDOWN(VK_F2))
+	{
+		CHANGESCENE(GroupScene::AniTool);
+	}
 	if (BUTTONDOWN(VK_SPACE))
 	{
 		CAMERA->FadeOut(0.25f);

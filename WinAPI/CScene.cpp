@@ -88,6 +88,9 @@ void CScene::ScenePhysicsUpdate()
 
 void CScene::SceneRender()
 {
+	// 상속한 자식 표현갱신
+	Render();
+
 	// 씬 내에 모든 게임오브젝트 표현갱신
 	for (int layer = 0; layer < (int)Layer::Size; layer++)
 	{
@@ -101,9 +104,6 @@ void CScene::SceneRender()
 			pGameObject->GameObjectRender();
 		}
 	}
-
-	// 상속한 자식 표현갱신
-	Render();
 }
 
 void CScene::SceneExit()

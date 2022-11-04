@@ -151,7 +151,9 @@
     <ClInclude Include="CEventManager.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGroundTile.h" />
+    <ClInclude Include="CImageButton.h" />
     <ClInclude Include="CImageObject.h" />
+    <ClInclude Include="CImagePanel.h" />
     <ClInclude Include="CInputManager.h" />
     <ClInclude Include="CMissile.h" />
     <ClInclude Include="CMonster.h" />
@@ -162,6 +164,7 @@
     <ClInclude Include="CResource.h" />
     <ClInclude Include="CResourceManager.h" />
     <ClInclude Include="CScene.h" />
+    <ClInclude Include="CSceneAniTool.h" />
     <ClInclude Include="CSceneManager.h" />
     <ClInclude Include="CSceneStage01.h" />
     <ClInclude Include="CSceneTileTool.h" />
@@ -196,7 +199,9 @@
     <ClCompile Include="CEventManager.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGroundTile.cpp" />
+    <ClCompile Include="CImageButton.cpp" />
     <ClCompile Include="CImageObject.cpp" />
+    <ClCompile Include="CImagePanel.cpp" />
     <ClCompile Include="CInputManager.cpp" />
     <ClCompile Include="CMissile.cpp" />
     <ClCompile Include="CMonster.cpp" />
@@ -207,6 +212,7 @@
     <ClCompile Include="CResource.cpp" />
     <ClCompile Include="CResourceManager.cpp" />
     <ClCompile Include="CScene.cpp" />
+    <ClCompile Include="CSceneAniTool.cpp" />
     <ClCompile Include="CSceneManager.cpp" />
     <ClCompile Include="CSceneStage01.cpp" />
     <ClCompile Include="CSceneTileTool.cpp" />
