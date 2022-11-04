@@ -103,6 +103,7 @@ void CSceneAniTool::GoToPrevAni()
 void CSceneAniTool::Init()
 {
 	m_bSelectImg1 = true;
+	m_bSelectImg2 = false;
 }
 
 void CSceneAniTool::Enter()
@@ -129,6 +130,8 @@ void CSceneAniTool::Update()
 {
 	// 배열이 지정되지 않았을 경우 리턴
 	if (aniArr == nullptr) return;
+
+	Logger::Debug(L"Here");
 
 	// Title 씬으로 돌아가기
 	if (BUTTONDOWN(VK_ESCAPE))
@@ -440,7 +443,7 @@ LRESULT CALLBACK WinAniToolProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			if (aniArr == nullptr)
 			{
 				// 생성된 애니메이션 배열이 없었을 경우 새로 생성된 aniframe 넣어주기
-				aniArr = newAniFrame;
+				pAniToolScene->GetAniArr() = newAniFrame;
 			}
 			else
 			{

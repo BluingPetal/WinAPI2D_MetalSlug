@@ -41,7 +41,7 @@ public:
 	}
 	CImage* GetImage1();
 	CImage* GetImage2();
-	AniFrame* GetAniArr() { return aniArr; }
+	AniFrame*& GetAniArr() { return aniArr; }
 	void SetImage1(CImage* img1) { m_pImage1 = img1; }
 	void SetImage2(CImage* img2) { m_pImage2 = img2; }
 	bool GetSelectImg1() { return m_bSelectImg1; }
