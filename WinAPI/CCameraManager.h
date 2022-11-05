@@ -22,6 +22,8 @@ private:
 	float			m_fCurBright;		// 카메라의 현재 밝기
 	float			m_fTimeToBright;	// 카메라의 밝기 변화 남은시간
 
+	float			m_fZoom;			// 카메라 줌
+
 public:
 	Vector			GetLookAt();
 	Vector			GetTargetPos();
@@ -38,6 +40,9 @@ public:
 
 	void FadeIn(float duration);		// 씬 진입 효과
 	void FadeOut(float duration);		// 씬 탈출 효과
+
+	float GetZoom() { return m_fZoom; }
+	void SetZoom(float zoom) { m_fZoom = zoom; }
 
 private:
 	void Init();

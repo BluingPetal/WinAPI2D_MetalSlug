@@ -97,12 +97,16 @@ void CUI::GameObjectUpdate()
 
 void CUI::GameObjectRender()
 {
+	// UI는 확대되지 않도록 조정
+	float zoom = CAMERA->GetZoom();
+	CAMERA->SetZoom(0);
 	Render();
 
 	for (CUI* pUI : m_listChildUI)
 	{
 		pUI->GameObjectRender();
 	}
+	CAMERA->SetZoom(zoom);
 }
 
 void CUI::GameObjectRelease()

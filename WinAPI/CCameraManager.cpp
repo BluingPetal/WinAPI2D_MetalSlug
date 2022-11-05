@@ -15,6 +15,8 @@ CCameraManager::CCameraManager()
 	m_fTargetBright = 1.f;
 	m_fCurBright = 1.f;
 	m_fTimeToBright = 0.f;
+
+	m_fZoom = 0;
 }
 
 CCameraManager::~CCameraManager()
@@ -49,7 +51,8 @@ void CCameraManager::SetTargetObj(CGameObject* pTargetObj)
 
 Vector CCameraManager::WorldToScreenPoint(Vector worldPoint)
 {
-	return worldPoint - (m_vecLookAt - Vector(WINSIZEX * 0.5f, WINSIZEY * 0.5f));
+	Vector vecDiff = worldPoint - m_vecLookAt;
+	return worldPoint - (m_vecLookAt - Vector(WINSIZEX * 0.5f, WINSIZEY * 0.5f)) + vecDiff * m_fZoom;
 }
 
 Vector CCameraManager::ScreenToWorldPoint(Vector screenPoint)

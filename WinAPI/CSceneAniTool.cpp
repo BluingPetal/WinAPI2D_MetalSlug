@@ -103,31 +103,34 @@ void CSceneAniTool::ToolSaveAniData()
 		_wfopen_s(&pFile, wstring(szName).c_str(), L"wb");		// w : write, b : binary
 		assert(pFile);
 
-		fwrite(&(m_iCount1), sizeof(Vector), 1, pFile);
-		for (int i = 0; i < m_iCount1; i++)
+		if (m_bSelectImg1 && aniArr1 != nullptr)
 		{
-			fwrite(&(aniArr1[i].lt), sizeof(Vector), 1, pFile);
-			fwrite(&(aniArr1[i].slice), sizeof(Vector), 1, pFile);
-			fwrite(&(aniArr1[i].offset), sizeof(Vector), 1, pFile);
+			fwrite(&(m_iCount1), sizeof(UINT), 1, pFile);
+			for (int i = 0; i < m_iCount1; i++)
+			{
+				fwrite(&(aniArr1[i].lt), sizeof(Vector), 1, pFile);
+				fwrite(&(aniArr1[i].slice), sizeof(Vector), 1, pFile);
+				fwrite(&(aniArr1[i].offset), sizeof(Vector), 1, pFile);
+			}
+			delete[] aniArr1;
+			aniArr1 = nullptr;
 		}
 
-		if (aniArr2 != nullptr)
+		if (m_bSelectImg2 && aniArr2 != nullptr)
 		{
-			fwrite(&(m_iCount2), sizeof(Vector), 1, pFile);
+			fwrite(&(m_iCount2), sizeof(UINT), 1, pFile);
 			for (int i = 0; i < m_iCount2; i++)
 			{
 				fwrite(&(aniArr2[i].lt), sizeof(Vector), 1, pFile);
 				fwrite(&(aniArr2[i].slice), sizeof(Vector), 1, pFile);
 				fwrite(&(aniArr2[i].offset), sizeof(Vector), 1, pFile);
 			}
+			delete[] aniArr2;
+			aniArr2 = nullptr;
 		}
 
 		fclose(pFile);
 	}
-	delete[] aniArr1;
-	if (aniArr2 != nullptr) delete[] aniArr2;
-	aniArr1 = nullptr;
-	aniArr2 = nullptr;
 }
 
 void CSceneAniTool::PlayAni()
@@ -167,10 +170,10 @@ void CSceneAniTool::RenderAni()
 	{
 		RENDER->FrameImage(
 			m_pImage1,
-			100 - aniArr1[m_iCurFrame1].slice.x * 0.5f,
-			100 - aniArr1[m_iCurFrame1].slice.y * 0.5f,
-			100 + aniArr1[m_iCurFrame1].slice.x * 0.5f,
-			100 + aniArr1[m_iCurFrame1].slice.y * 0.5f,
+			100 - aniArr1[m_iCurFrame1].slice.x * 0.5f + aniArr1[m_iCurFrame1].offset.x,
+			100 - aniArr1[m_iCurFrame1].slice.y * 0.5f + aniArr1[m_iCurFrame1].offset.y,
+			100 + aniArr1[m_iCurFrame1].slice.x * 0.5f + aniArr1[m_iCurFrame1].offset.x,
+			100 + aniArr1[m_iCurFrame1].slice.y * 0.5f + aniArr1[m_iCurFrame1].offset.y,
 			aniArr1[m_iCurFrame1].lt.x,
 			aniArr1[m_iCurFrame1].lt.y,
 			aniArr1[m_iCurFrame1].lt.x + aniArr1[m_iCurFrame1].slice.x,
@@ -181,10 +184,10 @@ void CSceneAniTool::RenderAni()
 	{
 		RENDER->FrameImage(
 			m_pImage2,
-			100 - aniArr2[m_iCurFrame1].slice.x * 0.5f,
-			100 - aniArr2[m_iCurFrame1].slice.y * 0.5f,
-			100 + aniArr2[m_iCurFrame1].slice.x * 0.5f,
-			100 + aniArr2[m_iCurFrame1].slice.y * 0.5f,
+			100 - aniArr2[m_iCurFrame1].slice.x * 0.5f + aniArr2[m_iCurFrame2].offset.x,
+			100 - aniArr2[m_iCurFrame1].slice.y * 0.5f + aniArr2[m_iCurFrame2].offset.x,
+			100 + aniArr2[m_iCurFrame1].slice.x * 0.5f + aniArr2[m_iCurFrame2].offset.x,
+			100 + aniArr2[m_iCurFrame1].slice.y * 0.5f + aniArr2[m_iCurFrame2].offset.x,
 			aniArr2[m_iCurFrame1].lt.x,
 			aniArr2[m_iCurFrame1].lt.y,
 			aniArr2[m_iCurFrame1].lt.x + aniArr2[m_iCurFrame1].slice.x,
@@ -262,8 +265,8 @@ void CSceneAniTool::Enter()
 	CreateFrame();
 
 	pPanel = new CPanel;
-	pPanel->SetScale(Vector(400.f, 600.f));
-	pPanel->SetPos(Vector(WINSIZEX - 450.f, 50.f));
+	pPanel->SetScale(Vector(200.f, 200.f));
+	pPanel->SetPos(Vector(WINSIZEX - 230.f, 40.f));
 	AddGameObject(pPanel);
 }
 
@@ -296,7 +299,7 @@ void CSceneAniTool::Update()
 		m_bSelectImg2 = true;
 	}
 	// Left Top 조절
-	if (BUTTONSTAY(VK_UP))
+	if (BUTTONSTAY(VK_DOWN))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
@@ -309,7 +312,7 @@ void CSceneAniTool::Update()
 				m_curAniFrame2.lt += Vector(0, -20) * DT;
 		}
 	}
-	if (BUTTONSTAY(VK_DOWN))
+	if (BUTTONSTAY(VK_UP))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
@@ -322,7 +325,7 @@ void CSceneAniTool::Update()
 				m_curAniFrame2.lt += Vector(0, 20) * DT;
 		}
 	}
-	if (BUTTONSTAY(VK_LEFT))
+	if (BUTTONSTAY(VK_RIGHT))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
@@ -335,7 +338,7 @@ void CSceneAniTool::Update()
 				m_curAniFrame2.lt += Vector(-20, 0)*DT;
 		}
 	}
-	if (BUTTONSTAY(VK_RIGHT))
+	if (BUTTONSTAY(VK_LEFT))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
@@ -364,44 +367,44 @@ void CSceneAniTool::Update()
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			m_curAniFrame1.offset += Vector(0, -10) * DT;
+			m_curAniFrame1.offset += Vector(0, -20) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			m_curAniFrame2.offset += Vector(0, -10) * DT;
+			m_curAniFrame2.offset += Vector(0, -20) * DT;
 		}
 	}
 	if (BUTTONSTAY(VK_NUMPAD5))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			m_curAniFrame1.offset += Vector(0, 10) * DT;
+			m_curAniFrame1.offset += Vector(0, 20) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			m_curAniFrame2.offset += Vector(0, 10) * DT;
+			m_curAniFrame2.offset += Vector(0, 20) * DT;
 		}
 	}
 	if (BUTTONSTAY(VK_NUMPAD4))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			m_curAniFrame1.offset += Vector(-10, 0) * DT;
+			m_curAniFrame1.offset += Vector(-20, 0) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			m_curAniFrame2.offset += Vector(-10, 0) * DT;
+			m_curAniFrame2.offset += Vector(-20, 0) * DT;
 		}
 	}
 	if (BUTTONSTAY(VK_NUMPAD6))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			m_curAniFrame1.offset += Vector(10, 0) * DT;
+			m_curAniFrame1.offset += Vector(20, 0) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			m_curAniFrame2.offset += Vector(10, 0) * DT;
+			m_curAniFrame2.offset += Vector(20, 0) * DT;
 		}
 	}
 	// Slice 조절
@@ -410,12 +413,12 @@ void CSceneAniTool::Update()
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.y + m_curAniFrame1.offset.y + m_curAniFrame1.slice.y < m_pImage1->GetHeight())
-				m_curAniFrame1.slice += Vector(0, 10) * DT;
+				m_curAniFrame1.slice += Vector(0, 20) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.y + m_curAniFrame2.offset.y + m_curAniFrame2.slice.y < m_pImage2->GetHeight())
-				m_curAniFrame2.slice += Vector(0, 10) * DT;
+				m_curAniFrame2.slice += Vector(0, 20) * DT;
 		}
 	}
 	if (BUTTONSTAY('S'))
@@ -423,12 +426,12 @@ void CSceneAniTool::Update()
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.slice.y > 0)
-				m_curAniFrame1.slice -= Vector(0, 10) * DT;
+				m_curAniFrame1.slice -= Vector(0, 20) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.slice.y > 0)
-				m_curAniFrame2.slice -= Vector(0, 10) * DT;
+				m_curAniFrame2.slice -= Vector(0, 20) * DT;
 		}
 	}
 	if (BUTTONSTAY('D'))
@@ -436,12 +439,12 @@ void CSceneAniTool::Update()
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.x + m_curAniFrame1.offset.x + m_curAniFrame1.slice.x < m_pImage1->GetWidth())
-				m_curAniFrame1.slice += Vector(10, 0) * DT;
+				m_curAniFrame1.slice += Vector(20, 0) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.x + m_curAniFrame2.offset.x + m_curAniFrame2.slice.x < m_pImage2->GetWidth())
-				m_curAniFrame2.slice += Vector(10, 0) * DT;
+				m_curAniFrame2.slice += Vector(20, 0) * DT;
 		}
 	}
 	if (BUTTONSTAY('A'))
@@ -449,15 +452,31 @@ void CSceneAniTool::Update()
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.slice.x > 0)
-				m_curAniFrame1.slice -= Vector(10, 0) * DT;
+				m_curAniFrame1.slice -= Vector(20, 0) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.slice.x > 0)
-				m_curAniFrame2.slice -= Vector(10, 0) * DT;
+				m_curAniFrame2.slice -= Vector(20, 0) * DT;
 		}
 	}
 #pragma endregion
+	if (BUTTONSTAY(VK_F1))
+	{
+		float zoom = CAMERA->GetZoom();
+		float setZoom = zoom - zoom * 2 * DT;
+		if (setZoom > 0)
+			CAMERA->SetZoom(setZoom);
+		else
+			CAMERA->SetZoom(0);
+	}
+	if (BUTTONSTAY(VK_F2))
+	{
+		float zoom = CAMERA->GetZoom();
+		float setZoom = zoom + 0.01;
+		CAMERA->SetZoom(setZoom);
+	}
+	Logger::Debug(to_wstring(CAMERA->GetZoom()));
 
 	if (BUTTONDOWN(VK_SPACE))
 	{
@@ -654,14 +673,7 @@ LRESULT CALLBACK WinAniToolProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			CSceneAniTool* pAniToolScene = dynamic_cast<CSceneAniTool*>(pCurScene);
 			assert(nullptr != pAniToolScene && L"AniTool Scene cast Failed");
 
-			if (pAniToolScene->GetSelectImg1())
-			{
 				pAniToolScene->GoToPrevAni();
-			}
-			else if (pAniToolScene->GetSelectImg2())
-			{
-				pAniToolScene->GoToPrevAni();
-			}
 		}
 		else if (LOWORD(wParam) == IDC_BUTTONNEXT)
 		{
