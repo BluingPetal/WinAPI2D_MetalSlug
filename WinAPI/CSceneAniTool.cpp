@@ -186,9 +186,9 @@ void CSceneAniTool::RenderAni()
 		RENDER->FrameImage(
 			m_pImage2,
 			100 - aniArr2[m_iCurFrame1].slice.x * 0.5f + aniArr2[m_iCurFrame2].offset.x,
-			100 - aniArr2[m_iCurFrame1].slice.y * 0.5f + aniArr2[m_iCurFrame2].offset.x,
+			100 - aniArr2[m_iCurFrame1].slice.y * 0.5f + aniArr2[m_iCurFrame2].offset.y,
 			100 + aniArr2[m_iCurFrame1].slice.x * 0.5f + aniArr2[m_iCurFrame2].offset.x,
-			100 + aniArr2[m_iCurFrame1].slice.y * 0.5f + aniArr2[m_iCurFrame2].offset.x,
+			100 + aniArr2[m_iCurFrame1].slice.y * 0.5f + aniArr2[m_iCurFrame2].offset.y,
 			aniArr2[m_iCurFrame1].lt.x,
 			aniArr2[m_iCurFrame1].lt.y,
 			aniArr2[m_iCurFrame1].lt.x + aniArr2[m_iCurFrame1].slice.x,
@@ -271,8 +271,8 @@ void CSceneAniTool::Enter()
 	AddGameObject(pPanel);
 	/*
 	pDescptPanel = new CPanel;
-	pDescptPanel->SetScale(Vector(500.f, 200.f));
-	pDescptPanel->SetPos(Vector(WINSIZEX - 510.f, WINSIZEY - 210.f));
+	pDescptPanel->SetScale(Vector(500.f, 250.f));
+	pDescptPanel->SetPos(Vector(WINSIZEX - 510.f, WINSIZEY - 260.f));
 	AddGameObject(pDescptPanel);
 	*/
 }
@@ -484,8 +484,27 @@ void CSceneAniTool::Update()
 	{
 		m_bPlay = !m_bPlay;
 	}
-#pragma endregion
 
+	// duration Á¶Àý
+	if (BUTTONSTAY(VK_F3))
+	{
+		m_duration1 -= 5 * DT;
+		m_duration2 -= 5 * DT;
+		if (m_duration1 < 0.1)
+			m_duration1 = 0.1f;
+		if (m_duration2 < 0.1)
+			m_duration2 = 0.1f;
+	}
+	if (BUTTONSTAY(VK_F4))
+	{
+		m_duration1 += 5 * DT;
+		m_duration2 += 5 * DT;
+		if (m_duration1 > 3 )
+			m_duration1 = 3.f;
+		if (m_duration2 > 3)
+			m_duration2 = 3.f;
+	}
+#pragma endregion
 
 	if (m_bPlay)
 	{
@@ -587,6 +606,7 @@ void CSceneAniTool::Render()
 						L"NUMPAD(8,5,4,6)\t: Change Offset\t\t\n"
 						L"W,S,A,D\t\t\t: Change Slice Size\t\n"
 						L"F2, F1\t\t\t: Zoom In/Out\t\t\n"
+						L"F4, F3\t\t\t: Duration Up/Down\t\n"
 						L"SPACE\t\t\t: Play Animation\t\t\n"
 						L"============================================ \n";
 

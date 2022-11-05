@@ -64,3 +64,19 @@ enum class TypeTile
 
 	Size,
 };
+
+//========================================
+//##				ป๓ลย					##
+//========================================
+
+enum class PlayerStatus
+{
+	Idle,
+	Move,
+	Jump,
+	Sit,
+	Attack,
+	Full,
+
+	Dead,
+};

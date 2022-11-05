@@ -150,6 +150,7 @@
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CEventManager.h" />
     <ClInclude Include="CGameObject.h" />
+    <ClInclude Include="CGravity.h" />
     <ClInclude Include="CGroundTile.h" />
     <ClInclude Include="CImageButton.h" />
     <ClInclude Include="CImageObject.h" />
@@ -198,6 +199,7 @@
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CEventManager.cpp" />
     <ClCompile Include="CGameObject.cpp" />
+    <ClCompile Include="CGravity.cpp" />
     <ClCompile Include="CGroundTile.cpp" />
     <ClCompile Include="CImageButton.cpp" />
     <ClCompile Include="CImageObject.cpp" />

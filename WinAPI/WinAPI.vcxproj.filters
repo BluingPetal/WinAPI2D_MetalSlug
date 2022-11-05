@@ -192,6 +192,9 @@
     <ClInclude Include="CImageButton.h">
       <Filter>Engine\Asset\UI</Filter>
     </ClInclude>
+    <ClInclude Include="CGravity.h">
+      <Filter>Engine\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinAPI.cpp">
@@ -313,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="CImageButton.cpp">
       <Filter>Engine\Asset\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CGravity.cpp">
+      <Filter>Engine\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
