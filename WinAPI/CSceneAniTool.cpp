@@ -12,7 +12,7 @@ CSceneAniTool::CSceneAniTool()
 	m_hWndAniTool = 0;
 
 	m_pImage1 = m_pImage2 = nullptr;
-	pPanel = nullptr;
+	pPanel = pDescptPanel = nullptr;
 	aniArr1 = aniArr2 = nullptr;
 
 	m_curIndex1 = m_curIndex2 = 0;
@@ -269,6 +269,12 @@ void CSceneAniTool::Enter()
 	pPanel->SetScale(Vector(200.f, 200.f));
 	pPanel->SetPos(Vector(WINSIZEX - 230.f, 40.f));
 	AddGameObject(pPanel);
+	/*
+	pDescptPanel = new CPanel;
+	pDescptPanel->SetScale(Vector(500.f, 200.f));
+	pDescptPanel->SetPos(Vector(WINSIZEX - 510.f, WINSIZEY - 210.f));
+	AddGameObject(pDescptPanel);
+	*/
 }
 
 void CSceneAniTool::Update()
@@ -479,7 +485,6 @@ void CSceneAniTool::Update()
 		m_bPlay = !m_bPlay;
 	}
 #pragma endregion
-	Logger::Debug(to_wstring(CAMERA->GetZoom()));
 
 
 	if (m_bPlay)
@@ -491,8 +496,6 @@ void CSceneAniTool::Update()
 void CSceneAniTool::Render()
 {
 	CreateFrame(); 
-
-	RENDER->FrameRect(0, 0, 200, 200);
 
 #pragma region Image Rendering
 	if (m_pImage1 != nullptr)
@@ -562,17 +565,34 @@ void CSceneAniTool::Render()
 		RenderAni();
 	}
 
-	wstring description =	L"Frame1 Left Top : (" + to_wstring((int)m_curAniFrame1.lt.x) + L", " + to_wstring((int)m_curAniFrame1.lt.y) + L")\n" +
-							L"Frame1 Slice    : (" + to_wstring((int)m_curAniFrame1.slice.x) + L", " + to_wstring((int)m_curAniFrame1.slice.y) + L")\n" +
-							L"Frame1 Offset   : (" + to_wstring((int)m_curAniFrame1.offset.x) + L", " + to_wstring((int)m_curAniFrame1.offset.y) + L")\n" +
-							L"Frame1 Index    : (" + to_wstring((int)m_curIndex1+1) + L" / " + to_wstring((int)m_iCount1) + L")\n\n" +
+	wstring info =	L"Frame1 Left Top : (" + to_wstring((int)m_curAniFrame1.lt.x) + L", " + to_wstring((int)m_curAniFrame1.lt.y) + L")\n" +
+					L"Frame1 Slice    : (" + to_wstring((int)m_curAniFrame1.slice.x) + L", " + to_wstring((int)m_curAniFrame1.slice.y) + L")\n" +
+					L"Frame1 Offset   : (" + to_wstring((int)m_curAniFrame1.offset.x) + L", " + to_wstring((int)m_curAniFrame1.offset.y) + L")\n" +
+					L"Frame1 Index    : (" + to_wstring((int)m_curIndex1+1) + L" / " + to_wstring((int)m_iCount1) + L")\n\n" +
 
-							L"Frame2 Left Top : (" + to_wstring((int)m_curAniFrame2.lt.x) + L", " + to_wstring((int)m_curAniFrame2.lt.y) + L")\n" +
-							L"Frame2 Slice    : (" + to_wstring((int)m_curAniFrame2.slice.x) + L", " + to_wstring((int)m_curAniFrame2.slice.y) + L")\n"+
-							L"Frame2 Offset   : (" + to_wstring((int)m_curAniFrame2.offset.x) + L", " + to_wstring((int)m_curAniFrame2.offset.y) + L")\n"+
-							L"Frame2 Index    : (" + to_wstring((int)m_curIndex2+1) + L" / " + to_wstring((int)m_iCount2) + L")\n\n";
+					L"Frame2 Left Top : (" + to_wstring((int)m_curAniFrame2.lt.x) + L", " + to_wstring((int)m_curAniFrame2.lt.y) + L")\n" +
+					L"Frame2 Slice    : (" + to_wstring((int)m_curAniFrame2.slice.x) + L", " + to_wstring((int)m_curAniFrame2.slice.y) + L")\n"+
+					L"Frame2 Offset   : (" + to_wstring((int)m_curAniFrame2.offset.x) + L", " + to_wstring((int)m_curAniFrame2.offset.y) + L")\n"+
+					L"Frame2 Index    : (" + to_wstring((int)m_curIndex2+1) + L" / " + to_wstring((int)m_iCount2) + L")\n\n";
 
-	pPanel->SetText(description, 15);
+	pPanel->SetText(info, 15);
+	/*
+	RENDER->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_LEADING);
+
+	wstring descrpt =	L"================ HOW TO USE ================ \n"
+						L"ESC\t\t\t: Go To Title\t\t\n"
+						L"TAB\t\t\t: Switch Target Image\t\n"
+						L"N,M\t\t\t: Change Frame Size\t\n"
+						L"ARROW KEYS(¡è¡é¡ç¡æ)\t : Change Left-Top Position\n"
+						L"NUMPAD(8,5,4,6)\t: Change Offset\t\t\n"
+						L"W,S,A,D\t\t\t: Change Slice Size\t\n"
+						L"F2, F1\t\t\t: Zoom In/Out\t\t\n"
+						L"SPACE\t\t\t: Play Animation\t\t\n"
+						L"============================================ \n";
+
+	pDescptPanel->SetText(descrpt, 15);
+	RENDER->SetTextAlignment(DWRITE_TEXT_ALIGNMENT_CENTER);
+	*/
 }
 
 void CSceneAniTool::Exit()

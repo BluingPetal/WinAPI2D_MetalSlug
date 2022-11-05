@@ -18,29 +18,22 @@ public:
 private:
 	HWND m_hWndAniTool;
 
-	CImage* m_pImage1;
-	CImage* m_pImage2;
-	CPanel* pPanel;
-	AniFrame* aniArr1;
-	AniFrame* aniArr2;
-	AniFrame m_curAniFrame1;
-	AniFrame m_curAniFrame2;
+	CImage* m_pImage1, * m_pImage2;
+	CPanel* pPanel, * pDescptPanel;
+	AniFrame* aniArr1, * aniArr2;
+	AniFrame m_curAniFrame1, m_curAniFrame2;
 
 	Vector m_vecFrameSize;
 
-	UINT m_curIndex1;
-	UINT m_curIndex2;
-	UINT m_iCurFrame1;
-	UINT m_iCurFrame2;
-	bool m_bSelectImg1;
-	bool m_bSelectImg2;
-	int m_iCount1;
-	int m_iCount2;
+	wstring m_strInfo, m_strDescrpt;
 
-	float m_duration1;
-	float m_duration2;
-	float m_fAccTime1;
-	float m_fAccTime2;
+	UINT m_curIndex1, m_curIndex2;
+	UINT m_iCurFrame1, m_iCurFrame2;
+	bool m_bSelectImg1, m_bSelectImg2;
+	int m_iCount1, m_iCount2;
+
+	float m_duration1, m_duration2;
+	float m_fAccTime1, m_fAccTime2;
 
 	bool m_bPlay;
 
