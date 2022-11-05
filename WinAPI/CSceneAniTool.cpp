@@ -10,23 +10,19 @@ LRESULT CALLBACK    WinAniToolProc(HWND, UINT, WPARAM, LPARAM);
 CSceneAniTool::CSceneAniTool()
 {
 	m_hWndAniTool = 0;
-	m_pImage1 = nullptr;
-	m_pImage2 = nullptr;
-	m_bSelectImg1 = false;
-	m_bSelectImg2 = false;
+
+	m_pImage1 = m_pImage2 = nullptr;
 	pPanel = nullptr;
-	aniArr1 = nullptr;
-	aniArr2 = nullptr;
-	m_curIndex1 = 0;
-	m_curIndex2 = 0;
-	m_iCount1 = 0;
-	m_iCount2 = 0;
-	m_duration1 = 1;
-	m_duration2 = 1;
-	m_bPlay = false;
+	aniArr1 = aniArr2 = nullptr;
+
+	m_curIndex1 = m_curIndex2 = 0;
+	m_iCount1 = m_iCount2 = 0;
+	m_duration1 = m_duration2 = 1;
 	m_fAccTime1 = m_fAccTime2 = 0;
 	m_iCurFrame1 = m_iCurFrame2 = 0;
-	m_pAnimation = nullptr;
+
+	m_bSelectImg1 = m_bSelectImg2 = false;
+	m_bPlay = false;
 
 	m_vecFrameSize = Vector(100, 100);
 }
@@ -41,6 +37,11 @@ void CSceneAniTool::CreateFrame()
 	RENDER->FrameRect(WINSIZEX * 0.5f, WINSIZEY * 0.5f - m_vecFrameSize.y * 0.5f, WINSIZEX * 0.5f + m_vecFrameSize.x * 0.5f, WINSIZEY * 0.5f);
 	RENDER->FrameRect(WINSIZEX * 0.5f - m_vecFrameSize.x * 0.5f, WINSIZEY * 0.5f, WINSIZEX * 0.5f, WINSIZEY * 0.5f + m_vecFrameSize.y * 0.5f);
 	RENDER->FrameRect(WINSIZEX * 0.5f, WINSIZEY * 0.5f, WINSIZEX * 0.5f + m_vecFrameSize.x * 0.5f, WINSIZEY * 0.5f + m_vecFrameSize.y * 0.5f);
+}
+
+void CSceneAniTool::SetAniFrame(AniFrame& frame, Vector lt, Vector slice, float duration)
+{
+	frame.lt = lt; frame.slice = slice; frame.duration = duration;
 }
 
 CImage* CSceneAniTool::GetImage1()
@@ -281,23 +282,14 @@ void CSceneAniTool::Update()
 	{
 		CHANGESCENE(GroupScene::Title);
 	}
-	// Zoom
-	if (BUTTONDOWN(VK_MBUTTON))
+
+	// 선택할 이미지 변경
+	if (BUTTONDOWN(VK_TAB))
 	{
-		// 줌 구현
+		m_bSelectImg1 = !m_bSelectImg1;
+		m_bSelectImg2 = !m_bSelectImg2;
 	}
 
-	// Image 선택
-	if (BUTTONDOWN(VK_NUMPAD1))
-	{
-		m_bSelectImg1 = true;
-		m_bSelectImg2 = false;
-	}
-	if (BUTTONDOWN(VK_NUMPAD2))
-	{
-		m_bSelectImg1 = false;
-		m_bSelectImg2 = true;
-	}
 	// Left Top 조절
 	if (BUTTONSTAY(VK_DOWN))
 	{
@@ -316,12 +308,12 @@ void CSceneAniTool::Update()
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			if (m_curAniFrame1.lt.y + m_curAniFrame1.offset.y + m_curAniFrame1.slice.y < m_pImage1->GetHeight())
+			if (m_curAniFrame1.lt.y + m_curAniFrame1.slice.y < m_pImage1->GetHeight())
 				m_curAniFrame1.lt += Vector(0, 20) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			if (m_curAniFrame2.lt.y + m_curAniFrame2.offset.y + m_curAniFrame2.slice.y < m_pImage2->GetHeight())
+			if (m_curAniFrame2.lt.y + m_curAniFrame2.slice.y < m_pImage2->GetHeight())
 				m_curAniFrame2.lt += Vector(0, 20) * DT;
 		}
 	}
@@ -342,15 +334,16 @@ void CSceneAniTool::Update()
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			if (m_curAniFrame1.lt.x + m_curAniFrame1.offset.x + m_curAniFrame1.slice.x < m_pImage1->GetWidth())
+			if (m_curAniFrame1.lt.x + m_curAniFrame1.slice.x < m_pImage1->GetWidth())
 				m_curAniFrame1.lt += Vector(20, 0) * DT;
 		}
-		else if (m_bSelectImg2 + m_curAniFrame2.offset.x + +m_curAniFrame2.slice.x && m_pImage2 != nullptr)
+		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			if (m_curAniFrame2.lt.x < m_pImage2->GetWidth())
+			if (m_curAniFrame2.lt.x + m_curAniFrame2.slice.x < m_pImage2->GetWidth())
 				m_curAniFrame2.lt += Vector(20, 0) * DT;
 		}
 	}
+
 	// Frame 조절
 	if (BUTTONSTAY('N'))
 	{
@@ -362,6 +355,7 @@ void CSceneAniTool::Update()
 		m_vecFrameSize.x += 50.f * DT;
 		m_vecFrameSize.y += 50.f * DT;
 	}
+
 	// Offset 조절
 	if (BUTTONSTAY(VK_NUMPAD8))
 	{
@@ -407,17 +401,18 @@ void CSceneAniTool::Update()
 			m_curAniFrame2.offset += Vector(20, 0) * DT;
 		}
 	}
+
 	// Slice 조절
 	if (BUTTONSTAY('W'))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			if (m_curAniFrame1.lt.y + m_curAniFrame1.offset.y + m_curAniFrame1.slice.y < m_pImage1->GetHeight())
+			if (m_curAniFrame1.lt.y + m_curAniFrame1.slice.y < m_pImage1->GetHeight())
 				m_curAniFrame1.slice += Vector(0, 20) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			if (m_curAniFrame2.lt.y + m_curAniFrame2.offset.y + m_curAniFrame2.slice.y < m_pImage2->GetHeight())
+			if (m_curAniFrame2.lt.y + m_curAniFrame2.slice.y < m_pImage2->GetHeight())
 				m_curAniFrame2.slice += Vector(0, 20) * DT;
 		}
 	}
@@ -438,12 +433,12 @@ void CSceneAniTool::Update()
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			if (m_curAniFrame1.lt.x + m_curAniFrame1.offset.x + m_curAniFrame1.slice.x < m_pImage1->GetWidth())
+			if (m_curAniFrame1.lt.x + m_curAniFrame1.slice.x < m_pImage1->GetWidth())
 				m_curAniFrame1.slice += Vector(20, 0) * DT;
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			if (m_curAniFrame2.lt.x + m_curAniFrame2.offset.x + m_curAniFrame2.slice.x < m_pImage2->GetWidth())
+			if (m_curAniFrame2.lt.x + m_curAniFrame2.slice.x < m_pImage2->GetWidth())
 				m_curAniFrame2.slice += Vector(20, 0) * DT;
 		}
 	}
@@ -460,11 +455,12 @@ void CSceneAniTool::Update()
 				m_curAniFrame2.slice -= Vector(20, 0) * DT;
 		}
 	}
-#pragma endregion
+
+	// Zoom In/Out
 	if (BUTTONSTAY(VK_F1))
 	{
 		float zoom = CAMERA->GetZoom();
-		float setZoom = zoom - zoom * 2 * DT;
+		float setZoom = zoom - 0.005;
 		if (setZoom > 0)
 			CAMERA->SetZoom(setZoom);
 		else
@@ -473,15 +469,18 @@ void CSceneAniTool::Update()
 	if (BUTTONSTAY(VK_F2))
 	{
 		float zoom = CAMERA->GetZoom();
-		float setZoom = zoom + 0.01;
+		float setZoom = zoom + 0.005;
 		CAMERA->SetZoom(setZoom);
 	}
-	Logger::Debug(to_wstring(CAMERA->GetZoom()));
 
+	// 애니메이션 재생
 	if (BUTTONDOWN(VK_SPACE))
 	{
 		m_bPlay = !m_bPlay;
 	}
+#pragma endregion
+	Logger::Debug(to_wstring(CAMERA->GetZoom()));
+
 
 	if (m_bPlay)
 	{
@@ -582,11 +581,6 @@ void CSceneAniTool::Exit()
 
 void CSceneAniTool::Release()
 {
-}
-
-void CSceneAniTool::Create(CImage* pImg, Vector lt, Vector slice, Vector step, float duration, UINT count, bool repeat)
-{
-
 }
 
 LRESULT CALLBACK WinAniToolProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
