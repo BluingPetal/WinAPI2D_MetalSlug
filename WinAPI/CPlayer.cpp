@@ -34,14 +34,15 @@ CPlayer::~CPlayer()
 
 void CPlayer::Init()
 {
-	m_pIdleImage = RESOURCE->LoadImg(L"EriMove", L"Image\\Boss.png");
+	m_pIdleImage = RESOURCE->LoadImg(L"EriMove", L"Image\\Player\\EriRun.png");
 	
 	//m_pMoveImage = RESOURCE->LoadImg(L"PlayerMove", L"Image\\PlayerMove.png");
 
 	m_pAnimator1 = new CAnimator;
-	//m_pAnimator2 = new CAnimator;
-	m_pAnimator1->CreateAnimation(L"Boss\\BossDestroyed", m_pIdleImage, 0.1f);
-	//m_pAnimator2->CreateAnimation(L"EriMove_2", m_pIdleImage, 0.1f);
+	m_pAnimator2 = new CAnimator;
+	m_pAnimator1->CreateAnimation(L"Player\\EriHeavyGunRunL_1", m_pIdleImage, 0.2f);
+	m_pAnimator2->CreateAnimation(L"Player\\EriStartToRunL_2", m_pIdleImage, 0.2f);
+	m_pAnimator2->CreateAnimation(L"Player\\EriStartToRunR_2", m_pIdleImage, 0.2f);
 	/*
 	m_pAnimator->CreateAnimation(L"IdleRightUp", m_pIdleImage, Vector(8.f, 70.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
 	m_pAnimator->CreateAnimation(L"IdleRight", m_pIdleImage, Vector(8.f, 140.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
@@ -60,10 +61,8 @@ void CPlayer::Init()
 	m_pAnimator->CreateAnimation(L"MoveLeft", m_pMoveImage, Vector(0.f, 474.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
 	m_pAnimator->CreateAnimation(L"MoveLeftUp", m_pMoveImage, Vector(0.f, 553.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
 	*/
-	m_pAnimator1->Play(L"Boss\\BossDestroyed", false);
-	//m_pAnimator2->Play(L"EriMove_2", false);
+	AddComponent(m_pAnimator2);
 	AddComponent(m_pAnimator1);
-	//AddComponent(m_pAnimator2);
 
 	AddCollider(ColliderType::Rect, Vector(90, 90), Vector(0, 0));
 }
@@ -77,12 +76,14 @@ void CPlayer::Update()
 		m_vecPos.x -= m_fSpeed * DT;
 		m_bIsMove = true;
 		m_vecMoveDir.x = -1;
+		m_pAnimator2->Play(L"Player\\EriStartToRunL_2");
 	}
 	else if (BUTTONSTAY(VK_RIGHT))
 	{
 		m_vecPos.x += m_fSpeed * DT;
 		m_bIsMove = true;
 		m_vecMoveDir.x = +1;
+		m_pAnimator2->Play(L"Player\\EriStartToRunR_2");
 	}
 	else
 	{
@@ -110,9 +111,7 @@ void CPlayer::Update()
 	{
 		CreateMissile();
 	}
-
-	m_pAnimator1->Play(L"Boss\\BossDestroyed", false);
-	//m_pAnimator2->Play(L"EriMove_2", false);
+	m_pAnimator1->Play(L"Player\\EriHeavyGunRunL_1");
 }
 
 void CPlayer::Render()

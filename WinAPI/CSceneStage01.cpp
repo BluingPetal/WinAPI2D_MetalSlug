@@ -41,6 +41,7 @@ void CSceneStage01::Init()
 void CSceneStage01::Enter()
 {
 	CAMERA->FadeIn(0.25f);
+	CAMERA->SetTargetObj(pPlayer);
 	LoadTile(GETPATH + L"Tile\\Stage01.tile");
 }
 
@@ -50,6 +51,22 @@ void CSceneStage01::Update()
 	{
 		CAMERA->FadeOut(0.25f);
 		DELAYCHANGESCENE(GroupScene::Title, 0.25f);
+	}
+	// Zoom In/Out
+	if (BUTTONSTAY(VK_F1))
+	{
+		float zoom = CAMERA->GetZoom();
+		float setZoom = zoom - 0.005;
+		if (setZoom > 0)
+			CAMERA->SetZoom(setZoom);
+		else
+			CAMERA->SetZoom(0);
+	}
+	if (BUTTONSTAY(VK_F2))
+	{
+		float zoom = CAMERA->GetZoom();
+		float setZoom = zoom + 0.005;
+		CAMERA->SetZoom(setZoom);
 	}
 }
 

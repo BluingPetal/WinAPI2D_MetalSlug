@@ -297,56 +297,56 @@ void CSceneAniTool::Update()
 	}
 
 	// Left Top 조절
-	if (BUTTONSTAY(VK_DOWN))
+	if (BUTTONDOWN(VK_DOWN))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.y > 0)
-				m_curAniFrame1.lt += Vector(0, -20) * DT;
+				m_curAniFrame1.lt += Vector(0, -1);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.y > 0)
-				m_curAniFrame2.lt += Vector(0, -20) * DT;
+				m_curAniFrame2.lt += Vector(0, -1);
 		}
 	}
-	if (BUTTONSTAY(VK_UP))
+	if (BUTTONDOWN(VK_UP))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.y + m_curAniFrame1.slice.y < m_pImage1->GetHeight())
-				m_curAniFrame1.lt += Vector(0, 20) * DT;
+				m_curAniFrame1.lt += Vector(0, 1);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.y + m_curAniFrame2.slice.y < m_pImage2->GetHeight())
-				m_curAniFrame2.lt += Vector(0, 20) * DT;
+				m_curAniFrame2.lt += Vector(0, 1);
 		}
 	}
-	if (BUTTONSTAY(VK_RIGHT))
+	if (BUTTONDOWN(VK_RIGHT))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.x > 0)
-				m_curAniFrame1.lt += Vector(-20, 0)*DT;
+				m_curAniFrame1.lt += Vector(-1, 0);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.x > 0)
-				m_curAniFrame2.lt += Vector(-20, 0)*DT;
+				m_curAniFrame2.lt += Vector(-1, 0);
 		}
 	}
-	if (BUTTONSTAY(VK_LEFT))
+	if (BUTTONDOWN(VK_LEFT))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.x + m_curAniFrame1.slice.x < m_pImage1->GetWidth())
-				m_curAniFrame1.lt += Vector(20, 0) * DT;
+				m_curAniFrame1.lt += Vector(1, 0);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.x + m_curAniFrame2.slice.x < m_pImage2->GetWidth())
-				m_curAniFrame2.lt += Vector(20, 0) * DT;
+				m_curAniFrame2.lt += Vector(1, 0);
 		}
 	}
 
@@ -363,102 +363,102 @@ void CSceneAniTool::Update()
 	}
 
 	// Offset 조절
-	if (BUTTONSTAY(VK_NUMPAD8))
+	if (BUTTONDOWN(VK_NUMPAD8))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			m_curAniFrame1.offset += Vector(0, -20) * DT;
+			m_curAniFrame1.offset += Vector(0, -1);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			m_curAniFrame2.offset += Vector(0, -20) * DT;
+			m_curAniFrame2.offset += Vector(0, -1);
 		}
 	}
-	if (BUTTONSTAY(VK_NUMPAD5))
+	if (BUTTONDOWN(VK_NUMPAD5))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			m_curAniFrame1.offset += Vector(0, 20) * DT;
+			m_curAniFrame1.offset += Vector(0, 1);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			m_curAniFrame2.offset += Vector(0, 20) * DT;
+			m_curAniFrame2.offset += Vector(0, 1);
 		}
 	}
-	if (BUTTONSTAY(VK_NUMPAD4))
+	if (BUTTONDOWN(VK_NUMPAD4))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			m_curAniFrame1.offset += Vector(-20, 0) * DT;
+			m_curAniFrame1.offset += Vector(-1, 0);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			m_curAniFrame2.offset += Vector(-20, 0) * DT;
+			m_curAniFrame2.offset += Vector(-1, 0);
 		}
 	}
-	if (BUTTONSTAY(VK_NUMPAD6))
+	if (BUTTONDOWN(VK_NUMPAD6))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
-			m_curAniFrame1.offset += Vector(20, 0) * DT;
+			m_curAniFrame1.offset += Vector(1, 0);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
-			m_curAniFrame2.offset += Vector(20, 0) * DT;
+			m_curAniFrame2.offset += Vector(1, 0);
 		}
 	}
 
 	// Slice 조절
-	if (BUTTONSTAY('W'))
+	if (BUTTONDOWN('W'))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.y + m_curAniFrame1.slice.y < m_pImage1->GetHeight())
-				m_curAniFrame1.slice += Vector(0, 20) * DT;
+				m_curAniFrame1.slice += Vector(0, 2);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.y + m_curAniFrame2.slice.y < m_pImage2->GetHeight())
-				m_curAniFrame2.slice += Vector(0, 20) * DT;
+				m_curAniFrame2.slice += Vector(0, 2);
 		}
 	}
-	if (BUTTONSTAY('S'))
+	if (BUTTONDOWN('S'))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.slice.y > 0)
-				m_curAniFrame1.slice -= Vector(0, 20) * DT;
+				m_curAniFrame1.slice -= Vector(0, 2);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.slice.y > 0)
-				m_curAniFrame2.slice -= Vector(0, 20) * DT;
+				m_curAniFrame2.slice -= Vector(0, 2);
 		}
 	}
-	if (BUTTONSTAY('D'))
+	if (BUTTONDOWN('D'))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.lt.x + m_curAniFrame1.slice.x < m_pImage1->GetWidth())
-				m_curAniFrame1.slice += Vector(20, 0) * DT;
+				m_curAniFrame1.slice += Vector(2, 0);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.lt.x + m_curAniFrame2.slice.x < m_pImage2->GetWidth())
-				m_curAniFrame2.slice += Vector(20, 0) * DT;
+				m_curAniFrame2.slice += Vector(2, 0);
 		}
 	}
-	if (BUTTONSTAY('A'))
+	if (BUTTONDOWN('A'))
 	{
 		if (m_bSelectImg1 && m_pImage1 != nullptr)
 		{
 			if (m_curAniFrame1.slice.x > 0)
-				m_curAniFrame1.slice -= Vector(20, 0) * DT;
+				m_curAniFrame1.slice -= Vector(2, 0);
 		}
 		else if (m_bSelectImg2 && m_pImage2 != nullptr)
 		{
 			if (m_curAniFrame2.slice.x > 0)
-				m_curAniFrame2.slice -= Vector(20, 0) * DT;
+				m_curAniFrame2.slice -= Vector(2, 0);
 		}
 	}
 
