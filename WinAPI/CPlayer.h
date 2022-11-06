@@ -11,16 +11,23 @@ public:
 	virtual ~CPlayer();
 
 private:
-	CAnimator* m_pAnimator1;
-	CAnimator* m_pAnimator2;
 	CImage* m_pIdleImage;
 	CImage* m_pMoveImage;
+	CImage* m_pJumpImage;
+	CImage* m_pAttackRImage;
+	CImage* m_pAttackLImage;
+	CImage* m_pDeathImage;
+
+	CAnimator* m_pAnimator1;
+	CAnimator* m_pAnimator2;
 
 	Vector m_vecMoveDir;
 	Vector m_vecLookDir;
+
 	bool m_bIsMove;
 
 	float m_fSpeed = 200.0f;
+	float test = 0;
 
 private:
 	void Init() override;

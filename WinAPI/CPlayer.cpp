@@ -22,6 +22,9 @@ CPlayer::CPlayer()
 
 	m_pIdleImage = nullptr;
 	m_pMoveImage = nullptr;
+	m_pJumpImage = nullptr;
+	m_pAttackRImage = nullptr;
+	m_pAttackLImage = nullptr;
 
 	m_vecMoveDir = Vector(0, 0);
 	m_vecLookDir = Vector(0, -1);
@@ -34,33 +37,38 @@ CPlayer::~CPlayer()
 
 void CPlayer::Init()
 {
-	m_pIdleImage = RESOURCE->LoadImg(L"EriMove", L"Image\\Player\\EriRun.png");
-	
-	//m_pMoveImage = RESOURCE->LoadImg(L"PlayerMove", L"Image\\PlayerMove.png");
+	m_pIdleImage = RESOURCE->LoadImg(L"PlayerIdle", L"Image\\Player\\EriIdle.png");
+	m_pMoveImage = RESOURCE->LoadImg(L"PlayerMove", L"Image\\Player\\EriRun.png");
+	m_pJumpImage = RESOURCE->LoadImg(L"PlayerJump", L"Image\\Player\\EriJump.png");
+	m_pAttackRImage = RESOURCE->LoadImg(L"PlayerAttackR", L"Image\\Player\\EriAttackR.png");
+	m_pAttackLImage = RESOURCE->LoadImg(L"PlayerAttackL", L"Image\\Player\\EriAttackL.png");
+	m_pDeathImage = RESOURCE->LoadImg(L"PlayerDeath", L"Image\\Player\\EriDeath.png");
 
 	m_pAnimator1 = new CAnimator;
 	m_pAnimator2 = new CAnimator;
-	m_pAnimator1->CreateAnimation(L"Player\\EriHeavyGunRunL_1", m_pIdleImage, 0.2f);
-	m_pAnimator2->CreateAnimation(L"Player\\EriStartToRunL_2", m_pIdleImage, 0.2f);
-	m_pAnimator2->CreateAnimation(L"Player\\EriStartToRunR_2", m_pIdleImage, 0.2f);
-	/*
-	m_pAnimator->CreateAnimation(L"IdleRightUp", m_pIdleImage, Vector(8.f, 70.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
-	m_pAnimator->CreateAnimation(L"IdleRight", m_pIdleImage, Vector(8.f, 140.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
-	m_pAnimator->CreateAnimation(L"IdleRightDown", m_pIdleImage, Vector(8.f, 210.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
-	m_pAnimator->CreateAnimation(L"IdleDown", m_pIdleImage, Vector(8.f, 280.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
-	m_pAnimator->CreateAnimation(L"IdleLeftDown", m_pIdleImage, Vector(8.f, 350.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
-	m_pAnimator->CreateAnimation(L"IdleLeft", m_pIdleImage, Vector(8.f, 420.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
-	m_pAnimator->CreateAnimation(L"IdleLeftUp", m_pIdleImage, Vector(8.f, 490.f), Vector(80.f, 70.f), Vector(80.f, 0.f), 0.1f, 7);
+	// Move Animation
+		// TOP
+	m_pAnimator1->CreateAnimation(L"Player\\Move\\EriRunL_1", m_pMoveImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Move\\EriRunR_1", m_pMoveImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Move\\EriHeavyGunRunL_1", m_pMoveImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Move\\EriHeavyGunRunR_1", m_pMoveImage, 0.1f);
+		// BOTTOM
+	m_pAnimator2->CreateAnimation(L"Player\\Move\\EriStartToRunL_2", m_pMoveImage, 0.2f);
+	m_pAnimator2->CreateAnimation(L"Player\\Move\\EriStartToRunR_2", m_pMoveImage, 0.2f);
+	m_pAnimator2->CreateAnimation(L"Player\\Move\\EriRunL_2", m_pMoveImage, 0.2f);
+	m_pAnimator2->CreateAnimation(L"Player\\Move\\EriRunR_2", m_pMoveImage, 0.2f);
 
-	m_pAnimator->CreateAnimation(L"MoveUp", m_pMoveImage, Vector(0.f, 0.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	m_pAnimator->CreateAnimation(L"MoveRightUp", m_pMoveImage, Vector(0.f, 79.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	m_pAnimator->CreateAnimation(L"MoveRight", m_pMoveImage, Vector(0.f, 158.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	m_pAnimator->CreateAnimation(L"MoveRightDown", m_pMoveImage, Vector(0.f, 237.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	m_pAnimator->CreateAnimation(L"MoveDown", m_pMoveImage, Vector(0.f, 316.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	m_pAnimator->CreateAnimation(L"MoveLeftDown", m_pMoveImage, Vector(0.f, 395.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	m_pAnimator->CreateAnimation(L"MoveLeft", m_pMoveImage, Vector(0.f, 474.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	m_pAnimator->CreateAnimation(L"MoveLeftUp", m_pMoveImage, Vector(0.f, 553.f), Vector(80.f, 75.f), Vector(84.f, 0.f), 0.05f, 16);
-	*/
+	// Attack Animation - TOP
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriAttackL_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunAttackL_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL1_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL2_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriBombL_1", m_pAttackLImage, 0.1f);
+
+
+
+
+
 	AddComponent(m_pAnimator2);
 	AddComponent(m_pAnimator1);
 
@@ -76,14 +84,12 @@ void CPlayer::Update()
 		m_vecPos.x -= m_fSpeed * DT;
 		m_bIsMove = true;
 		m_vecMoveDir.x = -1;
-		m_pAnimator2->Play(L"Player\\EriStartToRunL_2");
 	}
 	else if (BUTTONSTAY(VK_RIGHT))
 	{
 		m_vecPos.x += m_fSpeed * DT;
 		m_bIsMove = true;
 		m_vecMoveDir.x = +1;
-		m_pAnimator2->Play(L"Player\\EriStartToRunR_2");
 	}
 	else
 	{
@@ -111,7 +117,21 @@ void CPlayer::Update()
 	{
 		CreateMissile();
 	}
-	m_pAnimator1->Play(L"Player\\EriHeavyGunRunL_1");
+	/*
+	test += DT;
+	if (test > 0.4f)
+	{
+		m_pAnimator2->Play(L"Player\\Move\\EriRunL_2");
+		if (test > 1.6f)
+			test = 0;
+	}
+	else
+	{
+		m_pAnimator2->Play(L"Player\\Move\\EriStartToRunL_2");
+	}
+	*/
+	m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackL_1");
+	m_pAnimator2->Play(L"Player\\Move\\EriRunL_2");
 }
 
 void CPlayer::Render()
