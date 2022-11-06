@@ -1,10 +1,19 @@
 #pragma once
 #include "CGameObject.h"
+
+class CImage;
+class CAnimator;
+
 class CMonster : public CGameObject
 {
 public:
 	CMonster();
 	virtual ~CMonster();
+
+private:
+	CImage* m_pCongaTotalImg;
+
+	CAnimator* m_pAnimator;
 
 private:
 	void Init() override;

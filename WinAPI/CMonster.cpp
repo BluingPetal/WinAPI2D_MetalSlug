@@ -3,6 +3,7 @@
 
 #include "CRenderManager.h"
 #include "CCollider.h"
+#include "CAnimator.h"
 
 CMonster::CMonster()
 {
@@ -16,20 +17,28 @@ CMonster::~CMonster()
 
 void CMonster::Init()
 {
+	m_pCongaTotalImg = RESOURCE->LoadImg(L"Conga", L"Image\\Monster\\Conga.png");
+
+	m_pAnimator = new CAnimator;
+
+	m_pAnimator->CreateAnimation(L"Monster\\Conga\\CongaIdleL", m_pCongaTotalImg, 0.1f);
+	m_pAnimator->CreateAnimation(L"Monster\\Conga\\CongaWalkL", m_pCongaTotalImg, 0.1f);
+	m_pAnimator->CreateAnimation(L"Monster\\Conga\\CongaAttackL1", m_pCongaTotalImg, 0.1f);
+	m_pAnimator->CreateAnimation(L"Monster\\Conga\\CongaAttackL2", m_pCongaTotalImg, 0.1f);
+	m_pAnimator->CreateAnimation(L"Monster\\Conga\\CongaDeathL", m_pCongaTotalImg, 0.1f);
+
+	AddComponent(m_pAnimator);
+
 	AddCollider(ColliderType::Rect, Vector(90, 90), Vector(0, 0));
 }
 
 void CMonster::Update()
 {
+	m_pAnimator->Play(L"Monster\\Conga\\CongaDeathL");
 }
 
 void CMonster::Render()
 {
-	RENDER->FrameRect(
-		m_vecPos.x - m_vecScale.x * 0.5f,
-		m_vecPos.y - m_vecScale.y * 0.5f,
-		m_vecPos.x + m_vecScale.x * 0.5f,
-		m_vecPos.y + m_vecScale.y * 0.5f);
 }
 
 void CMonster::Release()

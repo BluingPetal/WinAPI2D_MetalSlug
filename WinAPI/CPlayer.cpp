@@ -131,7 +131,7 @@ void CPlayer::Update()
 	}
 	*/
 	m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackL_1");
-	m_pAnimator2->Play(L"Player\\Move\\EriRunL_2");
+	//m_pAnimator2->Play(L"Player\\Move\\EriRunL_2");
 }
 
 void CPlayer::Render()
