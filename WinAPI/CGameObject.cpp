@@ -11,6 +11,7 @@ CGameObject::CGameObject()
 	m_layer = Layer::Default;
 	m_bReservedDelete = false;
 	m_bSafeToDelete = false;
+	m_fExtension = 1;
 
 	m_pCollider = nullptr;
 }

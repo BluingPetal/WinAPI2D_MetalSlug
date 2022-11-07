@@ -195,6 +195,9 @@
     <ClInclude Include="CGravity.h">
       <Filter>Engine\Component</Filter>
     </ClInclude>
+    <ClInclude Include="CAniObject.h">
+      <Filter>GameObject\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinAPI.cpp">
@@ -319,6 +322,9 @@
     </ClCompile>
     <ClCompile Include="CGravity.cpp">
       <Filter>Engine\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="CAniObject.cpp">
+      <Filter>GameObject\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

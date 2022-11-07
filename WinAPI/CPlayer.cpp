@@ -71,8 +71,7 @@ void CPlayer::Init()
 	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathL", m_pDeathImage, 0.1f);
 	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathR", m_pDeathImage, 0.1f);
 
-
-	AddComponent(m_pAnimator2);
+	//AddComponent(m_pAnimator2);
 	AddComponent(m_pAnimator1);
 
 	AddCollider(ColliderType::Rect, Vector(90, 90), Vector(0, 0));
@@ -80,7 +79,7 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
-	//m_pAnimator1->Play(L"Player\\Death\\EriDeathR");
+	m_pAnimator1->Play(L"Player\\Death\\EriDeathR");
 	//m_pAnimator2->Play(L"Player\\Move\\EriStartToRunL_2");
 
 	m_bIsMove = false;
@@ -140,7 +139,6 @@ void CPlayer::Update()
 
 void CPlayer::Render()
 {
-	RENDER->FrameRect(20, 20, 20, 20);
 }
 
 void CPlayer::Release()

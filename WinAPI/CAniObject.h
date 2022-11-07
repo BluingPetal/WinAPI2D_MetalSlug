@@ -1,22 +1,25 @@
 #pragma once
 #include "CGameObject.h"
 
+class CAnimator;
 class CImage;
 
-class CImageObject : public CGameObject
+class CAniObject : public CGameObject
 {
 public:
-	CImageObject();
-	virtual ~CImageObject();
+	CAniObject();
+	virtual ~CAniObject();
 
 private:
-	CImage* m_pImage;
+	CImage* m_pImg;
+	CAnimator* m_pAnimator;
 	Vector m_vecOffset;
 
 public:
-	CImage* GetImage();
+	CAnimator* GetAnimator();
 	void SetImage(CImage* pImage);
 	void SetOffset(Vector vecOffset) { m_vecOffset = vecOffset; }
+	void SetPosWithFirstLt();
 
 private:
 	void Init() override;

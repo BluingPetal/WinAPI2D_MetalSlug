@@ -72,6 +72,11 @@ CAnimation* CAnimator::FindAnimation(const wstring& aniName)
 		return m_mapAni[aniName];
 }
 
+AniFrame CAnimator::GetFirstAniFrame()
+{
+	return m_pCurAni->m_FirstAniFrame;
+}
+
 void CAnimator::Play(const wstring& aniName, bool trigger)
 {
 	// 현재 애니메이션이 플레이하고자 하는 애니메이션이며

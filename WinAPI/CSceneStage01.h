@@ -2,6 +2,8 @@
 #include "CScene.h"
 
 class CPlayer;
+class CImageObject;
+class CAniObject;
 
 class CSceneStage01 : public CScene
 {
@@ -11,6 +13,11 @@ public:
 
 private:
 	CPlayer* pPlayer;
+
+	CAniObject* pFrontOceanObj;
+
+	CImageObject* pBackGround;
+	CImageObject* pFrontGround;
 
 private:
 	void Init()		override;

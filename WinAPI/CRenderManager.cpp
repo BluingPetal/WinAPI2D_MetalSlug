@@ -507,6 +507,7 @@ void CRenderManager::Image(CImage* pImg, float startX, float startY, float endX,
 	Vector start = CAMERA->WorldToScreenPoint(Vector(startX, startY));
 	startX = start.x;
 	startY = start.y;
+	
 	Vector end = CAMERA->WorldToScreenPoint(Vector(endX, endY));
 	endX = end.x;
 	endY = end.y;

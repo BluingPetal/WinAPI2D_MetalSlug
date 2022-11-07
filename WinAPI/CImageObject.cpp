@@ -8,13 +8,16 @@
 CImageObject::CImageObject()
 {
 	m_pImage = nullptr;
+	m_vecPos = Vector(0, 0);
+	m_layer = Layer::BackGround;
+	m_vecOffset = Vector(0, 0);
 }
 
 CImageObject::~CImageObject()
 {
 }
 
-CImage* CImageObject::GetIamge()
+CImage* CImageObject::GetImage()
 {
     return m_pImage;
 }
@@ -38,11 +41,10 @@ void CImageObject::Render()
 	{
 		RENDER->Image(
 			m_pImage,
-			0,
-			0,
-			(float)m_pImage->GetWidth(),
-			(float)m_pImage->GetHeight()
-		);
+			m_vecPos.x + m_vecOffset.x * m_fExtension,
+			m_vecPos.y + m_vecOffset.y * m_fExtension,
+			m_vecPos.x +((float)m_pImage->GetWidth() + m_vecOffset.x) * m_fExtension,
+			m_vecPos.y + ((float)m_pImage->GetHeight() + m_vecOffset.y)* m_fExtension);
 	}
 }
 

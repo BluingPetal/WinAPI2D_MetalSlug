@@ -15,6 +15,7 @@ CAnimation::CAnimation()
 	m_iCurFrame = 0;
 	m_fAccTime = 0;
 	m_bRepeat = true;
+	m_fExtension = 1;
 }
 
 CAnimation::~CAnimation()
@@ -46,12 +47,18 @@ void CAnimation::LoadAni(const wstring& aniName)
 
 	fread(&count, sizeof(UINT), 1, pFile);
 	m_vecReadAni = new Vector[count * 3];
-	m_count = count;
+	m_iCount = count;
 	for (int i = 0; i < count * 3; i+=3)
 	{
 		fread(&lt, sizeof(Vector), 1, pFile);
 		fread(&slice, sizeof(Vector), 1, pFile);
 		fread(&offset, sizeof(Vector), 1, pFile);
+		if (i == 0)
+		{
+			m_FirstAniFrame.lt = lt;
+			m_FirstAniFrame.slice = slice;
+			m_FirstAniFrame.offset = offset;
+		}
 		m_vecReadAni[i] = lt;
 		m_vecReadAni[i + 1] = slice;
 		m_vecReadAni[i + 2] = offset;
@@ -71,7 +78,7 @@ void CAnimation::Create(CImage* pImg, float duration, bool repeat)
 	// slice	: 프레임 이미지의 크기
 	// duration : 프레임 이미지의 지속시간
 	AniFrame frame;
-	for (UINT i = 0; i < m_count * 3; i+=3)
+	for (UINT i = 0; i < m_iCount * 3; i+=3)
 	{
 		frame.lt = m_vecReadAni[i];
 		frame.slice = m_vecReadAni[i+1];
@@ -118,6 +125,8 @@ void CAnimation::Update()
 			else			m_iCurFrame--;
 		}
 	}
+
+	m_fExtension = m_pAnimator->GetOwner()->GetExtension();
 }
 
 void CAnimation::Render()
@@ -128,10 +137,10 @@ void CAnimation::Render()
 	// 프레임 이미지 그리기
 	RENDER->FrameImage(
 		m_pImage,
-		pos.x - frame.slice.x * 0.5f + frame.offset.x,
-		pos.y - frame.slice.y * 0.5f + frame.offset.y,
-		pos.x + frame.slice.x * 0.5f + frame.offset.x,
-		pos.y + frame.slice.y * 0.5f + frame.offset.y,
+		pos.x + (-1 * frame.slice.x * 0.5f + frame.offset.x) * m_fExtension,
+		pos.y + (-1 * frame.slice.y * 0.5f + frame.offset.y) * m_fExtension,
+		pos.x + (frame.slice.x * 0.5f + frame.offset.x) * m_fExtension,
+		pos.y + (frame.slice.y * 0.5f + frame.offset.y) * m_fExtension,
 		frame.lt.x,
 		frame.lt.y,
 		frame.lt.x + frame.slice.x,

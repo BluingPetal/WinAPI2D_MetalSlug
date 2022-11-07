@@ -3,9 +3,11 @@
 
 class CAnimation;
 class CImage;
+class CAniObject;
 
 class CAnimator : public CComponent
 {
+	friend CAniObject;
 public:
 	CAnimator();
 	virtual ~CAnimator();
@@ -25,6 +27,7 @@ public:
 		 float duration, bool repeat = true);
 	void RemoveAnimation(const wstring& aniName);				// 애니메이션 삭제
 	CAnimation* FindAnimation(const wstring& aniName);			// 애니메이션 탐색
+	AniFrame GetFirstAniFrame();
 
 	void Play(const wstring& aniName, bool trigger = false);	// 애니메이션 재생
 	void Stop();												// 애니메이션 종료
