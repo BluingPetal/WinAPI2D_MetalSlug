@@ -65,8 +65,11 @@ void CPlayer::Init()
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL2_1", m_pAttackLImage, 0.1f);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriBombL_1", m_pAttackLImage, 0.1f);
 
-
-
+	// Death Animation
+	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathJumpL", m_pDeathImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathJumpR", m_pDeathImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathL", m_pDeathImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathR", m_pDeathImage, 0.1f);
 
 
 	AddComponent(m_pAnimator2);
@@ -77,6 +80,9 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
+	//m_pAnimator1->Play(L"Player\\Death\\EriDeathR");
+	//m_pAnimator2->Play(L"Player\\Move\\EriStartToRunL_2");
+
 	m_bIsMove = false;
 
 	if (BUTTONSTAY(VK_LEFT))
@@ -119,23 +125,22 @@ void CPlayer::Update()
 	}
 	/*
 	test += DT;
-	if (test > 0.4f)
+	if (test > 0.8f)
 	{
-		m_pAnimator2->Play(L"Player\\Move\\EriRunL_2");
-		if (test > 1.6f)
+		m_pAnimator2->Play(L"Player\\Move\\EriRunR_2");
+		if (test > 3.2f)
 			test = 0;
 	}
 	else
 	{
-		m_pAnimator2->Play(L"Player\\Move\\EriStartToRunL_2");
+		m_pAnimator2->Play(L"Player\\Move\\EriStartToRunR_2");
 	}
 	*/
-	m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackL_1");
-	//m_pAnimator2->Play(L"Player\\Move\\EriRunL_2");
 }
 
 void CPlayer::Render()
 {
+	RENDER->FrameRect(20, 20, 20, 20);
 }
 
 void CPlayer::Release()

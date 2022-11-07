@@ -30,10 +30,10 @@ private:
 	UINT m_curIndex1, m_curIndex2;
 	UINT m_iCurFrame1, m_iCurFrame2;
 	bool m_bSelectImg1, m_bSelectImg2;
-	int m_iCount1, m_iCount2;
+	UINT m_iCount1, m_iCount2;
 
 	float m_duration1, m_duration2;
-	float m_fAccTime1, m_fAccTime2;
+	float m_fAccTime1, m_fAccTime2; 
 
 	bool m_bPlay;
 
@@ -73,5 +73,6 @@ public:
 	void GoToNextAni();
 	void PlayAni();
 	void RenderAni();
+	void MakeFlipAni(Vector ltFliped);
 };
 

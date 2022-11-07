@@ -197,6 +197,91 @@ void CSceneAniTool::RenderAni()
 	}
 }
 
+void CSceneAniTool::MakeFlipAni(Vector ltFliped)
+{
+	OPENFILENAME ofn = {};
+
+	ofn.lStructSize = sizeof(OPENFILENAME);  // 구조체 사이즈.
+	ofn.hwndOwner = hWnd;					// 부모 윈도우 지정.
+	wchar_t szName[256] = {};
+	ofn.lpstrFile = szName; // 나중에 완성된 경로가 채워질 버퍼 지정.
+	ofn.nMaxFile = sizeof(szName); // lpstrFile에 지정된 버퍼의 문자 수.
+	ofn.lpstrFilter = L"ALL\0*.*\0ani\0*.ani"; // 필터 설정
+	ofn.nFilterIndex = 0; // 기본 필터 세팅. 0는 all로 초기 세팅됨. 처음꺼.
+	ofn.lpstrFileTitle = nullptr; // 타이틀 바
+	ofn.nMaxFileTitle = 0; // 타이틀 바 문자열 크기. nullptr이면 0.
+	wstring strTileFolder = GETPATH;
+	strTileFolder += L"AniData";
+	ofn.lpstrInitialDir = strTileFolder.c_str(); // 초기경로. 우리는 타일 저장할거기 때문에, content->tile 경로로 해두자.
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST; // 스타일
+
+	if (GetOpenFileName(&ofn))
+	{
+		FILE* pFile = nullptr;
+		FILE* pFileWrite = nullptr;
+
+		_wfopen_s(&pFile, szName, L"rb");      // w : write, b : binary
+		wstring writeFileName = wstring(szName) + L"_Reversed";
+		_wfopen_s(&pFileWrite, writeFileName.c_str(), L"wb");      // w : write, b : binary
+		assert(pFile);
+		assert(pFileWrite);
+
+		int count;
+		Vector lt = Vector(0,0);
+		Vector prevLt;
+		Vector slice = Vector(0, 0);
+		Vector prevSlice;
+		Vector offset;
+		Vector leftTopFliped = ltFliped;
+
+		fread(&count, sizeof(UINT), 1, pFile);
+		Vector* vecReadAni = new Vector[count];
+		fwrite(&count, sizeof(UINT), 1, pFileWrite);
+		Vector vecDiff = Vector(0, 0);
+
+		for (int i = 0; i < count; i++)
+		{
+			prevLt = lt;
+			prevSlice = slice;
+
+			fread(&lt, sizeof(Vector), 1, pFile);
+			fread(&slice, sizeof(Vector), 1, pFile);
+			fread(&offset, sizeof(Vector), 1, pFile);
+			Logger::Debug(L"R(" + to_wstring(lt.x) + L", " + to_wstring(lt.y) + L")");
+			Logger::Debug(L"R(" + to_wstring(slice.x) + L", " + to_wstring(slice.y) + L")");
+			Logger::Debug(L"R(" + to_wstring(offset.x) + L", " + to_wstring(offset.y) + L")");
+
+			if (i != 0)
+			{
+				vecDiff.x = prevLt.x - lt.x - (slice.x - prevSlice.x);
+				vecDiff.y = lt.y - prevLt.y;
+			}
+
+			if (i == 0)
+				fwrite(&leftTopFliped, sizeof(Vector), 1, pFileWrite);
+			else
+			{
+				leftTopFliped += vecDiff;
+				fwrite(&leftTopFliped, sizeof(Vector), 1, pFileWrite);
+			}
+
+				fwrite(&slice, sizeof(Vector), 1, pFileWrite);
+				offset.x *= -1;
+				fwrite(&offset, sizeof(Vector), 1, pFileWrite);
+
+				Logger::Debug(L"W(" + to_wstring(leftTopFliped.x) + L", " + to_wstring(leftTopFliped.y) + L")");
+				Logger::Debug(L"W(" + to_wstring(slice.x) + L", " + to_wstring(slice.y) + L")");
+				Logger::Debug(L"W(" + to_wstring(offset.x) + L", " + to_wstring(offset.y) + L")");
+		}
+
+		delete[] vecReadAni;
+		vecReadAni = nullptr;
+
+		fclose(pFileWrite);
+		fclose(pFile);
+	}
+}
+
 void CSceneAniTool::GoToPrevAni()
 {
 	if (m_bSelectImg1 && m_pImage1 != nullptr)
@@ -724,6 +809,17 @@ LRESULT CALLBACK WinAniToolProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM l
 			assert(nullptr != pAniToolScene && L"AniTool Scene cast Failed");
 
 			pAniToolScene->ToolSaveAniData();
+		}
+		else if (LOWORD(wParam) == IDC_BUTTONMAKE)
+		{
+			int ltX = GetDlgItemInt(hDlg, IDC_EDIT_LEFT_TOP_X, nullptr, false);
+			int ltY = GetDlgItemInt(hDlg, IDC_EDIT_LEFT_TOP_Y, nullptr, false);
+
+			CScene* pCurScene = SCENE->GetCurScene();
+			CSceneAniTool* pAniToolScene = dynamic_cast<CSceneAniTool*>(pCurScene);
+			assert(nullptr != pAniToolScene && L"AniTool Scene cast Failed");
+
+			pAniToolScene->MakeFlipAni(Vector((float)ltX, (float)ltY));
 		}
 		return (INT_PTR)TRUE;
 		break;

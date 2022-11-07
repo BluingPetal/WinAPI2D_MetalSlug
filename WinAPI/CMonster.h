@@ -11,7 +11,8 @@ public:
 	virtual ~CMonster();
 
 private:
-	CImage* m_pCongaTotalImg;
+	CImage* m_pCongaTotalImgL;
+	CImage* m_pCongaTotalImgR;
 
 	CAnimator* m_pAnimator;
 
