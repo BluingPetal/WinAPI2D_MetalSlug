@@ -64,6 +64,12 @@ void CPlayer::Init()
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL1_1", m_pAttackLImage, 0.1f);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL2_1", m_pAttackLImage, 0.1f);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriBombL_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunKnifeMotionL1_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunKnifeMotionL2_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriUpAttackL_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunGoingUpL_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunUpL_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunDownL_1", m_pAttackLImage, 0.1f);
 
 	// Death Animation
 	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathJumpL", m_pDeathImage, 0.1f);
@@ -71,7 +77,7 @@ void CPlayer::Init()
 	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathL", m_pDeathImage, 0.1f);
 	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathR", m_pDeathImage, 0.1f);
 
-	//AddComponent(m_pAnimator2);
+	AddComponent(m_pAnimator2);
 	AddComponent(m_pAnimator1);
 
 	AddCollider(ColliderType::Rect, Vector(90, 90), Vector(0, 0));
@@ -79,8 +85,8 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
-	m_pAnimator1->Play(L"Player\\Death\\EriDeathR");
-	//m_pAnimator2->Play(L"Player\\Move\\EriStartToRunL_2");
+	m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunDownL_1");
+	m_pAnimator2->Play(L"Player\\Move\\EriRunL_2");
 
 	m_bIsMove = false;
 
