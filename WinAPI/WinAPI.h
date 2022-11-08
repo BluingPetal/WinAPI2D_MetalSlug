@@ -78,7 +78,16 @@ enum class PlayerStatus
 	Jump,
 	Sit,
 	Attack,
-	Full,
 
 	Dead,
+};
+
+//========================================
+//##				¹«±â					##
+//========================================
+
+enum class PlayerWeapon
+{
+	Pistol,
+	HeavyMachineGun,
 };

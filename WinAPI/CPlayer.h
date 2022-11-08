@@ -21,13 +21,21 @@ private:
 	CAnimator* m_pAnimator1;
 	CAnimator* m_pAnimator2;
 
+	PlayerStatus m_status;
+
 	Vector m_vecMoveDir;
 	Vector m_vecLookDir;
 
 	bool m_bIsMove;
+	bool m_bIsJump;
+	bool m_bIsDead;
+	bool m_bIsAttack;
 
-	float m_fSpeed = 200.0f;
-	float test = 0;
+	float m_fSpeed;
+	float m_fAcctime;
+	float m_fAttackAccTime;
+
+	PlayerWeapon m_curWeapon;
 
 private:
 	void Init() override;
@@ -36,7 +44,9 @@ private:
 	void Release() override;
 
 	void AnimatorUpdate();
+	void KeyUpdate();
 	void CreateMissile();
+	void Attack();
 
 	void OnCollisionEnter(CCollider* pOtherCollider) override;
 	void OnCollisionStay(CCollider* pOtherCollider) override;

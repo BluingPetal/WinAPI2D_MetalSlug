@@ -84,8 +84,8 @@ void CSceneStage01::Init()
 	pFrontOceanObj2->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean2", pFrontOceanImage, 0.1f);
 	pFrontOceanObj2->GetAnimator()->Play(L"BackGround\\FrontOcean2");
 
-	CCameraController* pCamController = new CCameraController;
-	AddGameObject(pCamController);
+	//CCameraController* pCamController = new CCameraController;
+	//AddGameObject(pCamController);
 }
 
 void CSceneStage01::Enter()
@@ -121,13 +121,13 @@ void CSceneStage01::Update()
 	}
 	if (BUTTONSTAY(VK_RIGHT))
 	{
-		Vector prevPos = pBackGround->GetPos();
-		pBackGround->SetPos(prevPos + Vector(50 * DT, 0));
+		//Vector prevPos = pBackGround->GetPos();
+		//pBackGround->SetPos(prevPos + Vector(50 * DT, 0));
 	}
 	if (BUTTONSTAY(VK_LEFT))
 	{
-		Vector prevPos = pBackGround->GetPos();
-		pBackGround->SetPos(prevPos + Vector(-50 * DT, 0));
+		//Vector prevPos = pBackGround->GetPos();
+		//pBackGround->SetPos(prevPos + Vector(-50 * DT, 0));
 	}
 
 	pFrontOceanObj1->GetAnimator()->Play(L"BackGround\\FrontOcean1");
