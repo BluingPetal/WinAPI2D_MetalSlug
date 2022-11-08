@@ -81,8 +81,8 @@ AniFrame CAnimator::GetFirstAniFrame()
 void CAnimator::Play(const wstring& aniName, bool trigger)
 {
 	// 현재 애니메이션이 플레이하고자 하는 애니메이션이며
-	// Tigger가 아닐 경우 현재 애니메이션을 변경하지 않음
-	// Tigger : 같은 애니메이션을 처음부터 재생 (ex. 공격 모션처럼 누를때마다 처음부터 재생해야하는 애니메이션)
+	// Trigger가 아닐 경우 현재 애니메이션을 변경하지 않음
+	// Trigger : 같은 애니메이션을 처음부터 재생 (ex. 공격 모션처럼 누를때마다 처음부터 재생해야하는 애니메이션)
 	if (nullptr != m_pCurAni && aniName == m_pCurAni->GetName() && !trigger)
 		return;
 
