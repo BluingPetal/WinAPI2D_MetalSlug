@@ -31,7 +31,7 @@ private:
 	float				m_fExtension;
 	AniFrame			m_FirstAniFrame;
 
-	Vector* m_vecReadAni;					// 읽어온 애니메이션
+	Vector*				m_vecReadAni;					// 읽어온 애니메이션
 public:
 	const wstring& GetName();
 

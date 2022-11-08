@@ -74,7 +74,8 @@ CAnimation* CAnimator::FindAnimation(const wstring& aniName)
 
 AniFrame CAnimator::GetFirstAniFrame()
 {
-	return m_pCurAni->m_FirstAniFrame;
+	if(m_pCurAni != nullptr)
+		return m_pCurAni->m_FirstAniFrame;
 }
 
 void CAnimator::Play(const wstring& aniName, bool trigger)

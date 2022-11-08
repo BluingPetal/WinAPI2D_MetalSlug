@@ -52,13 +52,20 @@ void CSceneStage01::Init()
 	pFrontGround->SetExtension(extension);
 	AddGameObject(pFrontGround);
 
-	pFrontOceanObj = new CAniObject;
+	pFrontOceanObj1 = new CAniObject;
 	CImage* pFrontOceanImage = RESOURCE->LoadImg(L"FrontOcean", L"Image\\BackGround\\FrontOcean.png");
-	Vector frontOceanPos = Vector(-2, 226 + frontGroundOffset.y);
-	pFrontOceanObj->SetImage(pFrontOceanImage);
-	//pFrontOceanObj->SetPos(frontOceanOffset);
-	pFrontOceanObj->SetExtension(extension);
-	AddGameObject(pFrontOceanObj);
+	Vector frontOceanPos1 = Vector(0, 226 + backGroundOffset.y);
+	pFrontOceanObj1->SetImage(pFrontOceanImage);
+	pFrontOceanObj1->SetOffset(frontOceanPos1);
+	pFrontOceanObj1->SetExtension(extension);
+	AddGameObject(pFrontOceanObj1);
+
+	pFrontOceanObj2 = new CAniObject;
+	Vector frontOceanPos2 = Vector(0, frontOceanPos1.y + 24);
+	pFrontOceanObj2->SetImage(pFrontOceanImage);
+	pFrontOceanObj2->SetOffset(frontOceanPos2);
+	pFrontOceanObj2->SetExtension(extension);
+	AddGameObject(pFrontOceanObj2);
 
 #pragma endregion
 
@@ -72,7 +79,10 @@ void CSceneStage01::Init()
 	pMonster->SetExtension(extension);
 	AddGameObject(pMonster);
 
-	pFrontOceanObj->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean1", pFrontOceanImage, 0.1f);
+	pFrontOceanObj1->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean1", pFrontOceanImage, 0.1f);
+	pFrontOceanObj1->GetAnimator()->Play(L"BackGround\\FrontOcean1");
+	pFrontOceanObj2->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean2", pFrontOceanImage, 0.1f);
+	pFrontOceanObj2->GetAnimator()->Play(L"BackGround\\FrontOcean2");
 
 	CCameraController* pCamController = new CCameraController;
 	AddGameObject(pCamController);
@@ -81,6 +91,8 @@ void CSceneStage01::Init()
 void CSceneStage01::Enter()
 {
 	CAMERA->FadeIn(0.25f);
+	pFrontOceanObj1->SetPosWithFirstLt();
+	pFrontOceanObj2->SetPosWithFirstLt();
 	//CAMERA->SetTargetObj(pPlayer);
 }
 
@@ -107,8 +119,18 @@ void CSceneStage01::Update()
 		float setZoom = zoom + 0.005;
 		CAMERA->SetZoom(setZoom);
 	}
+	if (BUTTONSTAY(VK_RIGHT))
+	{
+		Vector prevPos = pBackGround->GetPos();
+		pBackGround->SetPos(prevPos + Vector(50 * DT, 0));
+	}
+	if (BUTTONSTAY(VK_LEFT))
+	{
+		Vector prevPos = pBackGround->GetPos();
+		pBackGround->SetPos(prevPos + Vector(-50 * DT, 0));
+	}
 
-	pFrontOceanObj->GetAnimator()->Play(L"BackGround\\FrontOcean1");
+	pFrontOceanObj1->GetAnimator()->Play(L"BackGround\\FrontOcean1");
 }
 
 void CSceneStage01::Render()

@@ -14,7 +14,8 @@ public:
 private:
 	CPlayer* pPlayer;
 
-	CAniObject* pFrontOceanObj;
+	CAniObject* pFrontOceanObj1;
+	CAniObject* pFrontOceanObj2;
 
 	CImageObject* pBackGround;
 	CImageObject* pFrontGround;
