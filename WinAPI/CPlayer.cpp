@@ -124,6 +124,12 @@ void CPlayer::Init()
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunDownR_1", m_pAttackRImage, 0.1f);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunGoingDownPlaceR_1", m_pAttackRImage, 0.1f, false);
 
+		// SitAttack
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriSitAttackL", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriSitHeavyGunL", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriSitAttackR", m_pAttackRImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriSitHeavyGunR", m_pAttackRImage, 0.1f, false);
+
 	// Death Animation
 		// L
 	m_pAnimator1->CreateAnimation(L"Player\\Death\\EriDeathJumpL", m_pDeathImage, 0.1f);
@@ -243,7 +249,8 @@ void CPlayer::KeyUpdate()
 
 void CPlayer::AnimatorUpdate()
 {
-	m_fAcctime += DT; 
+	m_fAcctime += DT;
+	Logger::Debug(L"m_fAttackAccTime : " + to_wstring(m_fAttackAccTime));
 
 	switch (m_status)
 	{
@@ -294,7 +301,7 @@ void CPlayer::AnimatorUpdate()
 				m_pAnimator2->Play(L"Player\\Move\\EriStartToRunL_2");
 		}
 		else if (m_vecMoveDir.x > 0)
-	{
+		{
 			m_vecPos.x += m_fSpeed * DT;
 			if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
 				m_pAnimator1->Play(L"Player\\Move\\EriHeavyGunRunR_1");
@@ -341,13 +348,11 @@ void CPlayer::AnimatorUpdate()
 			m_fAcctime = 0;
 		}
 		break;
-	case PlayerStatus::Sit:
-		break;
 	case PlayerStatus::Attack:
 
 		m_fAttackAccTime += DT;
-		//Logger::Debug(to_wstring(m_fAttackAccTime));
-		 
+
+#pragma region 오른쪽으로 걷고 있을 경우 공격
 		// 상체 정의
 		if (m_vecMoveDir.x > 0) // 오른쪽으로 걸을 때
 		{
@@ -360,6 +365,7 @@ void CPlayer::AnimatorUpdate()
 						m_pAnimator1->Play(L"Player\\Attack\\EriUpAttackR_1", true);
 						m_bIsShoot = false;
 					}
+
 					if (m_fAttackAccTime > 0.1f * 10)
 					{
 						m_bIsAttack = false;
@@ -367,11 +373,170 @@ void CPlayer::AnimatorUpdate()
 				}
 				else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
 				{
-					Logger::Debug(to_wstring(m_vecPrevLookDir.y));
 					float WaitedTime = 0.f;
 					float needToWaitTime = 0.f;
+				
+					if (m_vecPrevLookDir.y < 0)
+					{
+						if (m_bIsJump)
+						{
+							needToWaitTime += 0.1 * 2;
+							if (m_fAttackAccTime < needToWaitTime)
+								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownPlaceR_1");
+						}
+
+						WaitedTime = needToWaitTime;
+						needToWaitTime += 0.1 * 2;
+						if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingUpR_1");
+					}
+					else if (m_vecPrevLookDir.y == 0)
+					{
+						needToWaitTime += 0.1 * 2;
+						if (m_fAttackAccTime < needToWaitTime)
+							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingUpR_1");
+					}
+
+					WaitedTime = needToWaitTime;
+					needToWaitTime = 0.1 * 4;
+					if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+					{
+						if (m_bIsShoot)
+						{
+							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpR_1", true);
+							m_bIsShoot = false;
+						}
+					}
 					
-					// TODO : 코드 고치기 
+					if (m_fAttackAccTime >= needToWaitTime)
+					{
+						m_bIsAttack = false;
+					}
+				}
+				// TODO : bomb공격, knife 공격 구현
+			}
+			else if (m_vecLookDir.y == 0)
+			{
+				if (m_curWeapon == PlayerWeapon::Pistol)
+				{
+					if (m_bIsShoot)
+					{
+						m_pAnimator1->Play(L"Player\\Attack\\EriAttackR_1", true);
+						m_bIsShoot = false;
+					}
+
+					if (m_fAttackAccTime > 0.1f * 10)
+					{
+						m_bIsAttack = false;
+					}
+				}
+				else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+				{
+					if (m_bIsShoot)
+					{
+						m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackR_1", true);
+						m_bIsShoot = false;
+					}
+
+					if (m_fAttackAccTime > 0.1f * 7)
+					{
+						m_bIsAttack = false;
+					}
+				}
+			}
+			else // 아래쪽
+			{
+				if (m_bIsJump)
+				{
+					if (m_curWeapon == PlayerWeapon::Pistol)
+					{
+						if (m_bIsShoot)
+						{
+							m_pAnimator1->Play(L"Player\\Attack\\EriDownAttackR_1", true);
+							m_bIsShoot = false;
+						}
+						if (m_fAttackAccTime > 0.1f * 6)
+						{
+							m_bIsAttack = false;
+						}
+					}
+					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+					{
+						float WaitedTime = 0.f;
+						float needToWaitTime = 0.f;
+
+						if (m_vecPrevLookDir.y > 0)
+						{
+							if (m_bIsJump)
+							{
+								needToWaitTime += 0.1 * 2;
+								if (m_fAttackAccTime < needToWaitTime)
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownPlaceR_1");
+							}
+
+							WaitedTime = needToWaitTime;
+							needToWaitTime += 0.1 * 2;
+							if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownR_1");
+						}
+						else if (m_vecPrevLookDir.y == 0)
+						{
+							needToWaitTime += 0.1 * 2;
+							if (m_fAttackAccTime < needToWaitTime)
+								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownR_1");
+						}
+						else
+						{
+							WaitedTime = needToWaitTime;
+							needToWaitTime = 0.1 * 4;
+							if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+							{
+								if (m_bIsShoot)
+								{
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunDownR_1", true);
+									m_bIsShoot = false;
+								}
+							}
+						}
+
+						if (m_fAttackAccTime >= needToWaitTime)
+						{
+							m_bIsAttack = false;
+						}
+					}
+				}
+				else
+				{
+					// 앉아서 오른쪽 이동하면서 쏘기(무기따라서)
+				}
+			}
+		}
+#pragma endregion
+#pragma region  멈춰있을 경우 공격
+		else if (m_vecMoveDir.x == 0) // 멈춰있을 경우
+		{
+			if (m_vecLookDir.x >= 0) // 오른쪽 보고 있을 경우
+			{
+				if (m_vecLookDir.y > 0)
+				{
+					if (m_curWeapon == PlayerWeapon::Pistol)
+					{
+						if (m_bIsShoot)
+						{
+							m_pAnimator1->Play(L"Player\\Attack\\EriUpAttackR_1", true);
+							m_bIsShoot = false;
+						}
+
+						if (m_fAttackAccTime > 0.1f * 10)
+						{
+							m_bIsAttack = false;
+						}
+					}
+					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+					{
+						float WaitedTime = 0.f;
+						float needToWaitTime = 0.f;
+				
 						if (m_vecPrevLookDir.y < 0)
 						{
 							if (m_bIsJump)
@@ -395,54 +560,324 @@ void CPlayer::AnimatorUpdate()
 
 						WaitedTime = needToWaitTime;
 						needToWaitTime = 0.1 * 4;
-						Logger::Debug(L"Waited : " + to_wstring(WaitedTime));
-						Logger::Debug(L"Need to Wait : " + to_wstring(needToWaitTime));
 						if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
 						{
-							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpR_1", true);
-							m_bIsShoot = false;
+							if (m_bIsShoot)
+							{
+								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpR_1", true);
+								m_bIsShoot = false;
+							}
 						}
 					
-					if (m_fAttackAccTime >= needToWaitTime)
-					{
-						m_bIsAttack = false; 
-						WaitedTime = needToWaitTime = 0.f;
+						if (m_fAttackAccTime >= needToWaitTime)
+						{
+							m_bIsAttack = false;
+						}
 					}
-					/*
-					if (m_fAttackAccTime >= 0.1f * 2)
-						m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpL_1", true);
+					// TODO : bomb공격, knife 공격 구현
+				}
+				else if (m_vecLookDir.y == 0)
+				{
+					if (m_curWeapon == PlayerWeapon::Pistol)
+					{
+						if (m_bIsShoot)
+						{
+							m_pAnimator1->Play(L"Player\\Attack\\EriAttackR_1", true);
+							m_bIsShoot = false;
+						}
+
+						if (m_fAttackAccTime > 0.1f * 10)
+						{
+							m_bIsAttack = false;
+						}
+					}
+					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+					{
+						if (m_bIsShoot)
+						{
+							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackR_1", true);
+							m_bIsShoot = false;
+						}
+						if (m_fAttackAccTime > 0.1f * 7)
+						{
+							m_bIsAttack = false;
+						}
+					}
+				}
+				else if (m_vecLookDir.y < 0)
+				{
+					if (m_bIsJump)
+					{
+						if (m_curWeapon == PlayerWeapon::Pistol)
+						{
+							if (m_bIsShoot)
+							{
+								m_pAnimator1->Play(L"Player\\Attack\\EriDownAttackR_1", true);
+								m_bIsShoot = false;
+							}
+							if (m_fAttackAccTime > 0.1f * 6)
+							{
+								m_bIsAttack = false;
+							}
+						}
+						else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+						{
+							float WaitedTime = 0.f;
+							float needToWaitTime = 0.f;
+
+							if (m_vecPrevLookDir.y > 0)
+							{
+								needToWaitTime += 0.1 * 2;
+								if (m_fAttackAccTime < needToWaitTime)
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownPlaceR_1");
+
+								WaitedTime = needToWaitTime;
+								needToWaitTime += 0.1 * 2;
+								if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownR_1");
+							}
+							else if (m_vecPrevLookDir.y == 0)
+							{
+								needToWaitTime += 0.1 * 2;
+								if (m_fAttackAccTime < needToWaitTime)
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownR_1");
+							}
+
+							WaitedTime = needToWaitTime;
+							needToWaitTime = 0.1 * 4;
+							if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+							{
+								if (m_bIsShoot)
+								{
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunDownR_1", true);
+									m_bIsShoot = false;
+								}
+							}
+
+							if (m_fAttackAccTime >= needToWaitTime)
+							{
+								m_bIsAttack = false;
+							}
+						}
+					}
 					else
-						m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpL_1", true);
-						*/
+					{
+						// 오른쪽으로 앉아서 쏘는 모션 (무기 나눠서)
+
+						if (m_curWeapon == PlayerWeapon::Pistol)
+						{
+							if (m_bIsShoot)
+							{
+								m_pAnimator1->Play(L"Player\\Attack\\EriSitAttackR", true);
+								m_pAnimator2->Stop();
+								m_bIsShoot = false;
+							}
+							if (m_fAttackAccTime > 0.1f * 9)
+							{
+								m_bIsAttack = false;
+							}
+						}
+						else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+						{
+							if (m_bIsShoot)
+							{
+								m_pAnimator1->Play(L"Player\\Attack\\EriSitHeavyGunR", true);
+								m_pAnimator2->Stop();
+								m_bIsShoot = false;
+							}
+							if (m_fAttackAccTime > 0.1f * 7)
+							{
+								m_bIsAttack = false;
+							}
+						}
+					}
 				}
 			}
-			else if (m_vecLookDir.y == 0)
+			else // 왼쪽 보고 있을 경우
 			{
-				if (m_curWeapon == PlayerWeapon::Pistol)
+				if (m_vecLookDir.y > 0)
 				{
-					if (m_bIsShoot)
+					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						m_pAnimator1->Play(L"Player\\Attack\\EriAttackR_1", true);
-						m_bIsShoot = false;
+						if (m_bIsShoot)
+						{
+							m_pAnimator1->Play(L"Player\\Attack\\EriUpAttackL_1", true);
+							m_bIsShoot = false;
+						}
+
+						if (m_fAttackAccTime > 0.1f * 10)
+						{
+							m_bIsAttack = false;
+						}
 					}
-					if (m_fAttackAccTime > 0.1f * 10)
+					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
 					{
-						m_bIsAttack = false;
+						float WaitedTime = 0.f;
+						float needToWaitTime = 0.f;
+
+						if (m_vecPrevLookDir.y < 0)
+						{
+							if (m_bIsJump)
+							{
+								needToWaitTime += 0.1 * 2;
+								if (m_fAttackAccTime < needToWaitTime)
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownPlaceL_1");
+							}
+
+							WaitedTime = needToWaitTime;
+							needToWaitTime += 0.1 * 2;
+							if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingUpL_1");
+						}
+						else if (m_vecPrevLookDir.y == 0)
+						{
+							needToWaitTime += 0.1 * 2;
+							if (m_fAttackAccTime < needToWaitTime)
+								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingUpL_1");
+						}
+
+						WaitedTime = needToWaitTime;
+						needToWaitTime = 0.1 * 4;
+						if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+						{
+							if (m_bIsShoot)
+							{
+								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpL_1", true);
+								m_bIsShoot = false;
+							}
+						}
+
+						if (m_fAttackAccTime >= needToWaitTime)
+						{
+							m_bIsAttack = false;
+						}
+					} 
+					// TODO : bomb공격, knife 공격 구현
+				}
+				else if (m_vecLookDir.y == 0)
+				{
+					if (m_curWeapon == PlayerWeapon::Pistol)
+					{
+						if (m_bIsShoot)
+						{
+							m_pAnimator1->Play(L"Player\\Attack\\EriAttackL_1", true);
+							m_bIsShoot = false;
+						}
+
+						if (m_fAttackAccTime > 0.1f * 10)
+						{
+							m_bIsAttack = false;
+						}
+					}
+					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+					{
+						if (m_bIsShoot)
+						{
+							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackL_1", true);
+							m_bIsShoot = false;
+						}
+						if (m_fAttackAccTime > 0.1f * 7)
+						{
+							m_bIsAttack = false;
+						}
 					}
 				}
-				else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+				else if (m_vecLookDir.y < 0)
 				{
-					if (m_bIsShoot)
+					if (m_bIsJump)
 					{
-						m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackR_1", true);
-						m_bIsShoot = false;
+						if (m_curWeapon == PlayerWeapon::Pistol)
+						{
+							if (m_bIsShoot)
+							{
+								m_pAnimator1->Play(L"Player\\Attack\\EriDownAttackL_1", true);
+								m_bIsShoot = false;
+							}
+							if (m_fAttackAccTime > 0.1f * 6)
+							{
+								m_bIsAttack = false;
+							}
+						}
+						else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+						{
+							float WaitedTime = 0.f;
+							float needToWaitTime = 0.f;
+
+							if (m_vecPrevLookDir.y > 0)
+							{
+								needToWaitTime += 0.1 * 2;
+								if (m_fAttackAccTime < needToWaitTime)
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownPlaceL_1");
+
+								WaitedTime = needToWaitTime;
+								needToWaitTime += 0.1 * 2;
+								if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownL_1");
+							}
+							else if (m_vecPrevLookDir.y == 0)
+							{
+								needToWaitTime += 0.1 * 2;
+								if (m_fAttackAccTime < needToWaitTime)
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownL_1");
+							}
+
+							WaitedTime = needToWaitTime;
+							needToWaitTime = 0.1 * 4;
+							if (m_fAttackAccTime >= WaitedTime && m_fAttackAccTime < needToWaitTime)
+							{
+								if (m_bIsShoot)
+								{
+									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunDownL_1", true);
+									m_bIsShoot = false;
+								}
+							}
+
+							if (m_fAttackAccTime >= needToWaitTime)
+							{
+								m_bIsAttack = false;
+							}
+						}
 					}
-					if (m_fAttackAccTime > 0.1f * 7)
+					else
 					{
-						m_bIsAttack = false;
+						if (m_curWeapon == PlayerWeapon::Pistol)
+						{
+							if (m_bIsShoot)
+							{
+								m_pAnimator1->Play(L"Player\\Attack\\EriSitAttackL", true);
+								m_pAnimator2->Stop();
+								m_bIsShoot = false;
+							}
+							if (m_fAttackAccTime > 0.1f * 9)
+							{
+								m_bIsAttack = false;
+							}
+						}
+						else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
+						{
+							if (m_bIsShoot)
+							{
+								m_pAnimator1->Play(L"Player\\Attack\\EriSitHeavyGunL", true);
+								m_pAnimator2->Stop();
+								m_bIsShoot = false;
+							}
+							if (m_fAttackAccTime > 0.1f * 7)
+							{
+								m_bIsAttack = false;
+							}
+						}
 					}
 				}
 			}
+		}
+#pragma endregion
+
+
+
+
+
+
+
 			/*
 			else if (m_vecLookDir.y < 0)
 			{
@@ -503,7 +938,6 @@ void CPlayer::AnimatorUpdate()
 		}
 
 		*/
-		}
 
 		break;
 	case PlayerStatus::Dead:
@@ -568,19 +1002,23 @@ void CPlayer::BehaviorUpdate()
 		}
 		break;
 	case PlayerStatus::Jump:
-
-		break;
-	case PlayerStatus::Sit:
+		if (m_bIsDead)
+		{
+			m_status = PlayerStatus::Dead;
+			m_fAcctime = 0;
+		}
+		else if (m_bIsAttack)
+		{
+			m_status = PlayerStatus::Attack;
+			m_fAcctime = 0;
+		}
 		break;
 	case PlayerStatus::Attack:
 
-		/*
 		if (!m_bIsAttack)
 		{
-			m_bIsAttack = false;
 			m_status = PlayerStatus::Idle;
 		}
-		*/
 
 		break;
 	case PlayerStatus::Dead:

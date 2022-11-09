@@ -76,7 +76,6 @@ enum class PlayerStatus
 	Idle,
 	Move,
 	Jump,
-	Sit,
 	Attack,
 
 	Dead,
