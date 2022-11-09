@@ -24,12 +24,13 @@ private:
 	PlayerStatus m_status;
 
 	Vector m_vecMoveDir;
-	Vector m_vecLookDir;
+	Vector m_vecLookDir, m_vecPrevLookDir, temp;
 
 	bool m_bIsMove;
 	bool m_bIsJump;
 	bool m_bIsDead;
 	bool m_bIsAttack;
+	bool m_bIsShoot;
 
 	float m_fSpeed;
 	float m_fAcctime;
@@ -43,10 +44,10 @@ private:
 	void Render() override;
 	void Release() override;
 
-	void AnimatorUpdate();
 	void KeyUpdate();
+	void BehaviorUpdate();
+	void AnimatorUpdate();
 	void CreateMissile();
-	void Attack();
 
 	void OnCollisionEnter(CCollider* pOtherCollider) override;
 	void OnCollisionStay(CCollider* pOtherCollider) override;

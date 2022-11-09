@@ -88,6 +88,8 @@ enum class PlayerStatus
 
 enum class PlayerWeapon
 {
+	Knife,
 	Pistol,
 	HeavyMachineGun,
+	Bomb,
 };
