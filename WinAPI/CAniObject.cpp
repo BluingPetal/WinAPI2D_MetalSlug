@@ -28,7 +28,9 @@ void CAniObject::SetImage(CImage* pImage)
 
 void CAniObject::Init()
 {
+	m_vecScale = m_pAnimator->GetFirstAniFrame().slice * m_fExtension;
 	AddComponent(m_pAnimator);
+	Logger::Debug(to_wstring(m_vecScale.x) + L", " + to_wstring(m_vecScale.y));
 }
 
 void CAniObject::Update()
@@ -52,4 +54,9 @@ void CAniObject::SetPosWithFirstLt()
 	Logger::Debug(to_wstring(firstAniFrame.slice.x) + L", " + to_wstring(firstAniFrame.slice.y));
 	Logger::Debug(to_wstring(firstAniFrame.offset.x) + L", " + to_wstring(firstAniFrame.offset.y));
 	Logger::Debug(to_wstring(m_vecPos.x) + L", " + to_wstring(m_vecPos.y));
+}
+
+void CAniObject::AniObjAddCollider(ColliderType type, Vector scale, Vector offsetPos)
+{
+	AddCollider(type, scale, offsetPos);
 }

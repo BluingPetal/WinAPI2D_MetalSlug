@@ -231,8 +231,6 @@ void CPlayer::KeyUpdate()
 		m_bIsShoot = true;
 	}
 
-
-
 	if (BUTTONDOWN('Q'))
 	{
 		m_bIsDead = true;
@@ -250,7 +248,7 @@ void CPlayer::KeyUpdate()
 void CPlayer::AnimatorUpdate()
 {
 	m_fAcctime += DT;
-	Logger::Debug(L"m_fAttackAccTime : " + to_wstring(m_fAttackAccTime));
+	//Logger::Debug(L"m_fAttackAccTime : " + to_wstring(m_fAttackAccTime));
 
 	switch (m_status)
 	{

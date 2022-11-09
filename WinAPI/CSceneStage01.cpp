@@ -20,6 +20,10 @@
 CSceneStage01::CSceneStage01()
 {
 	pPlayer = nullptr;
+	pBackGround = nullptr;
+	pFrontGround = nullptr;
+	pFrontOceanObj1 = nullptr;
+	pFrontOceanObj2 = nullptr;
 }
 
 CSceneStage01::~CSceneStage01()
@@ -84,8 +88,8 @@ void CSceneStage01::Init()
 	pFrontOceanObj2->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean2", pFrontOceanImage, 0.1f);
 	pFrontOceanObj2->GetAnimator()->Play(L"BackGround\\FrontOcean2");
 
-	//CCameraController* pCamController = new CCameraController;
-	//AddGameObject(pCamController);
+	CCameraController* pCamController = new CCameraController;
+	AddGameObject(pCamController);
 }
 
 void CSceneStage01::Enter()
@@ -93,6 +97,8 @@ void CSceneStage01::Enter()
 	CAMERA->FadeIn(0.25f);
 	pFrontOceanObj1->SetPosWithFirstLt();
 	pFrontOceanObj2->SetPosWithFirstLt();
+	pFrontOceanObj2->AniObjAddCollider(ColliderType::Rect, pFrontOceanObj2->GetScale(), Vector(0, 0));
+	Logger::Debug(to_wstring(pFrontOceanObj2->GetScale().x) + L", " + to_wstring(pFrontOceanObj2->GetScale().y));
 	//CAMERA->SetTargetObj(pPlayer);
 }
 
