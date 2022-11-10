@@ -28,7 +28,7 @@ void CAniObject::SetImage(CImage* pImage)
 
 void CAniObject::Init()
 {
-	m_vecScale = m_pAnimator->GetFirstAniFrame().slice * m_fExtension;
+ 	m_vecScale = m_pAnimator->GetFirstAniFrame().slice * m_fExtension;
 	AddComponent(m_pAnimator);
 	Logger::Debug(to_wstring(m_vecScale.x) + L", " + to_wstring(m_vecScale.y));
 }
