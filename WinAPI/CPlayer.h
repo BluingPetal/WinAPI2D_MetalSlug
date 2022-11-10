@@ -46,6 +46,7 @@ private:
 public:
 	bool GetIsJump() { return m_bIsJump; }
 	float GetSpeed() { return m_fSpeed; }
+	Vector GetMoveDir() { return m_vecMoveDir; }
 
 private:
 	void Init() override;

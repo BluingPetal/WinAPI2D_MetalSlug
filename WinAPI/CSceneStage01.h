@@ -13,7 +13,7 @@ public:
 
 private:
 	CPlayer* pPlayer;
-	Vector m_vecPrevPlayerPos;
+	float m_fPlayerMaxPosX;
 
 	CImageObject* pBackGround;
 

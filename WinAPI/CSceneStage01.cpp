@@ -21,6 +21,8 @@
 CSceneStage01::CSceneStage01()
 {
 	pPlayer = nullptr;
+	pBackGround = nullptr;
+	m_fPlayerMaxPosX = 0;
 }
 
 CSceneStage01::~CSceneStage01()
@@ -75,6 +77,7 @@ void CSceneStage01::Init()
 	pPlayer = new CPlayer;
 	pPlayer->SetPos(200, WINSIZEY * 0.5f);
 	pPlayer->SetExtension(extension);
+	m_fPlayerMaxPosX = pPlayer->GetPos().x;
 	AddGameObject(pPlayer);
 
 	CConga* pConga = new CConga;
@@ -104,14 +107,14 @@ void CSceneStage01::Init()
 	pObstacle->SetName(L"obstacle");
 	pObstacle->SetExtension(extension);
 	pObstacle->SetPos(0, WINSIZEY * 0.5f);
-	pObstacle->SetScale(5, WINSIZEY * 0.5f);
+	pObstacle->SetScale(5, WINSIZEY / extension);
 	pObstacle->SetLayer(Layer::ForeGround);
 	AddGameObject(pObstacle);
 
 #pragma endregion
 
-	// CCameraController* pCamController = new CCameraController;
-	// AddGameObject(pCamController);
+	CCameraController* pCamController = new CCameraController;
+	AddGameObject(pCamController);
 }
 
 void CSceneStage01::Enter()
@@ -129,21 +132,27 @@ void CSceneStage01::Update()
 	//Logger::Debug(L"playerpos : " + to_wstring(abs(pPlayer->GetPos().x - pPlayer->GetPrevPos().x)));
 	//Logger::Debug(L"playerSpd : " + to_wstring(pPlayer->GetSpeed() * DT));
 	//abs(pPlayer->GetPos().x - pPlayer->GetPrevPos().x) > (pPlayer->GetSpeed() * DT)
-	if (pPlayer->GetSpeed()!=0)
+
+	//if((pPlayer->GetPos().x > WINSIZEX) && 
+
+	if (pPlayer->GetPos().x > m_fPlayerMaxPosX)
 	{
-		if (BUTTONSTAY(VK_RIGHT))
-		{
-			pBackGround->SetSpeed(50);
-		}
-		else if (BUTTONSTAY(VK_LEFT))
-		{
-			pBackGround->SetSpeed(-50);
-		}
-		else
-		{
-			pBackGround->SetSpeed(0);
-		}
+		float posDiffX = pPlayer->GetPos().x - m_fPlayerMaxPosX;
+		pBackGround->SetPos(pBackGround->GetPos().x + posDiffX * 0.3f, pBackGround->GetPos().y);
+		m_fPlayerMaxPosX = pPlayer->GetPos().x;
 	}
+
+
+	/*
+	pBackGround->SetPos(pBackGround->GetPos().x, pBackGround->GetPos().y);
+	pBackGround->SetSpeed(pPlayer->GetMoveDir().x * 50);
+	*/
+	/*
+	if (pPlayer->GetPos().x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.4, WINSIZEY *0.5f)).x)
+	{
+		CAMERA->SetTargetObj(pPlayer);
+	}
+	*/
 
 	//pFrontOceanObj1->GetAnimator()->Play(L"BackGround\\FrontOcean1");
 	//pFrontOceanObj2->GetAnimator()->Play(L"BackGround\\FrontOcean2");
