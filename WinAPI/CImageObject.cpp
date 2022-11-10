@@ -11,6 +11,7 @@ CImageObject::CImageObject()
 	m_vecPos = Vector(0, 0);
 	m_layer = Layer::BackGround;
 	m_vecOffset = Vector(0, 0);
+	m_fSpeed = 0;
 }
 
 CImageObject::~CImageObject()
@@ -33,6 +34,7 @@ void CImageObject::Init()
 
 void CImageObject::Update()
 {
+	m_vecPos.x += m_fSpeed * DT;
 }
 
 void CImageObject::Render()

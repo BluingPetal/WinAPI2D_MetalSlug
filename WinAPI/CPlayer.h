@@ -45,6 +45,7 @@ private:
 
 public:
 	bool GetIsJump() { return m_bIsJump; }
+	float GetSpeed() { return m_fSpeed; }
 
 private:
 	void Init() override;

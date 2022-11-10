@@ -12,10 +12,13 @@ public:
 private:
 	CImage* m_pImage;
 	Vector m_vecOffset;
+	float m_fSpeed;
 
 public:
 	CImage* GetImage();
 	void SetImage(CImage* pImage);
+	void SetSpeed(float speed) { m_fSpeed = speed; }
+	float GetSpeed() { return m_fSpeed; }
 	void SetOffset(Vector vecOffset) { m_vecOffset = vecOffset; }
 
 private:

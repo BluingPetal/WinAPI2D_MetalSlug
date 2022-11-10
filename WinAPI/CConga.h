@@ -1,17 +1,21 @@
 #pragma once
-#include "CGameObject.h"
+#include "CMonster.h"
 
 class CImage;
 class CAnimator;
+class CGravity;
 
-class CMonster : public CGameObject
+class CConga : public CMonster
 {
 public:
-	CMonster();
-	virtual ~CMonster();
+	CConga();
+	virtual ~CConga();
 
-protected:
-	CGravity* m_pGravity;
+private:
+	CImage* m_pCongaTotalImgL;
+	CImage* m_pCongaTotalImgR;
+
+	CAnimator* m_pAnimator;
 
 private:
 	void Init() override;
@@ -23,4 +27,3 @@ private:
 	void OnCollisionStay(CCollider* pOtherCollider) override;
 	void OnCollisionExit(CCollider* pOtherCollider) override;
 };
-

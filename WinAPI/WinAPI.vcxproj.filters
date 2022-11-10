@@ -201,6 +201,9 @@
     <ClInclude Include="CColliderObject.h">
       <Filter>GameObject\Common</Filter>
     </ClInclude>
+    <ClInclude Include="CConga.h">
+      <Filter>GameObject\Stage01</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinAPI.cpp">
@@ -331,6 +334,9 @@
     </ClCompile>
     <ClCompile Include="CColliderObject.cpp">
       <Filter>GameObject\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="CConga.cpp">
+      <Filter>GameObject\Stage01</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

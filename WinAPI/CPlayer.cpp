@@ -19,7 +19,7 @@ CPlayer::CPlayer()
 	m_vecPos = Vector(0, 0);
 	m_vecScale = Vector(100, 100);
 	m_layer = Layer::Player;
-	m_strName = L"플레이어";
+	m_strName = L"Player";
 
 	m_pIdleImage = nullptr;
 	m_pMoveImage = nullptr;
@@ -34,11 +34,11 @@ CPlayer::CPlayer()
 	m_bIsJump = true;
 	m_bIsDead = false;
 	m_bIsAttack = false;
-	m_bIsShoot = false;
+	m_bIsShoot = false; 
 
 	m_bIsPrevCurLookSame = true;
 
-	m_fSpeed = 200.0f;
+	m_fSpeed = 300.0f;
 	m_fAcctime = 0;
 	m_fAttackAccTime = 0;
 
@@ -1658,6 +1658,11 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 	{
 		m_bIsJump = false;
 	}
+	else if (pOtherCollider->GetObjName() == L"obstacle")
+	{
+		m_fSpeed = 0;
+		m_vecPos.x += 5;
+	}
 }
 
 void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
@@ -1666,4 +1671,8 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 
 void CPlayer::OnCollisionExit(CCollider* pOtherCollider)
 {
+	if (pOtherCollider->GetObjName() == L"obstacle")
+	{
+		m_fSpeed = 300;
+	}
 }

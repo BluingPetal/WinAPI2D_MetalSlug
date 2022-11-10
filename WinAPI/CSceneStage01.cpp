@@ -10,13 +10,13 @@
 #include "CPathManager.h"
 
 #include "CPlayer.h"
-#include "CMonster.h"
 #include "CCameraController.h"
 #include "CImageObject.h"
 #include "CAniObject.h"
 #include "CButton.h"
 #include "CPanel.h"
 #include "CColliderObject.h"
+#include "CConga.h"
 
 CSceneStage01::CSceneStage01()
 {
@@ -70,15 +70,17 @@ void CSceneStage01::Init()
 
 #pragma endregion
 
+#pragma region OBJECT
+
 	pPlayer = new CPlayer;
 	pPlayer->SetPos(200, WINSIZEY * 0.5f);
 	pPlayer->SetExtension(extension);
 	AddGameObject(pPlayer);
 
-	CMonster* pMonster = new CMonster();
-	pMonster->SetPos(500, WINSIZEY * 0.5f);
-	pMonster->SetExtension(extension);
-	AddGameObject(pMonster);
+	CConga* pConga = new CConga;
+	pConga->SetPos(500, WINSIZEY * 0.5f);
+	pConga->SetExtension(extension);
+	AddGameObject(pConga);
 
 	pFrontOceanObj1->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean1", pFrontOceanImage, 0.1f);
 	pFrontOceanObj2->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean2", pFrontOceanImage, 0.1f);
@@ -98,6 +100,16 @@ void CSceneStage01::Init()
 	pFrontOceanCollider->SetLayer(Layer::ForeGround);
 	AddGameObject(pFrontOceanCollider);
 
+	CColliderObject* pObstacle = new CColliderObject;
+	pObstacle->SetName(L"obstacle");
+	pObstacle->SetExtension(extension);
+	pObstacle->SetPos(0, WINSIZEY * 0.5f);
+	pObstacle->SetScale(5, WINSIZEY * 0.5f);
+	pObstacle->SetLayer(Layer::ForeGround);
+	AddGameObject(pObstacle);
+
+#pragma endregion
+
 	// CCameraController* pCamController = new CCameraController;
 	// AddGameObject(pCamController);
 }
@@ -114,16 +126,23 @@ void CSceneStage01::Update()
 		CAMERA->FadeOut(0.25f);
 		DELAYCHANGESCENE(GroupScene::Title, 0.25f);
 	}
-
-	if (BUTTONSTAY(VK_RIGHT))
+	//Logger::Debug(L"playerpos : " + to_wstring(abs(pPlayer->GetPos().x - pPlayer->GetPrevPos().x)));
+	//Logger::Debug(L"playerSpd : " + to_wstring(pPlayer->GetSpeed() * DT));
+	//abs(pPlayer->GetPos().x - pPlayer->GetPrevPos().x) > (pPlayer->GetSpeed() * DT)
+	if (pPlayer->GetSpeed()!=0)
 	{
-		//Vector prevPos = pBackGround->GetPos();
-		//pBackGround->SetPos(prevPos + Vector(50 * DT, 0));
-	}
-	if (BUTTONSTAY(VK_LEFT))
-	{
-		//Vector prevPos = pBackGround->GetPos();
-		//pBackGround->SetPos(prevPos + Vector(-50 * DT, 0));
+		if (BUTTONSTAY(VK_RIGHT))
+		{
+			pBackGround->SetSpeed(50);
+		}
+		else if (BUTTONSTAY(VK_LEFT))
+		{
+			pBackGround->SetSpeed(-50);
+		}
+		else
+		{
+			pBackGround->SetSpeed(0);
+		}
 	}
 
 	//pFrontOceanObj1->GetAnimator()->Play(L"BackGround\\FrontOcean1");

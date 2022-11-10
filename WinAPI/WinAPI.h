@@ -44,8 +44,8 @@ enum class Layer
 	Default,
 	Tile,
 	BackGround,
-	Monster,
 
+	Monster,
 	Player,// 잠시동안
 
 	Missile,
