@@ -14,11 +14,7 @@ public:
 private:
 	CPlayer* pPlayer;
 
-	CAniObject* pFrontOceanObj1;
-	CAniObject* pFrontOceanObj2;
-
 	CImageObject* pBackGround;
-	CImageObject* pFrontGround;
 
 private:
 	void Init()		override;

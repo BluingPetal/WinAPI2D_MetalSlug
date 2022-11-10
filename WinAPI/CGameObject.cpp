@@ -3,6 +3,7 @@
 
 #include "CComponent.h"
 #include "CCollider.h"
+#include "CGravity.h"
 
 CGameObject::CGameObject()
 {

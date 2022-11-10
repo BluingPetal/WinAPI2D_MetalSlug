@@ -20,7 +20,6 @@ public:
 	void SetImage(CImage* pImage);
 	void SetOffset(Vector vecOffset) { m_vecOffset = vecOffset; }
 	void SetPosWithFirstLt();
-	void AniObjAddCollider(ColliderType type, Vector scale, Vector offsetPos);
 
 private:
 	void Init() override;

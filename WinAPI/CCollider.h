@@ -24,7 +24,7 @@ private:
 	Vector m_vecOffsetPos;	// 충돌체의 변위차(수정값)
 	Vector m_vecScale;		// 충돌체의 크기
 
-private:
+public:
 	void SetType(ColliderType type);
 	void SetPos(Vector pos);
 	void SetOffsetPos(Vector offset);

@@ -6,6 +6,7 @@ class CCollisionManager;
 class CScene;
 class CComponent;
 class CCollider;
+class CGravity;
 enum class ColliderType;
 
 // 게임오브젝트 : 

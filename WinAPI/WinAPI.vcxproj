@@ -146,6 +146,7 @@
     <ClInclude Include="CCameraController.h" />
     <ClInclude Include="CCameraManager.h" />
     <ClInclude Include="CCollider.h" />
+    <ClInclude Include="CColliderObject.h" />
     <ClInclude Include="CCollisionManager.h" />
     <ClInclude Include="CComponent.h" />
     <ClInclude Include="CCore.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="CUI.cpp" />
     <ClCompile Include="CUIManager.cpp" />
     <ClCompile Include="WinAPI.cpp" />
+    <ClCompile Include="CColliderObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WinAPI.rc" />

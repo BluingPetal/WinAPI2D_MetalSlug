@@ -44,11 +44,14 @@ enum class Layer
 	Default,
 	Tile,
 	BackGround,
-	Player,
-	Missile,
 	Monster,
+
+	Player,// 잠시동안
+
+	Missile,
 	ForeGround,
 
+	Collider,
 	Ui,
 	Size,
 };

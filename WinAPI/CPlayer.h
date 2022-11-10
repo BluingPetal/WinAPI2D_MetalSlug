@@ -3,6 +3,7 @@
 
 class CImage;
 class CAnimator;
+class CGravity;
 
 class CPlayer : public CGameObject
 {
@@ -20,6 +21,8 @@ private:
 
 	CAnimator* m_pAnimator1;
 	CAnimator* m_pAnimator2;
+
+	CGravity* m_gravity;
 
 	PlayerStatus m_status;
 
@@ -39,6 +42,9 @@ private:
 	float m_fAttackAccTime;
 
 	PlayerWeapon m_curWeapon;
+
+public:
+	bool GetIsJump() { return m_bIsJump; }
 
 private:
 	void Init() override;

@@ -10,6 +10,7 @@
 #include "CCollider.h"
 #include "CImage.h"
 #include "CAnimator.h"
+#include "CGravity.h"
 
 #include "CMissile.h"
 
@@ -30,7 +31,7 @@ CPlayer::CPlayer()
 	m_vecMoveDir = Vector(0, 0);
 	m_vecLookDir = m_vecPrevLookDir = tempLookDir = Vector(1, 0);
 	m_bIsMove = false; 
-	m_bIsJump = false;
+	m_bIsJump = true;
 	m_bIsDead = false;
 	m_bIsAttack = false;
 	m_bIsShoot = false;
@@ -159,6 +160,8 @@ void CPlayer::Init()
 	AddComponent(m_pAnimator2);
 	AddComponent(m_pAnimator1);
 
+	m_gravity = new CGravity;
+	AddComponent(m_gravity);
 	//m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownL_1");
 	//m_pAnimator2->Play(L"Player\\Jump\\EriJumpL_2");
 	AddCollider(ColliderType::Rect, Vector(50, 80), Vector(0, 0));
@@ -220,7 +223,7 @@ void CPlayer::KeyUpdate()
 	{
 		m_vecLookDir.y = 0;
 	}
-
+	/*
 	if (BUTTONSTAY(VK_SPACE)) // 충돌 구현 후 down으로 바꾸기
 	{
 		m_bIsJump = true;
@@ -228,6 +231,17 @@ void CPlayer::KeyUpdate()
 	else
 	{
 		m_bIsJump = false;
+	}
+	*/
+
+	if (BUTTONDOWN(VK_SPACE))
+	{
+		if (!m_bIsJump)
+		{
+			m_status = PlayerStatus::Jump;
+			m_gravity->SetVelocity(-400);
+			m_bIsJump = true;
+		}
 	}
 
 	if (BUTTONDOWN('A'))
@@ -1534,8 +1548,6 @@ void CPlayer::BehaviorUpdate()
 	switch (m_status)
 	{
 	case PlayerStatus::Idle:
-
-
 		if (m_bIsDead)
 		{
 			m_status = PlayerStatus::Dead;
@@ -1642,6 +1654,10 @@ void CPlayer::CreateMissile()
 
 void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 {
+	if (pOtherCollider->GetObjName() == L"frontOcean")
+	{
+		m_bIsJump = false;
+	}
 }
 
 void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
