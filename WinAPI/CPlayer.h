@@ -24,13 +24,15 @@ private:
 	PlayerStatus m_status;
 
 	Vector m_vecMoveDir;
-	Vector m_vecLookDir, m_vecPrevLookDir, temp;
+	Vector m_vecLookDir, m_vecPrevLookDir, tempLookDir;
 
 	bool m_bIsMove;
 	bool m_bIsJump;
 	bool m_bIsDead;
 	bool m_bIsAttack;
 	bool m_bIsShoot;
+
+	bool m_bIsPrevCurLookSame;
 
 	float m_fSpeed;
 	float m_fAcctime;

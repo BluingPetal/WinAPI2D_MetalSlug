@@ -88,8 +88,8 @@ void CSceneStage01::Init()
 	pFrontOceanObj2->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean2", pFrontOceanImage, 0.1f);
 	pFrontOceanObj2->GetAnimator()->Play(L"BackGround\\FrontOcean2");
 
-	CCameraController* pCamController = new CCameraController;
-	AddGameObject(pCamController);
+	//CCameraController* pCamController = new CCameraController;
+	//AddGameObject(pCamController);
 }
 
 void CSceneStage01::Enter()
