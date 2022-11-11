@@ -1,14 +1,6 @@
 #include "framework.h"
 #include "CSceneStage01.h"
 
-#include "WinAPI.h"
-#include "CInputManager.h"
-#include "CTimeManager.h"
-#include "CRenderManager.h"
-#include "CEventManager.h"
-#include "CCameraManager.h"
-#include "CPathManager.h"
-
 #include "CPlayer.h"
 #include "CCameraController.h"
 #include "CImageObject.h"
@@ -22,6 +14,8 @@ CSceneStage01::CSceneStage01()
 {
 	pPlayer = nullptr;
 	pBackGround = nullptr;
+	pObstacle = nullptr;
+
 	m_fPlayerMaxPosX = 0;
 }
 
@@ -103,7 +97,7 @@ void CSceneStage01::Init()
 	pFrontOceanCollider->SetLayer(Layer::ForeGround);
 	AddGameObject(pFrontOceanCollider);
 
-	CColliderObject* pObstacle = new CColliderObject;
+	pObstacle = new CColliderObject;
 	pObstacle->SetName(L"obstacle");
 	pObstacle->SetExtension(extension);
 	pObstacle->SetPos(0, WINSIZEY * 0.5f);
@@ -113,8 +107,8 @@ void CSceneStage01::Init()
 
 #pragma endregion
 
-	CCameraController* pCamController = new CCameraController;
-	AddGameObject(pCamController);
+	// CCameraController* pCamController = new CCameraController;
+	// AddGameObject(pCamController);
 }
 
 void CSceneStage01::Enter()
@@ -129,33 +123,27 @@ void CSceneStage01::Update()
 		CAMERA->FadeOut(0.25f);
 		DELAYCHANGESCENE(GroupScene::Title, 0.25f);
 	}
-	//Logger::Debug(L"playerpos : " + to_wstring(abs(pPlayer->GetPos().x - pPlayer->GetPrevPos().x)));
-	//Logger::Debug(L"playerSpd : " + to_wstring(pPlayer->GetSpeed() * DT));
-	//abs(pPlayer->GetPos().x - pPlayer->GetPrevPos().x) > (pPlayer->GetSpeed() * DT)
 
-	//if((pPlayer->GetPos().x > WINSIZEX) && 
+	if (m_fPlayerMaxPosX >= WINSIZEX * 0.4f)
+	{
+		// 카메라 이동
+		Vector targetPos = Vector(m_fPlayerMaxPosX + WINSIZEX * 0.1f, CAMERA->GetLookAt().y);
+		CAMERA->SetTargetPos(targetPos);
+		// 뒤로 이동을 막는 장애물 위치 이동
+		pObstacle->SetPos(CAMERA->ScreenToWorldPoint(Vector(0, WINSIZEY * 0.5f)));
 
+		if (pPlayer->GetPos().x >= m_fPlayerMaxPosX)
+		{
+			float posDiffX = pPlayer->GetPos().x - m_fPlayerMaxPosX;
+			pBackGround->SetPos(pBackGround->GetPos().x + posDiffX * 0.5f, pBackGround->GetPos().y);
+		}
+	}
+
+	// Player MaxPosition 정의
 	if (pPlayer->GetPos().x > m_fPlayerMaxPosX)
 	{
-		float posDiffX = pPlayer->GetPos().x - m_fPlayerMaxPosX;
-		pBackGround->SetPos(pBackGround->GetPos().x + posDiffX * 0.3f, pBackGround->GetPos().y);
 		m_fPlayerMaxPosX = pPlayer->GetPos().x;
 	}
-
-
-	/*
-	pBackGround->SetPos(pBackGround->GetPos().x, pBackGround->GetPos().y);
-	pBackGround->SetSpeed(pPlayer->GetMoveDir().x * 50);
-	*/
-	/*
-	if (pPlayer->GetPos().x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.4, WINSIZEY *0.5f)).x)
-	{
-		CAMERA->SetTargetObj(pPlayer);
-	}
-	*/
-
-	//pFrontOceanObj1->GetAnimator()->Play(L"BackGround\\FrontOcean1");
-	//pFrontOceanObj2->GetAnimator()->Play(L"BackGround\\FrontOcean2");
 }
 
 void CSceneStage01::Render()

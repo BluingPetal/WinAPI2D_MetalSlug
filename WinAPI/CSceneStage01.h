@@ -3,7 +3,7 @@
 
 class CPlayer;
 class CImageObject;
-class CAniObject;
+class CColliderObject;
 
 class CSceneStage01 : public CScene
 {
@@ -16,6 +16,7 @@ private:
 	float m_fPlayerMaxPosX;
 
 	CImageObject* pBackGround;
+	CColliderObject* pObstacle;
 
 private:
 	void Init()		override;

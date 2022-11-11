@@ -1,11 +1,9 @@
 #include "framework.h"
 #include "CSceneTitle.h"
 
-#include "WinAPI.h"
-#include "CRenderManager.h"
-#include "CInputManager.h"
-#include "CEventManager.h"
-#include "CCameraManager.h"
+#include "CImage.h"
+#include "CImageObject.h"
+#include "CCameraController.h"
 
 CSceneTitle::CSceneTitle()
 {
@@ -17,6 +15,18 @@ CSceneTitle::~CSceneTitle()
 
 void CSceneTitle::Init()
 {
+	CImage* pTitleImg = RESOURCE->LoadImg(L"TitleImg", L"Image\\Start\\Title.jpg");
+	CImageObject* pTitleObj = new CImageObject;
+	float extension = WINSIZEY / (float)(pTitleImg->GetHeight());
+
+	Vector pTitleObjOffset = Vector(-85, 0);
+	pTitleObj->SetImage(pTitleImg);
+	pTitleObj->SetExtension(extension);
+	pTitleObj->SetOffset(pTitleObjOffset);
+	AddGameObject(pTitleObj);
+
+	CCameraController* pCamController = new CCameraController;
+	AddGameObject(pCamController);
 }
 
 void CSceneTitle::Enter()
@@ -43,6 +53,7 @@ void CSceneTitle::Update()
 
 void CSceneTitle::Render()
 {
+	/*
 	RENDER->Text(L"press space to start",
 		WINSIZEX * 0.5f - 100,
 		WINSIZEY * 0.5f - 10,
@@ -50,6 +61,7 @@ void CSceneTitle::Render()
 		WINSIZEY * 0.5f + 10,
 		Color(0, 0, 0, 1.f),
 		20.f);
+	*/
 }
 
 void CSceneTitle::Exit()

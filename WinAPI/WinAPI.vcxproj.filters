@@ -204,6 +204,12 @@
     <ClInclude Include="CConga.h">
       <Filter>GameObject\Stage01</Filter>
     </ClInclude>
+    <ClInclude Include="CSceneChooseChar.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CFontImage.h">
+      <Filter>GameObject\Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinAPI.cpp">
@@ -337,6 +343,12 @@
     </ClCompile>
     <ClCompile Include="CConga.cpp">
       <Filter>GameObject\Stage01</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneChooseChar.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CFontImage.cpp">
+      <Filter>GameObject\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
