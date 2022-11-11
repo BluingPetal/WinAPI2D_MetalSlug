@@ -46,10 +46,10 @@ private:
 	bool m_bReservedDelete;		// 게임오브젝트가 삭제예정인지 여부
 	bool m_bSafeToDelete;		// 게임오브젝트가 삭제해도 문제없는지 여부
 
-	void SetReserveDelete();	// 게임오브젝트 삭제 예약
 	bool GetSafeToDelete();		// 게임오브젝트 삭제 가능 상태 확인
 	void SetSafeToDelete();		// 게임오브젝트 삭제 가능 상태 표시
 public:
+	void SetReserveDelete();	// 게임오브젝트 삭제 예약
 	bool GetReserveDelete();		// 게임오브젝트가 삭제예정인지 확인
 	void SetExtension(float extension) { m_fExtension = extension; }
 	float GetExtension() { return m_fExtension; }

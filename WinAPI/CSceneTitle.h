@@ -1,11 +1,19 @@
 #pragma once
 #include "CScene.h"
 
+class CFontImageObj;
+
 class CSceneTitle : public CScene
 {
 public:
 	CSceneTitle();
 	virtual ~CSceneTitle();
+
+private:
+	CFontImageObj* fontImgStartObj;
+	CFontImageObj* fontImgCredit;
+	float m_fAccTime;
+	int m_credit;
 
 private:
 	void Init()		override;

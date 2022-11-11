@@ -9,17 +9,25 @@ public:
 	CImageObject();
 	virtual ~CImageObject();
 
-private:
+protected:
 	CImage* m_pImage;
 	Vector m_vecOffset;
 	float m_fSpeed;
+
+	bool m_bRenderAsFrame;
+	float m_fRenderSourceInfo[4];
+	float m_fAlpha;
 
 public:
 	CImage* GetImage();
 	void SetImage(CImage* pImage);
 	void SetSpeed(float speed) { m_fSpeed = speed; }
 	float GetSpeed() { return m_fSpeed; }
+	void SetRenderAsFrame(bool isFrame) { m_bRenderAsFrame = isFrame; }
 	void SetOffset(Vector vecOffset) { m_vecOffset = vecOffset; }
+	void SetAlpha(float alpha) { m_fAlpha = alpha; }
+	float GetAlpha() { return m_fAlpha; }
+	void SetSourceInfo(float startX, float startY, float width, float height);
 
 private:
 	void Init() override;

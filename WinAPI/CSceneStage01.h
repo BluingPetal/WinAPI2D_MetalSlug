@@ -4,6 +4,7 @@
 class CPlayer;
 class CImageObject;
 class CColliderObject;
+class CFontImageObj;
 
 class CSceneStage01 : public CScene
 {
@@ -15,6 +16,7 @@ private:
 	CPlayer* pPlayer;
 	float m_fPlayerMaxPosX;
 
+	CFontImageObj* fontImgObj;
 	CImageObject* pBackGround;
 	CColliderObject* pObstacle;
 

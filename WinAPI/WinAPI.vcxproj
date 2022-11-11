@@ -152,7 +152,7 @@
     <ClInclude Include="CConga.h" />
     <ClInclude Include="CCore.h" />
     <ClInclude Include="CEventManager.h" />
-    <ClInclude Include="CFontImage.h" />
+    <ClInclude Include="CFontImageObj.h" />
     <ClInclude Include="CGameObject.h" />
     <ClInclude Include="CGravity.h" />
     <ClInclude Include="CGroundTile.h" />
@@ -205,7 +205,7 @@
     <ClCompile Include="CConga.cpp" />
     <ClCompile Include="CCore.cpp" />
     <ClCompile Include="CEventManager.cpp" />
-    <ClCompile Include="CFontImage.cpp" />
+    <ClCompile Include="CFontImageObj.cpp" />
     <ClCompile Include="CGameObject.cpp" />
     <ClCompile Include="CGravity.cpp" />
     <ClCompile Include="CGroundTile.cpp" />

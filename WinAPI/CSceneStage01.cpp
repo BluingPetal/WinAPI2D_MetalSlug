@@ -9,12 +9,14 @@
 #include "CPanel.h"
 #include "CColliderObject.h"
 #include "CConga.h"
+#include "CFontImageObj.h"
 
 CSceneStage01::CSceneStage01()
 {
 	pPlayer = nullptr;
 	pBackGround = nullptr;
 	pObstacle = nullptr;
+	
 
 	m_fPlayerMaxPosX = 0;
 }
@@ -107,6 +109,10 @@ void CSceneStage01::Init()
 
 #pragma endregion
 
+	fontImgObj = new CFontImageObj;
+	fontImgObj->SetExtension(extension);
+	AddGameObject(fontImgObj);
+
 	// CCameraController* pCamController = new CCameraController;
 	// AddGameObject(pCamController);
 }
@@ -114,6 +120,8 @@ void CSceneStage01::Init()
 void CSceneStage01::Enter()
 {
 	CAMERA->FadeIn(0.25f);
+
+	fontImgObj->CreateImg(L"0", Vector(0, 0), 1, FontType::Default);
 }
 
 void CSceneStage01::Update()
@@ -144,6 +152,24 @@ void CSceneStage01::Update()
 	{
 		m_fPlayerMaxPosX = pPlayer->GetPos().x;
 	}
+	/*
+	// Zoom In/Out
+	if (BUTTONSTAY(VK_F1))
+	{
+		float zoom = CAMERA->GetZoom();
+		float setZoom = zoom - 0.005;
+		if (setZoom > 0)
+			CAMERA->SetZoom(setZoom);
+		else
+			CAMERA->SetZoom(0);
+	}
+	if (BUTTONSTAY(VK_F2))
+	{
+		float zoom = CAMERA->GetZoom();
+		float setZoom = zoom + 0.005;
+		CAMERA->SetZoom(setZoom);
+	}
+	*/
 }
 
 void CSceneStage01::Render()

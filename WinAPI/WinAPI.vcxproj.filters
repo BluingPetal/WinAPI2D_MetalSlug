@@ -207,7 +207,7 @@
     <ClInclude Include="CSceneChooseChar.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="CFontImage.h">
+    <ClInclude Include="CFontImageObj.h">
       <Filter>GameObject\Common</Filter>
     </ClInclude>
   </ItemGroup>
@@ -347,7 +347,7 @@
     <ClCompile Include="CSceneChooseChar.cpp">
       <Filter>Scene</Filter>
     </ClCompile>
-    <ClCompile Include="CFontImage.cpp">
+    <ClCompile Include="CFontImageObj.cpp">
       <Filter>GameObject\Common</Filter>
     </ClCompile>
   </ItemGroup>

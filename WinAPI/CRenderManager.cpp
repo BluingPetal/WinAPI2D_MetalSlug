@@ -528,7 +528,7 @@ void CRenderManager::FrameImage(CImage* pImg, float dstX, float dstY, float dstW
 	D2D1_RECT_F imgRect = { dstX, dstY, dstW, dstH };
 	D2D1_RECT_F srcRect = { srcX, srcY, srcW, srcH };
 
-	m_pRenderTarget->DrawBitmap(pImg->GetImage(), imgRect, 1.0f, D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR, srcRect);
+	m_pRenderTarget->DrawBitmap(pImg->GetImage(), imgRect, alpha, D2D1_BITMAP_INTERPOLATION_MODE_NEAREST_NEIGHBOR, srcRect);
 }
 
 IWICImagingFactory* CRenderManager::GetImageFactory()
