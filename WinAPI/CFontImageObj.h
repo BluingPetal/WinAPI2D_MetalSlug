@@ -15,6 +15,9 @@ private:
 	//map<const wstring&, vector<Vector>>m_mapFont;
 	CImage* m_pImage;
 	float m_fInterval;
+
+	bool m_isFixed;
+
 	vector<Vector> m_vecDefault;
 	vector<Vector> m_vecMission;
 	vector<Vector> m_vecCoin;

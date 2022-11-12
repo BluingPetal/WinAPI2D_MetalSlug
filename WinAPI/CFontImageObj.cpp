@@ -9,6 +9,7 @@ CFontImageObj::CFontImageObj()
 	m_pImage = RESOURCE->LoadImg(L"Font", L"Image\\Font\\Font.png");
 	//m_curFont = nullptr;
 	m_fInterval = 0.7f;
+	m_isFixed = false;
 }
 
 CFontImageObj::~CFontImageObj()
@@ -24,6 +25,7 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT coun
 	{
 		CImageObject* imgObj = new CImageObject;
 		m_vecImgObj.push_back(imgObj);
+		imgObj->SetImage(m_pImage);
 
 		int index;
 		switch (font)
@@ -51,6 +53,20 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT coun
 			break;
 		case FontType::Coin:
 			index = FindImgInCoin(content[i]);
+			if (index >= 0)
+			{
+				imgObj->SetPos(startPos.x, startPos.y);
+				startPos.x += (m_vecCoin[index + 1].x * m_fExtension * m_fInterval);
+				imgObj->SetExtension(m_fExtension);
+				imgObj->SetRenderAsFrame(true);
+				imgObj->SetLayer(Layer::ForeGround);
+				imgObj->SetSourceInfo(m_vecCoin[index].x, m_vecCoin[index].y, m_vecCoin[index + 1].x, m_vecCoin[index + 1].y);
+				ADDOBJECT(imgObj);
+			}
+			else // ¶ç¾î¾²±â
+			{
+				startPos.x += (m_vecCoin[index + 2].x * m_fExtension * m_fInterval);
+			}
 			break;
 		case FontType::Score:
 			index = FindImgInScore(content[i]);
@@ -76,8 +92,6 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT coun
 			}
 			break;
 		}
-		imgObj->SetImage(m_pImage);
-
 	}
 }
 

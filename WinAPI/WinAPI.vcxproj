@@ -159,6 +159,7 @@
     <ClInclude Include="CImageButton.h" />
     <ClInclude Include="CImageObject.h" />
     <ClInclude Include="CImagePanel.h" />
+    <ClInclude Include="CImageUI.h" />
     <ClInclude Include="CInputManager.h" />
     <ClInclude Include="CMissile.h" />
     <ClInclude Include="CMonster.h" />
@@ -212,6 +213,7 @@
     <ClCompile Include="CImageButton.cpp" />
     <ClCompile Include="CImageObject.cpp" />
     <ClCompile Include="CImagePanel.cpp" />
+    <ClCompile Include="CImageUI.cpp" />
     <ClCompile Include="CInputManager.cpp" />
     <ClCompile Include="CMissile.cpp" />
     <ClCompile Include="CMonster.cpp" />

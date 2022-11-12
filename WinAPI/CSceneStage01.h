@@ -13,12 +13,13 @@ public:
 	virtual ~CSceneStage01();
 
 private:
-	CPlayer* pPlayer;
+	CPlayer* m_pPlayer;
 	float m_fPlayerMaxPosX;
+	float m_fAccTime;
 
-	CFontImageObj* fontImgObj;
-	CImageObject* pBackGround;
-	CColliderObject* pObstacle;
+	CFontImageObj* m_pFontImgObj;
+	CImageObject* m_pBackGround;
+	CColliderObject* m_pObstacle;
 
 private:
 	void Init()		override;

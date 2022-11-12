@@ -13,11 +13,12 @@
 
 CSceneStage01::CSceneStage01()
 {
-	pPlayer = nullptr;
-	pBackGround = nullptr;
-	pObstacle = nullptr;
+	m_pPlayer = nullptr;
+	m_pBackGround = nullptr;
+	m_pObstacle = nullptr;
+	m_pFontImgObj = nullptr;
 	
-
+	m_fAccTime = 0;
 	m_fPlayerMaxPosX = 0;
 }
 
@@ -30,7 +31,7 @@ void CSceneStage01::Init()
 #pragma region BACKGROUND
 
 	// 백그라운드 Image
-	pBackGround = new CImageObject;
+	m_pBackGround = new CImageObject;
 	CImage* pBackGroundImg = RESOURCE->LoadImg(L"BackGround", L"Image\\BackGround\\Map.png");
 	CImageObject* pFrontGround = new CImageObject;
 	CImage* pFrontGroundImg = RESOURCE->LoadImg(L"FrontGround", L"Image\\BackGround\\MapPiece1.png");
@@ -39,11 +40,11 @@ void CSceneStage01::Init()
 	float extension = WINSIZEY / (frontGroundOffset.y + (pFrontGroundImg->GetHeight()));
 
 	// ImageObject 설정
-	pBackGround->SetImage(pBackGroundImg);
-	pBackGround->SetPos(Vector(0,0));
-	pBackGround->SetOffset(backGroundOffset);
-	pBackGround->SetExtension(extension);
-	AddGameObject(pBackGround);
+	m_pBackGround->SetImage(pBackGroundImg);
+	m_pBackGround->SetPos(Vector(0,0));
+	m_pBackGround->SetOffset(backGroundOffset);
+	m_pBackGround->SetExtension(extension);
+	AddGameObject(m_pBackGround);
 
 	pFrontGround->SetImage(pFrontGroundImg);
 	pFrontGround->SetPos(Vector(0, 0));
@@ -70,11 +71,11 @@ void CSceneStage01::Init()
 
 #pragma region OBJECT
 
-	pPlayer = new CPlayer;
-	pPlayer->SetPos(200, WINSIZEY * 0.5f);
-	pPlayer->SetExtension(extension);
-	m_fPlayerMaxPosX = pPlayer->GetPos().x;
-	AddGameObject(pPlayer);
+	m_pPlayer = new CPlayer;
+	m_pPlayer->SetPos(200, WINSIZEY * 0.5f);
+	m_pPlayer->SetExtension(extension);
+	m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
+	AddGameObject(m_pPlayer);
 
 	CConga* pConga = new CConga;
 	pConga->SetPos(500, WINSIZEY * 0.5f);
@@ -99,19 +100,19 @@ void CSceneStage01::Init()
 	pFrontOceanCollider->SetLayer(Layer::ForeGround);
 	AddGameObject(pFrontOceanCollider);
 
-	pObstacle = new CColliderObject;
-	pObstacle->SetName(L"obstacle");
-	pObstacle->SetExtension(extension);
-	pObstacle->SetPos(0, WINSIZEY * 0.5f);
-	pObstacle->SetScale(5, WINSIZEY / extension);
-	pObstacle->SetLayer(Layer::ForeGround);
-	AddGameObject(pObstacle);
+	m_pObstacle = new CColliderObject;
+	m_pObstacle->SetName(L"obstacle");
+	m_pObstacle->SetExtension(extension);
+	m_pObstacle->SetPos(0, WINSIZEY * 0.5f);
+	m_pObstacle->SetScale(5, WINSIZEY / extension);
+	m_pObstacle->SetLayer(Layer::ForeGround);
+	AddGameObject(m_pObstacle);
 
 #pragma endregion
 
-	fontImgObj = new CFontImageObj;
-	fontImgObj->SetExtension(extension);
-	AddGameObject(fontImgObj);
+	m_pFontImgObj = new CFontImageObj;
+	m_pFontImgObj->SetExtension(extension + 1);
+	AddGameObject(m_pFontImgObj);
 
 	// CCameraController* pCamController = new CCameraController;
 	// AddGameObject(pCamController);
@@ -121,11 +122,39 @@ void CSceneStage01::Enter()
 {
 	CAMERA->FadeIn(0.25f);
 
-	fontImgObj->CreateImg(L"0", Vector(0, 0), 1, FontType::Default);
+	m_pFontImgObj->SetInterval(1.1f);
+	m_pFontImgObj->CreateImg(L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);
 }
 
 void CSceneStage01::Update()
 {
+	m_fAccTime += DT;
+
+	// insert coin 깜박거리는 효과
+	if (m_fAccTime >= 1.f)
+	{
+		for (int i = 0; i < m_pFontImgObj->GetImageObj().size(); i++)
+		{
+			CImageObject* imgObj = m_pFontImgObj->GetImageObj()[i];
+			imgObj->SetAlpha(!(imgObj->GetAlpha()));
+		}
+		m_fAccTime = 0;
+	}
+	for (int i = 0; i < m_pFontImgObj->GetImageObj().size(); i++)
+	{
+		CImageObject* imgObj = m_pFontImgObj->GetImageObj()[i];
+		if (i != 0)
+		{
+			CImageObject* prevObj = m_pFontImgObj->GetImageObj()[i-1];
+			Vector posDiff = imgObj->GetPos() - prevObj->GetPos();
+			imgObj->SetPos(prevObj->GetPos() + CAMERA->ScreenToWorldPoint(posDiff * i));
+		}
+		else
+		{
+			imgObj->SetPos(CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f)));
+		}
+	}
+
 	if (BUTTONDOWN(VK_ESCAPE))
 	{
 		CAMERA->FadeOut(0.25f);
@@ -138,19 +167,19 @@ void CSceneStage01::Update()
 		Vector targetPos = Vector(m_fPlayerMaxPosX + WINSIZEX * 0.1f, CAMERA->GetLookAt().y);
 		CAMERA->SetTargetPos(targetPos);
 		// 뒤로 이동을 막는 장애물 위치 이동
-		pObstacle->SetPos(CAMERA->ScreenToWorldPoint(Vector(0, WINSIZEY * 0.5f)));
+		m_pObstacle->SetPos(CAMERA->ScreenToWorldPoint(Vector(0, WINSIZEY * 0.5f)));
 
-		if (pPlayer->GetPos().x >= m_fPlayerMaxPosX)
+		if (m_pPlayer->GetPos().x >= m_fPlayerMaxPosX)
 		{
-			float posDiffX = pPlayer->GetPos().x - m_fPlayerMaxPosX;
-			pBackGround->SetPos(pBackGround->GetPos().x + posDiffX * 0.5f, pBackGround->GetPos().y);
+			float posDiffX = m_pPlayer->GetPos().x - m_fPlayerMaxPosX;
+			m_pBackGround->SetPos(m_pBackGround->GetPos().x + posDiffX * 0.5f, m_pBackGround->GetPos().y);
 		}
 	}
 
 	// Player MaxPosition 정의
-	if (pPlayer->GetPos().x > m_fPlayerMaxPosX)
+	if (m_pPlayer->GetPos().x > m_fPlayerMaxPosX)
 	{
-		m_fPlayerMaxPosX = pPlayer->GetPos().x;
+		m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
 	}
 	/*
 	// Zoom In/Out

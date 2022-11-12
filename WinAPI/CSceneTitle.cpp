@@ -9,8 +9,9 @@
 CSceneTitle::CSceneTitle()
 {
 	m_fAccTime = 0;
-	m_credit = 0;
+	m_credit = 1;
 	fontImgStartObj = nullptr;
+	fontImgCredit = nullptr;
 }
 
 CSceneTitle::~CSceneTitle()
@@ -29,9 +30,6 @@ void CSceneTitle::Init()
 	pTitleObj->SetOffset(pTitleObjOffset);
 	pTitleObj->SetLayer(Layer::BackGround);
 	AddGameObject(pTitleObj);
-
-	CCameraController* pCamController = new CCameraController;
-	AddGameObject(pCamController);
 
 	fontImgStartObj = new CFontImageObj;
 	fontImgStartObj->SetExtension(extension+1);
@@ -104,15 +102,6 @@ void CSceneTitle::Update()
 
 void CSceneTitle::Render()
 {
-	/*
-	RENDER->Text(L"press space to start",
-		WINSIZEX * 0.5f - 100,
-		WINSIZEY * 0.5f - 10,
-		WINSIZEX * 0.5f + 100,
-		WINSIZEY * 0.5f + 10,
-		Color(0, 0, 0, 1.f),
-		20.f);
-	*/
 }
 
 void CSceneTitle::Exit()
