@@ -5,6 +5,7 @@
 #include "CSceneTitle.h"
 #include "CSceneTileTool.h"
 #include "CSceneAniTool.h"
+#include "CSceneChooseChar.h"
 #include "CSceneStage01.h"
 
 CSceneManager::CSceneManager()
@@ -26,6 +27,8 @@ void CSceneManager::Init()
 	m_mapScene.insert(make_pair(GroupScene::TileTool, pSceneTileTool));
 	CSceneAniTool* pSceneAniTool = new CSceneAniTool;
 	m_mapScene.insert(make_pair(GroupScene::AniTool, pSceneAniTool));
+	CSceneChooseChar* pSceneStageChooseChar = new CSceneChooseChar;
+	m_mapScene.insert(make_pair(GroupScene::SelectChar, pSceneStageChooseChar));
 	CScene* pSceneStage01 = new CSceneStage01();
 	m_mapScene.insert(make_pair(GroupScene::Stage01, pSceneStage01));
 

@@ -18,13 +18,6 @@ CFontImageObj::~CFontImageObj()
 
 void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT count, FontType font)
 {
-	//CImageObject** imgObjArr = new CImageObject*[count];
-	//for (int i = 0; i < count; i++)
-	//{
-
-
-
-
 	for (UINT i = 0; i < count; i++)
 	{
 		CImageObject* imgObj = new CImageObject;
@@ -81,8 +74,9 @@ void CFontImageObj::DeleteObj()
 {
 	for (int i = 0; i < m_vecImgObj.size(); i++)
 	{
-		m_vecImgObj[i]->SetSafeToDelete();
+		m_vecImgObj[i]->SetReserveDelete();
 	}
+	m_vecImgObj.clear();
 }
 
 void CFontImageObj::InitFont(const wstring& name, FontType font)

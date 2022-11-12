@@ -12,6 +12,8 @@ CImageObject::CImageObject()
 	m_layer = Layer::BackGround;
 	m_vecOffset = Vector(0, 0);
 	m_fSpeed = 0;
+	m_bIsFixed = 0;
+	m_fRenderSourceInfo[0] = { 0 };
 	m_bRenderAsFrame = false;
 	m_fAlpha = 1;
 }

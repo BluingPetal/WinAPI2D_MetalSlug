@@ -30,6 +30,7 @@ enum class GroupScene
 	TileTool,
 	AniTool,
 
+	SelectChar,
 	Stage01,
 
 	Size,

@@ -3,7 +3,6 @@
 
 #include "CImage.h"
 #include "CImageObject.h"
-#include "CCameraController.h"
 #include "CFontImageObj.h"
 
 CSceneTitle::CSceneTitle()
@@ -64,7 +63,6 @@ void CSceneTitle::Init()
 	wstring timeStr = to_wstring(m_time);
 	fontImgTime->SetInterval(1.f);
 	fontImgTime->CreateImg(timeStr, Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
-	//Logger::Debug(to_wstring(m_credit));
 }
 
 void CSceneTitle::Enter()
@@ -80,6 +78,7 @@ void CSceneTitle::Update()
 	{
 		// time
 		m_time--;
+
 		fontImgTime->DeleteObj();
 		wstring timeStr = to_wstring(m_time);
 		fontImgTime->CreateImg(timeStr, Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
@@ -90,6 +89,7 @@ void CSceneTitle::Update()
 			CImageObject* imgObj = fontImgStartObj->GetImageObj()[i];
 			imgObj->SetAlpha(!(imgObj->GetAlpha()));
 		}
+
 		m_fAccTime = 0;
 	}
 
@@ -104,6 +104,7 @@ void CSceneTitle::Update()
 	if (BUTTONDOWN(VK_F3))
 	{
 		m_credit++;
+
 		fontImgCredit->DeleteObj();
 		wstring creditStr = to_wstring(m_credit);
 		fontImgCredit->CreateImg(creditStr, Vector(WINSIZEX * 0.92, WINSIZEY * 0.95), 2, FontType::Default);
@@ -113,10 +114,10 @@ void CSceneTitle::Update()
 		if (BUTTONDOWN(VK_SPACE) || m_time <= 0)
 		{
 			CAMERA->FadeOut(0.25f);
-			DELAYCHANGESCENE(GroupScene::Stage01, 0.25f);
+			DELAYCHANGESCENE(GroupScene::SelectChar, 0.25f);
+			DeleteAll();
 		}
 	}
-
 }
 
 void CSceneTitle::Render()

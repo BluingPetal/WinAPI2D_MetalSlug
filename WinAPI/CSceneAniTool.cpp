@@ -702,6 +702,9 @@ void CSceneAniTool::Render()
 
 void CSceneAniTool::Exit()
 {
+	EndDialog(m_hWndAniTool, IDOK);
+
+	DeleteAll();
 }
 
 void CSceneAniTool::Release()
