@@ -53,16 +53,33 @@ void CImageObject::Render()
 	{
 		if (m_bRenderAsFrame)
 		{
-			RENDER->FrameImage(
-				m_pImage,
-				m_vecPos.x + m_vecOffset.x * m_fExtension,
-				m_vecPos.y + m_vecOffset.y * m_fExtension,
-				m_vecPos.x + ((float)m_fRenderSourceInfo[2] + m_vecOffset.x) * m_fExtension,
-				m_vecPos.y + ((float)m_fRenderSourceInfo[3] + m_vecOffset.y) * m_fExtension,
-				m_fRenderSourceInfo[0],
-				m_fRenderSourceInfo[1],
-				m_fRenderSourceInfo[0] + m_fRenderSourceInfo[2],
-				m_fRenderSourceInfo[1] + m_fRenderSourceInfo[3], m_fAlpha);
+			if (m_bIsFixed)
+			{
+				Vector tempPos = CAMERA->ScreenToWorldPoint(m_vecPos);
+				RENDER->FrameImage(
+					m_pImage,
+					tempPos.x + m_vecOffset.x * m_fExtension,
+					tempPos.y + m_vecOffset.y * m_fExtension,
+					tempPos.x + ((float)m_fRenderSourceInfo[2] + m_vecOffset.x) * m_fExtension,
+					tempPos.y + ((float)m_fRenderSourceInfo[3] + m_vecOffset.y) * m_fExtension,
+					m_fRenderSourceInfo[0],
+					m_fRenderSourceInfo[1],
+					m_fRenderSourceInfo[0] + m_fRenderSourceInfo[2],
+					m_fRenderSourceInfo[1] + m_fRenderSourceInfo[3], m_fAlpha);
+			}
+			else
+			{
+				RENDER->FrameImage(
+					m_pImage,
+					m_vecPos.x + m_vecOffset.x * m_fExtension,
+					m_vecPos.y + m_vecOffset.y * m_fExtension,
+					m_vecPos.x + ((float)m_fRenderSourceInfo[2] + m_vecOffset.x) * m_fExtension,
+					m_vecPos.y + ((float)m_fRenderSourceInfo[3] + m_vecOffset.y) * m_fExtension,
+					m_fRenderSourceInfo[0],
+					m_fRenderSourceInfo[1],
+					m_fRenderSourceInfo[0] + m_fRenderSourceInfo[2],
+					m_fRenderSourceInfo[1] + m_fRenderSourceInfo[3], m_fAlpha);
+			}
 		}
 		else
 		{

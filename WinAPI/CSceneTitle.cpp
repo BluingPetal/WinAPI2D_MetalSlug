@@ -10,8 +10,10 @@ CSceneTitle::CSceneTitle()
 {
 	m_fAccTime = 0;
 	m_credit = 1;
+	m_time = 30;
 	fontImgStartObj = nullptr;
 	fontImgCredit = nullptr;
+	fontImgTime = nullptr;
 }
 
 CSceneTitle::~CSceneTitle()
@@ -34,24 +36,34 @@ void CSceneTitle::Init()
 	fontImgStartObj = new CFontImageObj;
 	fontImgStartObj->SetExtension(extension+1);
 	AddGameObject(fontImgStartObj);
-
 	fontImgStartObj->SetInterval(1.f); // 글자 간격 -> create하기 전에 변화해주기
-	fontImgStartObj->CreateImg(L"press 1p to start", Vector(WINSIZEX * 0.3, WINSIZEY * 0.85), 17, FontType::Default);
+	fontImgStartObj->CreateImg(L"press 1p to start", Vector(WINSIZEX * 0.3, WINSIZEY * 0.88), 17, FontType::Default);
 
 	CFontImageObj* fontImgCreditObj = new CFontImageObj;
 	fontImgCreditObj->SetExtension(extension + 1);
 	AddGameObject(fontImgCreditObj);
-
 	fontImgCreditObj->SetInterval(1.f); // 글자 간격 -> create하기 전에 변화해주기
-	fontImgCreditObj->CreateImg(L"credit ", Vector(WINSIZEX * 0.75, WINSIZEY * 0.95), 7, FontType::Default);
+	fontImgCreditObj->CreateImg(L"credit", Vector(WINSIZEX * 0.75, WINSIZEY * 0.95), 6, FontType::Default);
 
 	fontImgCredit = new CFontImageObj;
 	fontImgCredit->SetExtension(extension + 1);
 	AddGameObject(fontImgCredit);
-
 	wstring creditStr = to_wstring(m_credit);
 	fontImgCredit->SetInterval(1.f);
 	fontImgCredit->CreateImg(creditStr, Vector(WINSIZEX * 0.92, WINSIZEY * 0.95), 2, FontType::Default);
+
+	CFontImageObj* fontImgTimeObj = new CFontImageObj;
+	fontImgTimeObj->SetExtension(extension + 1);
+	AddGameObject(fontImgTimeObj);
+	fontImgCreditObj->SetInterval(1.f); // 글자 간격 -> create하기 전에 변화해주기
+	fontImgCreditObj->CreateImg(L"time", Vector(WINSIZEX * 0.46, WINSIZEY * 0.73), 4, FontType::Default);
+
+	fontImgTime = new CFontImageObj;
+	fontImgTime->SetExtension(extension + 1);
+	AddGameObject(fontImgTime);
+	wstring timeStr = to_wstring(m_time);
+	fontImgTime->SetInterval(1.f);
+	fontImgTime->CreateImg(timeStr, Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
 	//Logger::Debug(to_wstring(m_credit));
 }
 
@@ -66,6 +78,13 @@ void CSceneTitle::Update()
 
 	if (m_fAccTime >= 1.0f)
 	{
+		// time
+		m_time--;
+		fontImgTime->DeleteObj();
+		wstring timeStr = to_wstring(m_time);
+		fontImgTime->CreateImg(timeStr, Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
+
+		// "press 1p to start" blink
 		for (int i = 0; i < fontImgStartObj->GetImageObj().size(); i++)
 		{
 			CImageObject* imgObj = fontImgStartObj->GetImageObj()[i];
@@ -91,7 +110,7 @@ void CSceneTitle::Update()
 	}
 	if (m_credit > 0)
 	{
-		if (BUTTONDOWN(VK_SPACE))
+		if (BUTTONDOWN(VK_SPACE) || m_time <= 0)
 		{
 			CAMERA->FadeOut(0.25f);
 			DELAYCHANGESCENE(GroupScene::Stage01, 0.25f);

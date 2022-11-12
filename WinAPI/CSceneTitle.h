@@ -12,8 +12,10 @@ public:
 private:
 	CFontImageObj* fontImgStartObj;
 	CFontImageObj* fontImgCredit;
+	CFontImageObj* fontImgTime;
 	float m_fAccTime;
 	int m_credit;
+	int m_time;
 
 private:
 	void Init()		override;

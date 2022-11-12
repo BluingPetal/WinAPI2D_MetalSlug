@@ -16,7 +16,9 @@ private:
 	CImage* m_pImage;
 	float m_fInterval;
 
-	bool m_isFixed;
+	bool m_bIsFixed;
+
+	vector<Vector>* m_curFont;
 
 	vector<Vector> m_vecDefault;
 	vector<Vector> m_vecMission;
@@ -43,6 +45,7 @@ private:
 public:
 	void CreateImg(const wstring& content, Vector startPos, UINT count, FontType font);
 	void SetInterval(float interval) { m_fInterval = interval; }
+	void SetFixed(bool fixed) { m_bIsFixed = fixed; }
 	vector<CImageObject*> GetImageObj() { return m_vecImgObj; }
 	void DeleteObj();
 };

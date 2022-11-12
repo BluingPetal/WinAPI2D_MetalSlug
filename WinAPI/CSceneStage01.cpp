@@ -111,6 +111,7 @@ void CSceneStage01::Init()
 #pragma endregion
 
 	m_pFontImgObj = new CFontImageObj;
+	m_pFontImgObj->SetFixed(true);
 	m_pFontImgObj->SetExtension(extension + 1);
 	AddGameObject(m_pFontImgObj);
 
@@ -140,6 +141,7 @@ void CSceneStage01::Update()
 		}
 		m_fAccTime = 0;
 	}
+	/*
 	for (int i = 0; i < m_pFontImgObj->GetImageObj().size(); i++)
 	{
 		CImageObject* imgObj = m_pFontImgObj->GetImageObj()[i];
@@ -154,7 +156,7 @@ void CSceneStage01::Update()
 			imgObj->SetPos(CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f)));
 		}
 	}
-
+	*/
 	if (BUTTONDOWN(VK_ESCAPE))
 	{
 		CAMERA->FadeOut(0.25f);

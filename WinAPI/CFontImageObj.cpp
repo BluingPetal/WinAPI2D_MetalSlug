@@ -7,9 +7,9 @@
 CFontImageObj::CFontImageObj()
 {
 	m_pImage = RESOURCE->LoadImg(L"Font", L"Image\\Font\\Font.png");
-	//m_curFont = nullptr;
+	m_curFont = nullptr;
 	m_fInterval = 0.7f;
-	m_isFixed = false;
+	m_bIsFixed = false;
 }
 
 CFontImageObj::~CFontImageObj()
@@ -21,52 +21,30 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT coun
 	//CImageObject** imgObjArr = new CImageObject*[count];
 	//for (int i = 0; i < count; i++)
 	//{
+
+
+
+
 	for (UINT i = 0; i < count; i++)
 	{
 		CImageObject* imgObj = new CImageObject;
 		m_vecImgObj.push_back(imgObj);
 		imgObj->SetImage(m_pImage);
 
-		int index;
+		int index = -1;
 		switch (font)
 		{
 		case FontType::Default:
-			index = FindImgInDefault(content[i]);
-			if (index >= 0)
-			{
-				imgObj->SetPos(startPos.x, startPos.y);
-				startPos.x += (m_vecDefault[index + 1].x * m_fExtension * m_fInterval);
-				imgObj->SetExtension(m_fExtension);
-				imgObj->SetRenderAsFrame(true);
-				imgObj->SetLayer(Layer::ForeGround);
-				imgObj->SetSourceInfo(m_vecDefault[index].x, m_vecDefault[index].y, m_vecDefault[index + 1].x, m_vecDefault[index + 1].y);
-				//imgObj->SetAlpha(0);
-				ADDOBJECT(imgObj);
-			}
-			else // ¶ç¾î¾²±â
-			{
- 				startPos.x += (m_vecDefault[index + 2].x * m_fExtension * m_fInterval);
-			}
+			m_curFont = &m_vecDefault;
+			index = FindImgInDefault(content[i]);			
 			break;
 		case FontType::Mission:
 			index = FindImgInMission(content[i]);
+			m_curFont = &m_vecMission;
 			break;
 		case FontType::Coin:
+			m_curFont = &m_vecCoin;
 			index = FindImgInCoin(content[i]);
-			if (index >= 0)
-			{
-				imgObj->SetPos(startPos.x, startPos.y);
-				startPos.x += (m_vecCoin[index + 1].x * m_fExtension * m_fInterval);
-				imgObj->SetExtension(m_fExtension);
-				imgObj->SetRenderAsFrame(true);
-				imgObj->SetLayer(Layer::ForeGround);
-				imgObj->SetSourceInfo(m_vecCoin[index].x, m_vecCoin[index].y, m_vecCoin[index + 1].x, m_vecCoin[index + 1].y);
-				ADDOBJECT(imgObj);
-			}
-			else // ¶ç¾î¾²±â
-			{
-				startPos.x += (m_vecCoin[index + 2].x * m_fExtension * m_fInterval);
-			}
 			break;
 		case FontType::Score:
 			index = FindImgInScore(content[i]);
@@ -76,21 +54,25 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT coun
 			break;
 		case FontType::Time:
 			index = FindImgInTime(content[i]);
-			if (index >= 0)
-			{
-				imgObj->SetPos(startPos.x, startPos.y);
-				startPos.x += (m_vecTime[index + 1].x * m_fExtension * m_fInterval);
-				imgObj->SetExtension(m_fExtension);
-				imgObj->SetRenderAsFrame(true);
-				imgObj->SetLayer(Layer::ForeGround);
-				imgObj->SetSourceInfo(m_vecTime[index].x, m_vecTime[index].y, m_vecTime[index + 1].x, m_vecTime[index + 1].y);
-				ADDOBJECT(imgObj);
-			}
-			else // ¶ç¾î¾²±â
-			{
-				startPos.x += (m_vecTime[index + 2].x * m_fExtension * m_fInterval);
-			}
+			m_curFont = &m_vecTime;
 			break;
+		}
+
+		if (index >= 0)
+		{
+			imgObj->SetPos(startPos.x, startPos.y);
+			startPos.x += ((*m_curFont)[index + 1].x * m_fExtension * m_fInterval);
+			imgObj->SetFixed(m_bIsFixed);
+			imgObj->SetExtension(m_fExtension);
+			imgObj->SetRenderAsFrame(true);
+			imgObj->SetLayer(Layer::ForeGround);
+			imgObj->SetSourceInfo((*m_curFont)[index].x, (*m_curFont)[index].y, (*m_curFont)[index + 1].x, (*m_curFont)[index + 1].y);
+			//imgObj->SetAlpha(0);
+			ADDOBJECT(imgObj);
+		}
+		else // ¶ç¾î¾²±â
+		{
+			startPos.x += ((*m_curFont)[index + 2].x * m_fExtension * m_fInterval);
 		}
 	}
 }
@@ -99,7 +81,7 @@ void CFontImageObj::DeleteObj()
 {
 	for (int i = 0; i < m_vecImgObj.size(); i++)
 	{
-		m_vecImgObj[i]->SetReserveDelete();
+		m_vecImgObj[i]->SetSafeToDelete();
 	}
 }
 
@@ -280,7 +262,90 @@ UINT CFontImageObj::FindImgInDefault(const wchar_t str)
 
 UINT CFontImageObj::FindImgInMission(const wchar_t str)
 {
-	return 0;
+	switch (str)
+	{
+	case 'a':
+		return 0 * 3;
+		break;
+	case 'b':
+		return 1 * 3;
+		break;
+	case 'c':
+		return 2 * 3;
+		break;
+	case 'd':
+		return 3 * 3;
+		break;
+	case 'e':
+		return 4 * 3;
+		break;
+	case 'f':
+		return 5 * 3;
+		break;
+	case 'g':
+		return 6 * 3;
+		break;
+	case 'h':
+		return 7 * 3;
+		break;
+	case 'i':
+		return 8 * 3;
+		break;
+	case 'j':
+		return 9 * 3;
+		break;
+	case 'k':
+		return 10 * 3;
+		break;
+	case 'l':
+		return 11 * 3;
+		break;
+	case 'm':
+		return 12 * 3;
+		break;
+	case 'n':
+		return 13 * 3;
+		break;
+	case 'o':
+		return 14 * 3;
+		break;
+	case 'p':
+		return 15 * 3;
+		break;
+	case 'q':
+		return 16 * 3;
+		break;
+	case 'r':
+		return 17 * 3;
+		break;
+	case 's':
+		return 18 * 3;
+		break;
+	case 't':
+		return 19 * 3;
+		break;
+	case 'u':
+		return 20 * 3;
+		break;
+	case 'v':
+		return 21 * 3;
+		break;
+	case 'w':
+		return 22 * 3;
+		break;
+	case 'x':
+		return 23 * 3;
+		break;
+	case 'y':
+		return 24 * 3;
+		break;
+	case 'z':
+		return 25 * 3;
+		break;
+	default:
+		return -1;
+		break;
+	}
 }
 
 UINT CFontImageObj::FindImgInCoin(const wchar_t str)
@@ -424,9 +489,8 @@ UINT CFontImageObj::FindImgInTime(const wchar_t str)
 
 void CFontImageObj::Init()
 {
-	//enum class FontType { Default, Mission, Coin, Score, Ui, Time };
 	InitFont(L"Default", FontType::Default);
-	//InitFont(L"Mission", FontType::Mission);
+	InitFont(L"Mission", FontType::Mission);
 	InitFont(L"Coin", FontType::Coin);
 	//InitFont(L"Score", FontType::Score);
 	//InitFont(L"Ui", FontType::Ui);
