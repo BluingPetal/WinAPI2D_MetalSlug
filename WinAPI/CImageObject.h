@@ -29,6 +29,7 @@ public:
 	void SetFixed(bool fixed) { m_bIsFixed = fixed; }
 	void SetAlpha(float alpha) { m_fAlpha = alpha; }
 	float GetAlpha() { return m_fAlpha; }
+	Vector GetOffset() { return m_vecOffset; }
 	void SetSourceInfo(float startX, float startY, float width, float height);
 
 private:

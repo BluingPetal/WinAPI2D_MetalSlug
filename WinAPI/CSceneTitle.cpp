@@ -114,7 +114,7 @@ void CSceneTitle::Update()
 		if (BUTTONDOWN(VK_SPACE) || m_time <= 0)
 		{
 			CAMERA->FadeOut(0.25f);
-			DELAYCHANGESCENE(GroupScene::SelectChar, 0.25f);
+			DELAYCHANGESCENE(GroupScene::SelectChar, 0.5f);
 			DeleteAll();
 		}
 	}

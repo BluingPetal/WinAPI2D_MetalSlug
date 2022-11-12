@@ -1,6 +1,10 @@
 #pragma once
 #include "CScene.h"
 
+class CImage;
+class CImageObject;
+class CAniObject;
+
 class CSceneChooseChar : public CScene
 {
 public:
@@ -8,10 +12,14 @@ public:
 	virtual ~CSceneChooseChar();
 
 private:
-	//CFontImageObj* fontImgStartObj;
-	//CFontImageObj* fontImgCredit;
-	//CFontImageObj* fontImgTime;
+	CImageObject* m_pEriDoor;
+	CImageObject* m_pEriSelect;
+	CAniObject* selectSoldierAniObj;
+
 	float m_fAccTime;
+	float m_fExtension;
+
+	bool m_bSelectedChar;
 
 private:
 	void Init()		override;
