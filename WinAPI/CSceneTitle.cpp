@@ -68,7 +68,6 @@ void CSceneTitle::Init()
 
 void CSceneTitle::Enter()
 {
-	CAMERA->FadeIn(0.25f);
 }
 
 void CSceneTitle::Update()
@@ -114,11 +113,12 @@ void CSceneTitle::Update()
 
 	if (m_credit > 0)
 	{
-		if (BUTTONDOWN(VK_SPACE) || m_time <= 0)
+		if (BUTTONDOWN(VK_SPACE) || m_time == 0)
 		{
 			if(!m_bStopUpdate)
 				m_fAccTime = 0;
 
+			m_time--;
 			m_bStopUpdate = true;
 
 			if(m_fAccTime>=0.1f)

@@ -172,12 +172,12 @@ void CSceneChooseChar::Update()
 
 	if (!m_bSelectedChar)
 	{
-		if (!m_bSelectedChar && m_fAccTime <= 1.5f)
+		if (!m_bSelectedChar && m_fAccTime <= 1.f)
 		{
 			int doorLength = 126 * m_fExtension;
 
-			if (m_fAccTime < 1.f)
-				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - doorLength / 1.f * DT);
+			if (m_fAccTime < 0.5f)
+				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - doorLength / 0.5f * DT);
 		}
 		else
 		{
@@ -201,28 +201,28 @@ void CSceneChooseChar::Update()
 		{
 			int doorLength = 126 * m_fExtension;
 
-			if (m_fAccTime < 1.5f)
+			if (m_fAccTime < 1.f)
 			{
 				m_pEriBox->SetAlpha(1);
 				m_pEri1->GetAnimator()->Play(L"Player\\Idle\\EriIdleR_1");
 				m_pEri2->GetAnimator()->Play(L"Player\\Idle\\EriIdleR_2");
-				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + doorLength / 1.f * DT);
+				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + doorLength / 0.5f * DT);
 			}
-			else if (m_fAccTime < 1.6f)
+			else if (m_fAccTime < 1.1f)
 			{
 				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - 20 / 0.1f * DT);
 				m_pSelectSoldierAniObj->GetAnimator()->Play(L"BackGround\\SelectSoldier");
 			}
-			else if (m_fAccTime < 1.7f)
+			else if (m_fAccTime < 1.2f)
 				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + 20 / 0.1f * DT);
-			else if (m_fAccTime < 1.8f)
+			else if (m_fAccTime < 1.3f)
 				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - 20 / 0.1f * DT);
-			else if (m_fAccTime < 1.9f)
+			else if (m_fAccTime < 1.4f)
 				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + 20 / 0.1f * DT);
-			else if (m_fAccTime >= 2.3f)
+			else if (m_fAccTime >= 1.8f)
 				m_pSelectSoldierAniObj->GetAnimator()->Stop();
 		}
-		else if (m_fAccTime > 4.5f)
+		else if (m_fAccTime > 3.5f)
 		{
 			CAMERA->FadeOut(0.25f);
 			DELAYCHANGESCENE(GroupScene::Stage01, 0.25f);
@@ -233,9 +233,6 @@ void CSceneChooseChar::Update()
 	m_pEriBox->SetPos(m_pEriDoor->GetPos() + m_pEriDoor->GetOffset() * m_fExtension);
 	m_pEri1->SetPos(m_pEriBox->GetPos() + (m_pEriBox->GetOffset() + eriOffset) * m_fExtension);
 	m_pEri2->SetPos(m_pEriBox->GetPos() + (m_pEriBox->GetOffset() + eriOffset) * m_fExtension);
-
-	//int doorLength = 120;
-	//Vector eriDoorPos += 
 }
 
 void CSceneChooseChar::Render()
