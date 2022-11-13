@@ -78,7 +78,7 @@ void CSceneStage01::Init()
 	AddGameObject(m_pPlayer);
 
 	CConga* pConga = new CConga;
-	pConga->SetPos(500, WINSIZEY * 0.5f);
+	pConga->SetPos(WINSIZEX * 0.8f, WINSIZEY * 0.5f);
 	pConga->SetExtension(extension);
 	AddGameObject(pConga);
 
@@ -121,7 +121,8 @@ void CSceneStage01::Init()
 
 void CSceneStage01::Enter()
 {
-	CAMERA->FadeIn(0.25f);
+	CAMERA->FadeIn(1.f);
+
 
 	m_pFontImgObj->SetInterval(1.1f);
 	m_pFontImgObj->CreateImg(L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);

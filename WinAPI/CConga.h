@@ -4,6 +4,9 @@
 class CImage;
 class CAnimator;
 class CGravity;
+class CColliderObject;
+class CGameObject;
+enum class CongaStatus { Idle, Walk, NearAttack, FarAttack, Death };
 
 class CConga : public CMonster
 {
@@ -12,10 +15,22 @@ public:
 	virtual ~CConga();
 
 private:
-	CImage* m_pCongaTotalImgL;
-	CImage* m_pCongaTotalImgR;
-
 	CAnimator* m_pAnimator;
+	CGameObject* m_pTargetObj;
+	CColliderObject* m_pFarColliderObj;
+	CColliderObject* m_pNearColliderObj;
+
+	CongaStatus m_congaState;
+	Vector m_vecMoveDir;
+	Vector m_vecLookDir;
+	float m_fSpeed;
+
+	float m_fAccTime;
+
+public:
+	void SetTarget(CGameObject* target) { m_pTargetObj = target; }
+	void SetCongaState(CongaStatus status) { m_congaState = status; }
+	void SetAccTime(float time) { m_fAccTime = time;}
 
 private:
 	void Init() override;

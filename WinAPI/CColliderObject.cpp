@@ -2,6 +2,7 @@
 #include "CColliderObject.h"
 
 #include "CCollider.h"
+#include "CConga.h"
 
 CColliderObject::CColliderObject()
 {
@@ -9,6 +10,7 @@ CColliderObject::CColliderObject()
     m_layer = Layer::Collider;
     m_pCollider = new CCollider;
     m_vecOffset = Vector(0, 0);
+    m_pOwner = nullptr;
 }
 
 CColliderObject::~CColliderObject()
@@ -18,6 +20,11 @@ CColliderObject::~CColliderObject()
 CCollider* CColliderObject::GetCollider()
 {
     return m_pCollider;
+}
+
+CGameObject* CColliderObject::GetColliderObjOwner()
+{
+    return m_pOwner;
 }
 
 void CColliderObject::Init()
@@ -37,4 +44,36 @@ void CColliderObject::Render()
 
 void CColliderObject::Release()
 {
+}
+
+void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
+{
+    if (m_strName == L"FarColliderObj")
+    {
+        if (pOtherCollider->GetObjName() == L"Player")
+            dynamic_cast<CConga*>(m_pOwner)->SetTarget(pOtherCollider->GetOwner());
+    }
+    if (m_strName == L"NearColliderObj")
+    {
+        if (pOtherCollider->GetObjName() == L"Player")
+            dynamic_cast<CConga*>(m_pOwner)->SetCongaState(CongaStatus::NearAttack);
+    }
+}
+
+void CColliderObject::OnCollisionStay(CCollider* pOtherCollider)
+{
+}
+
+void CColliderObject::OnCollisionExit(CCollider* pOtherCollider)
+{
+    if (m_strName == L"FarColliderObj")
+    {
+        if (pOtherCollider->GetObjName() == L"Player")
+            dynamic_cast<CConga*>(m_pOwner)->SetTarget(nullptr);
+    }
+    if (m_strName == L"NearColliderObj")
+    {
+        if (pOtherCollider->GetObjName() == L"Player")
+            dynamic_cast<CConga*>(m_pOwner)->SetCongaState(CongaStatus::Walk);
+    }
 }
