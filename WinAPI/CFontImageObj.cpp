@@ -16,13 +16,16 @@ CFontImageObj::~CFontImageObj()
 {
 }
 
-void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT count, FontType font)
+void CFontImageObj::CreateImg(const wstring& content, Vector startPos, int count, FontType font)
 {
-	for (UINT i = 0; i < count; i++)
+	if (m_queueImgObj.size() != 0)
+		DeleteObj();
+
+	for (int i = 0; i < count; i++)
 	{
 		CImageObject* imgObj = new CImageObject;
-		m_vecImgObj.push_back(imgObj);
 		imgObj->SetImage(m_pImage);
+		m_queueImgObj.push(imgObj);
 
 		int index = -1;
 		switch (font)
@@ -32,8 +35,8 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT coun
 			index = FindImgInDefault(content[i]);			
 			break;
 		case FontType::Mission:
-			index = FindImgInMission(content[i]);
 			m_curFont = &m_vecMission;
+			index = FindImgInMission(content[i]);
 			break;
 		case FontType::Coin:
 			m_curFont = &m_vecCoin;
@@ -46,8 +49,8 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT coun
 			index = FindImgInUi(content[i]);
 			break;
 		case FontType::Time:
-			index = FindImgInTime(content[i]);
 			m_curFont = &m_vecTime;
+			index = FindImgInTime(content[i]);
 			break;
 		}
 
@@ -72,11 +75,19 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, UINT coun
 
 void CFontImageObj::DeleteObj()
 {
+	while (!m_queueImgObj.empty())
+	{
+		if(!(m_queueImgObj.front()->GetReserveDelete()))
+			m_queueImgObj.front()->SetReserveDelete();
+		m_queueImgObj.pop();
+	}
+	/*
 	for (int i = 0; i < m_vecImgObj.size(); i++)
 	{
 		m_vecImgObj[i]->SetReserveDelete();
 	}
 	m_vecImgObj.clear();
+	*/
 }
 
 void CFontImageObj::InitFont(const wstring& name, FontType font)

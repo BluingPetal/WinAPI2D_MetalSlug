@@ -14,7 +14,11 @@ public:
 private:
 	CImageObject* m_pEriDoor;
 	CImageObject* m_pEriSelect;
-	CAniObject* selectSoldierAniObj;
+	CImageObject* m_pEriBox;
+
+	CAniObject* m_pSelectSoldierAniObj;
+	CAniObject* m_pEri1;
+	CAniObject* m_pEri2;
 
 	float m_fAccTime;
 	float m_fExtension;

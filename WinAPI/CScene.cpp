@@ -209,7 +209,8 @@ void CScene::DeleteLayerObject(Layer layer)
 {
 	for (CGameObject* pObj : m_listObj[(int)layer])
 	{
-		delete pObj;
+		if(!pObj->GetReserveDelete() && !pObj->GetReserveDelete())
+			delete pObj;
 	}
 	m_listObj[(int)layer].clear();
 }

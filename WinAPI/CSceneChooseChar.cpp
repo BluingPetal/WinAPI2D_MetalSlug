@@ -12,6 +12,10 @@ CSceneChooseChar::CSceneChooseChar()
 {
 	m_pEriDoor = nullptr;
 	m_pEriSelect = nullptr;
+	m_pEriBox = nullptr;
+	m_pSelectSoldierAniObj = nullptr;
+	m_pEri1 = nullptr;
+	m_pEri2 = nullptr;
 	m_fAccTime = 0;
 	m_fExtension = 1;
 	m_bSelectedChar = false;
@@ -101,16 +105,40 @@ void CSceneChooseChar::Init()
 	float sourceEriInfo[4] = { 377, 3, 64, 120 };
 	m_pEriSelect->SetSourceInfo(sourceEriInfo[0], sourceEriInfo[1], sourceEriInfo[2], sourceEriInfo[3]);
 	m_pEriSelect->SetPos(pBackObj->GetPos());
-	m_pEriSelect->SetOffset(EriDoorOffset + Vector(0, 9));
+	Vector selectCharOffset = EriDoorOffset + Vector(0, 9);
+	m_pEriSelect->SetOffset(selectCharOffset);
 	m_pEriSelect->SetExtension(extension);
 
-	selectSoldierAniObj = new CAniObject;
-	selectSoldierAniObj->SetImage(pSelectCharImg);
-	// offset 조절하기
-	Vector selectSoldierOffset = m_pEriSelect->GetOffset() + Vector(33, 120);
-	selectSoldierAniObj->SetOffset(pBackObj->GetPos() - selectSoldierOffset);
-	selectSoldierAniObj->SetExtension(extension);
-	selectSoldierAniObj->GetAnimator()->CreateAnimation(L"BackGround\\SelectSoldier", pSelectCharImg, 0.1f);
+	m_pSelectSoldierAniObj = new CAniObject;
+	m_pSelectSoldierAniObj->SetImage(pSelectCharImg);
+	Vector selectSoldierOffset = selectCharOffset + Vector(33, 120);
+	m_pSelectSoldierAniObj->SetPos(pBackObj->GetPos() + selectSoldierOffset * extension);
+	m_pSelectSoldierAniObj->SetExtension(extension);
+	m_pSelectSoldierAniObj->GetAnimator()->CreateAnimation(L"BackGround\\SelectSoldier", pSelectCharImg, 0.15f, false);
+
+	m_pEriBox = new CImageObject;
+	m_pEriBox->SetImage(pSelectCharImg);
+	m_pEriBox->SetRenderAsFrame(true);
+	float sourceEriBoxInfo[4] = { 137, 335, 48, 52 };
+	m_pEriBox->SetSourceInfo(sourceEriBoxInfo[0], sourceEriBoxInfo[1], sourceEriBoxInfo[2], sourceEriBoxInfo[3]);
+	Vector eriBoxOffset = Vector(9, 52);
+	m_pEriBox->SetPos(m_pEriDoor->GetPos() + EriDoorOffset * extension);
+	m_pEriBox->SetOffset(eriBoxOffset);
+	m_pEriBox->SetExtension(extension);
+	m_pEriBox->SetAlpha(0);
+
+	m_pEri1 = new CAniObject;
+	m_pEri2 = new CAniObject;
+	CImage* m_pEriIdle = RESOURCE->LoadImg(L"PlayerIdle", L"Image\\Player\\EriIdle.png");
+	m_pEri1->SetImage(m_pEriIdle);
+	m_pEri2->SetImage(m_pEriIdle);
+	Vector eriOffset = Vector(23, 24);
+	m_pEri1->SetPos(m_pEriBox->GetPos() + (eriBoxOffset + eriOffset) * extension);
+	m_pEri2->SetPos(m_pEriBox->GetPos() + (eriBoxOffset + eriOffset) * extension);
+	m_pEri1->SetExtension(extension);
+	m_pEri2->SetExtension(extension);
+	m_pEri1->GetAnimator()->CreateAnimation(L"Player\\Idle\\EriIdleR_1", m_pEriIdle, 0.15f);
+	m_pEri2->GetAnimator()->CreateAnimation(L"Player\\Idle\\EriIdleR_2", m_pEriIdle, 0.15f);
 
 	m_fExtension = extension;
 
@@ -118,12 +146,15 @@ void CSceneChooseChar::Init()
 	AddGameObject(pBlackObj);
 	AddGameObject(m_pEriSelect);
 	AddGameObject(m_pEriDoor);
+	AddGameObject(m_pEriBox);
+	AddGameObject(m_pEri2);
+	AddGameObject(m_pEri1);
 	AddGameObject(pDoor1);
 	AddGameObject(pDoor2);
 	AddGameObject(pDoor3);
 	AddGameObject(pBackObj);
 	AddGameObject(pPlayer1);
-	AddGameObject(selectSoldierAniObj);
+	AddGameObject(m_pSelectSoldierAniObj);
 	AddGameObject(pSoldierSelect);
 
 	//CCameraController* pCamController = new CCameraController;
@@ -139,27 +170,29 @@ void CSceneChooseChar::Update()
 {
 	m_fAccTime += DT;
 
-	if (!m_bSelectedChar && m_fAccTime <= 1.5f)
+	if (!m_bSelectedChar)
 	{
-		int doorLength = 126 * m_fExtension;
-
-		if (m_fAccTime < 1.f)
-			m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - doorLength / 1.f * DT);
-	}
-	else
-	{
-		float sourceEriInfo[4] = { 377, 126, 64, 120 };
-
-		m_pEriSelect->SetSourceInfo(sourceEriInfo[0], sourceEriInfo[1], sourceEriInfo[2], sourceEriInfo[3]);
-
-		if (BUTTONDOWN(VK_SPACE))
+		if (!m_bSelectedChar && m_fAccTime <= 1.5f)
 		{
-			m_bSelectedChar = true;
-			m_fAccTime = 0;
+			int doorLength = 126 * m_fExtension;
+
+			if (m_fAccTime < 1.f)
+				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - doorLength / 1.f * DT);
+		}
+		else
+		{
+			float sourceEriInfo[4] = { 377, 126, 64, 120 };
+
+			m_pEriSelect->SetSourceInfo(sourceEriInfo[0], sourceEriInfo[1], sourceEriInfo[2], sourceEriInfo[3]);
+
+			if (BUTTONDOWN(VK_SPACE))
+			{
+				m_bSelectedChar = true;
+				m_fAccTime = 0;
+			}
 		}
 	}
-
-	if (m_bSelectedChar)
+	else
 	{
 		float sourceEriInfo[4] = { 377, 249, 64, 120 };
 		m_pEriSelect->SetSourceInfo(sourceEriInfo[0], sourceEriInfo[1], sourceEriInfo[2], sourceEriInfo[3]);
@@ -169,25 +202,37 @@ void CSceneChooseChar::Update()
 			int doorLength = 126 * m_fExtension;
 
 			if (m_fAccTime < 1.5f)
+			{
+				m_pEriBox->SetAlpha(1);
+				m_pEri1->GetAnimator()->Play(L"Player\\Idle\\EriIdleR_1");
+				m_pEri2->GetAnimator()->Play(L"Player\\Idle\\EriIdleR_2");
 				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + doorLength / 1.f * DT);
+			}
 			else if (m_fAccTime < 1.6f)
-				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - 5 / 0.1f * DT);
+			{
+				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - 20 / 0.1f * DT);
+				m_pSelectSoldierAniObj->GetAnimator()->Play(L"BackGround\\SelectSoldier");
+			}
 			else if (m_fAccTime < 1.7f)
-				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + 5 / 0.1f * DT);
+				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + 20 / 0.1f * DT);
 			else if (m_fAccTime < 1.8f)
-				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - 5 / 0.1f * DT);
+				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y - 20 / 0.1f * DT);
 			else if (m_fAccTime < 1.9f)
-				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + 5 / 0.1f * DT);
-			else if (m_fAccTime < 100.0f) //2.0f)
-				selectSoldierAniObj->GetAnimator()->Play(L"BackGround\\SelectSoldier");
+				m_pEriDoor->SetPos(m_pEriDoor->GetPos().x, m_pEriDoor->GetPos().y + 20 / 0.1f * DT);
+			else if (m_fAccTime >= 2.3f)
+				m_pSelectSoldierAniObj->GetAnimator()->Stop();
 		}
-		else if (m_fAccTime > 100.0f) // 3.0f)
+		else if (m_fAccTime > 4.5f)
 		{
 			CAMERA->FadeOut(0.25f);
 			DELAYCHANGESCENE(GroupScene::Stage01, 0.25f);
 		}
 	}
 
+	Vector eriOffset = Vector(23, 24);
+	m_pEriBox->SetPos(m_pEriDoor->GetPos() + m_pEriDoor->GetOffset() * m_fExtension);
+	m_pEri1->SetPos(m_pEriBox->GetPos() + (m_pEriBox->GetOffset() + eriOffset) * m_fExtension);
+	m_pEri2->SetPos(m_pEriBox->GetPos() + (m_pEriBox->GetOffset() + eriOffset) * m_fExtension);
 
 	//int doorLength = 120;
 	//Vector eriDoorPos += 

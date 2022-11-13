@@ -134,10 +134,12 @@ void CSceneStage01::Update()
 	// insert coin 깜박거리는 효과
 	if (m_fAccTime >= 1.f)
 	{
-		for (int i = 0; i < m_pFontImgObj->GetImageObj().size(); i++)
+		queue<CImageObject*> queueImgObj = m_pFontImgObj->GetImageObj();
+		while(!queueImgObj.empty())
 		{
-			CImageObject* imgObj = m_pFontImgObj->GetImageObj()[i];
+			CImageObject* imgObj = queueImgObj.front();
 			imgObj->SetAlpha(!(imgObj->GetAlpha()));
+			queueImgObj.pop();
 		}
 		m_fAccTime = 0;
 	}

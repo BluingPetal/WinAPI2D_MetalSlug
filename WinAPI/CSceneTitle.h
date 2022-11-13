@@ -13,6 +13,8 @@ private:
 	CFontImageObj* fontImgStartObj;
 	CFontImageObj* fontImgCredit;
 	CFontImageObj* fontImgTime;
+	
+	bool m_bStopUpdate;
 	float m_fAccTime;
 	int m_credit;
 	int m_time;

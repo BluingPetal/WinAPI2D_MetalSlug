@@ -27,7 +27,7 @@ private:
 	vector<Vector> m_vecUi;
 	vector<Vector> m_vecTime;
 
-	vector<CImageObject*> m_vecImgObj;
+	queue<CImageObject*> m_queueImgObj;
 
 private:
 	void InitFont(const wstring& name, FontType font);
@@ -43,10 +43,10 @@ private:
 	void Release() override;
 
 public:
-	void CreateImg(const wstring& content, Vector startPos, UINT count, FontType font);
+	void CreateImg(const wstring& content, Vector startPos, int count, FontType font);
 	void SetInterval(float interval) { m_fInterval = interval; }
 	void SetFixed(bool fixed) { m_bIsFixed = fixed; }
-	vector<CImageObject*> GetImageObj() { return m_vecImgObj; }
+	const queue<CImageObject*>& GetImageObj() { return m_queueImgObj; }
 	void DeleteObj();
 };
 

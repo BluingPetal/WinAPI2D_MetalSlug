@@ -13,6 +13,7 @@ CSceneTitle::CSceneTitle()
 	fontImgStartObj = nullptr;
 	fontImgCredit = nullptr;
 	fontImgTime = nullptr;
+	m_bStopUpdate = false;
 }
 
 CSceneTitle::~CSceneTitle()
@@ -54,8 +55,8 @@ void CSceneTitle::Init()
 	CFontImageObj* fontImgTimeObj = new CFontImageObj;
 	fontImgTimeObj->SetExtension(extension + 1);
 	AddGameObject(fontImgTimeObj);
-	fontImgCreditObj->SetInterval(1.f); // 글자 간격 -> create하기 전에 변화해주기
-	fontImgCreditObj->CreateImg(L"time", Vector(WINSIZEX * 0.46, WINSIZEY * 0.73), 4, FontType::Default);
+	fontImgTimeObj->SetInterval(1.f); // 글자 간격 -> create하기 전에 변화해주기
+	fontImgTimeObj->CreateImg(L"time", Vector(WINSIZEX * 0.46, WINSIZEY * 0.73), 4, FontType::Default);
 
 	fontImgTime = new CFontImageObj;
 	fontImgTime->SetExtension(extension + 1);
@@ -73,49 +74,60 @@ void CSceneTitle::Enter()
 void CSceneTitle::Update()
 {
 	m_fAccTime += DT;
-
-	if (m_fAccTime >= 1.0f)
+	if (!m_bStopUpdate)
 	{
-		// time
-		m_time--;
-
-		fontImgTime->DeleteObj();
-		wstring timeStr = to_wstring(m_time);
-		fontImgTime->CreateImg(timeStr, Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
-
-		// "press 1p to start" blink
-		for (int i = 0; i < fontImgStartObj->GetImageObj().size(); i++)
+		if (m_fAccTime >= 1.0f)
 		{
-			CImageObject* imgObj = fontImgStartObj->GetImageObj()[i];
-			imgObj->SetAlpha(!(imgObj->GetAlpha()));
+			// time
+			m_time--;
+
+			wstring timeStr = to_wstring(m_time);
+			fontImgTime->CreateImg(timeStr, Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
+
+			// "press 1p to start" blink
+			queue<CImageObject*> queueImgObj = fontImgStartObj->GetImageObj();
+			while (!queueImgObj.empty())
+			{
+				CImageObject* imgObj = queueImgObj.front();
+				imgObj->SetAlpha(!(imgObj->GetAlpha()));
+				queueImgObj.pop();
+			}
+			m_fAccTime = 0;
 		}
 
-		m_fAccTime = 0;
+		if (BUTTONDOWN(VK_F1))
+		{
+			CHANGESCENE(GroupScene::TileTool);
+		}
+		if (BUTTONDOWN(VK_F2))
+		{
+			CHANGESCENE(GroupScene::AniTool);
+		}
+		if (BUTTONDOWN(VK_F3))
+		{
+			m_credit++;
+
+			wstring creditStr = to_wstring(m_credit);
+			fontImgCredit->CreateImg(creditStr, Vector(WINSIZEX * 0.92, WINSIZEY * 0.95), 2, FontType::Default);
+		}
 	}
 
-	if (BUTTONDOWN(VK_F1))
-	{
-		CHANGESCENE(GroupScene::TileTool);
-	}
-	if (BUTTONDOWN(VK_F2))
-	{
-		CHANGESCENE(GroupScene::AniTool);
-	}
-	if (BUTTONDOWN(VK_F3))
-	{
-		m_credit++;
-
-		fontImgCredit->DeleteObj();
-		wstring creditStr = to_wstring(m_credit);
-		fontImgCredit->CreateImg(creditStr, Vector(WINSIZEX * 0.92, WINSIZEY * 0.95), 2, FontType::Default);
-	}
 	if (m_credit > 0)
 	{
 		if (BUTTONDOWN(VK_SPACE) || m_time <= 0)
 		{
-			CAMERA->FadeOut(0.25f);
-			DELAYCHANGESCENE(GroupScene::SelectChar, 0.5f);
-			DeleteAll();
+			if(!m_bStopUpdate)
+				m_fAccTime = 0;
+
+			m_bStopUpdate = true;
+
+			if(m_fAccTime>=0.1f)
+				DeleteAll(); 
+			else
+			{
+				CAMERA->FadeOut(0.25f);
+				DELAYCHANGESCENE(GroupScene::SelectChar, 0.25f);
+			}
 		}
 	}
 }
