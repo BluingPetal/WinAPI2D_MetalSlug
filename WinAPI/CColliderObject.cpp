@@ -50,30 +50,43 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
 {
     if (m_strName == L"FarColliderObj")
     {
-        if (pOtherCollider->GetObjName() == L"Player")
-            dynamic_cast<CConga*>(m_pOwner)->SetTarget(pOtherCollider->GetOwner());
+        CConga* pOwner = dynamic_cast<CConga*>(m_pOwner);
+        if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() !=CongaStatus::Death))
+            pOwner->SetTarget(pOtherCollider->GetOwner());
     }
     if (m_strName == L"NearColliderObj")
     {
-        if (pOtherCollider->GetObjName() == L"Player")
-            dynamic_cast<CConga*>(m_pOwner)->SetCongaState(CongaStatus::NearAttack);
+        CConga* pOwner = dynamic_cast<CConga*>(m_pOwner);
+        if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() != CongaStatus::Death))
+            pOwner->SetCongaState(CongaStatus::NearAttack);
     }
 }
 
 void CColliderObject::OnCollisionStay(CCollider* pOtherCollider)
 {
+    //if (m_strName == L"NearColliderObj")
+    //{
+    //    if (pOtherCollider->GetObjName() == L"Player")
+    //        if (dynamic_cast<CConga*>(m_pOwner)->GetAccTime() > 1.3f)
+    //        {
+    //            dynamic_cast<CConga*>(m_pOwner)->SetAccTime(0);
+    //            dynamic_cast<CConga*>(m_pOwner)->SetCongaState(CongaStatus::Idle);
+    //        }
+    //}
 }
 
 void CColliderObject::OnCollisionExit(CCollider* pOtherCollider)
 {
     if (m_strName == L"FarColliderObj")
     {
-        if (pOtherCollider->GetObjName() == L"Player")
-            dynamic_cast<CConga*>(m_pOwner)->SetTarget(nullptr);
+        CConga* pOwner = dynamic_cast<CConga*>(m_pOwner);
+        if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() != CongaStatus::Death))
+            pOwner->SetTarget(nullptr);
     }
     if (m_strName == L"NearColliderObj")
     {
-        if (pOtherCollider->GetObjName() == L"Player")
-            dynamic_cast<CConga*>(m_pOwner)->SetCongaState(CongaStatus::Walk);
+        CConga* pOwner = dynamic_cast<CConga*>(m_pOwner);
+        if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() != CongaStatus::Death))
+            pOwner->SetCongaState(CongaStatus::Walk);
     }
 }

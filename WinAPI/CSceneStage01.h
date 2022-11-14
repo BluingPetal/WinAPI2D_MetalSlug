@@ -17,7 +17,8 @@ private:
 	float m_fPlayerMaxPosX;
 	float m_fAccTime;
 
-	CFontImageObj* m_pFontImgObj;
+	CFontImageObj* m_pInsertCoinImgObj;
+	CFontImageObj* m_pMissionImgObj;
 	CImageObject* m_pBackGround;
 	CColliderObject* m_pObstacle;
 

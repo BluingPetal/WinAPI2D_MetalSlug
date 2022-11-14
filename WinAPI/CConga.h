@@ -26,11 +26,17 @@ private:
 	float m_fSpeed;
 
 	float m_fAccTime;
+	int m_hp;
+	bool m_isAttack;
 
 public:
 	void SetTarget(CGameObject* target) { m_pTargetObj = target; }
 	void SetCongaState(CongaStatus status) { m_congaState = status; }
+	CongaStatus GetCongaState() { return m_congaState; }
+	float GetAccTime() { return m_fAccTime; }
 	void SetAccTime(float time) { m_fAccTime = time;}
+	void SetHp(int hp) { m_hp = hp; }
+	int GetHp() { return m_hp; }
 
 private:
 	void Init() override;
@@ -41,4 +47,7 @@ private:
 	void OnCollisionEnter(CCollider* pOtherCollider) override;
 	void OnCollisionStay(CCollider* pOtherCollider) override;
 	void OnCollisionExit(CCollider* pOtherCollider) override;
+
+	void StateUpdate();
+	void AnimationUpdate();
 };

@@ -11,6 +11,7 @@
 #include "CImage.h"
 #include "CAnimator.h"
 #include "CGravity.h"
+#include "CConga.h"
 
 #include "CMissile.h"
 
@@ -38,6 +39,7 @@ CPlayer::CPlayer()
 
 	m_bIsPrevCurLookSame = true;
 
+	m_hp = 3;
 	m_fSpeed = 300.0f;
 	m_fAcctime = 0;
 	m_fAttackAccTime = 0;
@@ -257,6 +259,7 @@ void CPlayer::KeyUpdate()
 			m_bIsPrevCurLookSame = true;
 		}
 
+		CreateMissile();
 		// TODO : 총알에 따른 무기 정해주기
 		m_curWeapon = PlayerWeapon::HeavyMachineGun;
 		m_fAttackAccTime = 0;
@@ -272,10 +275,10 @@ void CPlayer::KeyUpdate()
 		m_bIsShoot = true;
 	}
 
-	if (BUTTONDOWN('Q'))
-	{
-		m_bIsDead = true;
-	}
+	//if (BUTTONDOWN('Q'))
+	//{
+	//	m_bIsDead = true;
+	//}
 
 	
 	// PrevLookDir.y 정의
@@ -1628,9 +1631,11 @@ void CPlayer::CreateMissile()
 
 	CMissile* pMissile = new CMissile();
 	pMissile->SetPos(m_vecPos);
-	pMissile->SetDir(Vector(1, 0));
+	pMissile->SetDir(m_vecLookDir);
+	pMissile->SetOwner(this);
+	pMissile->SetExtension(m_fExtension);
 	ADDOBJECT(pMissile);
-
+	/*
 	CMissile* pMissile1 = new CMissile();
 	pMissile1->SetPos(m_vecPos);
 	pMissile1->SetDir(Vector(1, -1));
@@ -1650,6 +1655,7 @@ void CPlayer::CreateMissile()
 	pMissile4->SetPos(m_vecPos);
 	pMissile4->SetDir(Vector(3, -1));
 	ADDOBJECT(pMissile4);
+	*/
 }
 
 void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)

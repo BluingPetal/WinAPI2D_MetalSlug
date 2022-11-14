@@ -16,7 +16,7 @@ CSceneStage01::CSceneStage01()
 	m_pPlayer = nullptr;
 	m_pBackGround = nullptr;
 	m_pObstacle = nullptr;
-	m_pFontImgObj = nullptr;
+	m_pInsertCoinImgObj = nullptr;
 	
 	m_fAccTime = 0;
 	m_fPlayerMaxPosX = 0;
@@ -44,13 +44,11 @@ void CSceneStage01::Init()
 	m_pBackGround->SetPos(Vector(0,0));
 	m_pBackGround->SetOffset(backGroundOffset);
 	m_pBackGround->SetExtension(extension);
-	AddGameObject(m_pBackGround);
 
 	pFrontGround->SetImage(pFrontGroundImg);
 	pFrontGround->SetPos(Vector(0, 0));
 	pFrontGround->SetOffset(frontGroundOffset);
 	pFrontGround->SetExtension(extension);
-	AddGameObject(pFrontGround);
 
 	CAniObject* pFrontOceanObj1 = new CAniObject;
 	CImage* pFrontOceanImage = RESOURCE->LoadImg(L"FrontOcean", L"Image\\BackGround\\FrontOcean.png");
@@ -58,14 +56,19 @@ void CSceneStage01::Init()
 	pFrontOceanObj1->SetImage(pFrontOceanImage);
 	pFrontOceanObj1->SetOffset(frontOceanPos1);
 	pFrontOceanObj1->SetExtension(extension);
-	AddGameObject(pFrontOceanObj1);
 
 	CAniObject* pFrontOceanObj2 = new CAniObject;
 	Vector frontOceanPos2 = Vector(0, frontOceanPos1.y + 24);
 	pFrontOceanObj2->SetImage(pFrontOceanImage);
 	pFrontOceanObj2->SetOffset(frontOceanPos2);
 	pFrontOceanObj2->SetExtension(extension);
-	AddGameObject(pFrontOceanObj2);
+
+	pFrontOceanObj1->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean1", pFrontOceanImage, 0.1f);
+	pFrontOceanObj2->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean2", pFrontOceanImage, 0.1f);
+	pFrontOceanObj1->GetAnimator()->Play(L"BackGround\\FrontOcean1");
+	pFrontOceanObj2->GetAnimator()->Play(L"BackGround\\FrontOcean2");
+	pFrontOceanObj1->SetPosWithFirstLt();
+	pFrontOceanObj2->SetPosWithFirstLt();
 
 #pragma endregion
 
@@ -75,20 +78,18 @@ void CSceneStage01::Init()
 	m_pPlayer->SetPos(200, WINSIZEY * 0.5f);
 	m_pPlayer->SetExtension(extension);
 	m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
-	AddGameObject(m_pPlayer);
 
 	CConga* pConga = new CConga;
 	pConga->SetPos(WINSIZEX * 0.8f, WINSIZEY * 0.5f);
 	pConga->SetExtension(extension);
-	AddGameObject(pConga);
 
-	pFrontOceanObj1->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean1", pFrontOceanImage, 0.1f);
-	pFrontOceanObj2->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean2", pFrontOceanImage, 0.1f);
-	pFrontOceanObj1->GetAnimator()->Play(L"BackGround\\FrontOcean1");
-	pFrontOceanObj2->GetAnimator()->Play(L"BackGround\\FrontOcean2");
+	m_pInsertCoinImgObj = new CFontImageObj;
+	m_pInsertCoinImgObj->SetFixed(true);
+	m_pInsertCoinImgObj->SetExtension(extension + 1);
 
-	pFrontOceanObj1->SetPosWithFirstLt();
-	pFrontOceanObj2->SetPosWithFirstLt();
+#pragma endregion
+
+#pragma region COLLIDER
 
 	CColliderObject* pFrontOceanCollider = new CColliderObject;
 	pFrontOceanCollider->SetName(L"frontOcean");
@@ -98,7 +99,6 @@ void CSceneStage01::Init()
 	pFrontOceanCollider->SetPos(pFrontOceanObj2->GetPos());
 	pFrontOceanCollider->SetScale(pFrontOceanObj2->GetAnimator()->GetFirstAniFrame().slice);
 	pFrontOceanCollider->SetLayer(Layer::ForeGround);
-	AddGameObject(pFrontOceanCollider);
 
 	m_pObstacle = new CColliderObject;
 	m_pObstacle->SetName(L"obstacle");
@@ -106,15 +106,24 @@ void CSceneStage01::Init()
 	m_pObstacle->SetPos(0, WINSIZEY * 0.5f);
 	m_pObstacle->SetScale(5, WINSIZEY / extension);
 	m_pObstacle->SetLayer(Layer::ForeGround);
-	AddGameObject(m_pObstacle);
 
 #pragma endregion
 
-	m_pFontImgObj = new CFontImageObj;
-	m_pFontImgObj->SetFixed(true);
-	m_pFontImgObj->SetExtension(extension + 1);
-	AddGameObject(m_pFontImgObj);
+#pragma region ADDOBJECT
 
+	AddGameObject(m_pBackGround);
+	AddGameObject(pFrontGround);
+	AddGameObject(pFrontOceanObj1);
+	AddGameObject(pFrontOceanObj2);
+
+	AddGameObject(m_pPlayer);
+	AddGameObject(pConga);
+	AddGameObject(pFrontOceanCollider);
+	AddGameObject(m_pObstacle);
+
+	AddGameObject(m_pInsertCoinImgObj);
+
+#pragma endregion
 	// CCameraController* pCamController = new CCameraController;
 	// AddGameObject(pCamController);
 }
@@ -124,8 +133,8 @@ void CSceneStage01::Enter()
 	CAMERA->FadeIn(1.f);
 
 
-	m_pFontImgObj->SetInterval(1.1f);
-	m_pFontImgObj->CreateImg(L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);
+	m_pInsertCoinImgObj->SetInterval(1.1f);
+	m_pInsertCoinImgObj->CreateImg(L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);
 }
 
 void CSceneStage01::Update()
@@ -135,7 +144,7 @@ void CSceneStage01::Update()
 	// insert coin 깜박거리는 효과
 	if (m_fAccTime >= 1.f)
 	{
-		queue<CImageObject*> queueImgObj = m_pFontImgObj->GetImageObj();
+		queue<CImageObject*> queueImgObj = m_pInsertCoinImgObj->GetImageObj();
 		while(!queueImgObj.empty())
 		{
 			CImageObject* imgObj = queueImgObj.front();

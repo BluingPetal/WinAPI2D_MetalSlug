@@ -37,6 +37,7 @@ private:
 
 	bool m_bIsPrevCurLookSame;
 
+	int m_hp;
 	float m_fSpeed;
 	float m_fAcctime;
 	float m_fAttackAccTime;
@@ -47,6 +48,8 @@ public:
 	bool GetIsJump() { return m_bIsJump; }
 	float GetSpeed() { return m_fSpeed; }
 	Vector GetMoveDir() { return m_vecMoveDir; }
+	void SetHp(int hp) { m_hp = hp; }
+	int GetHp() { return m_hp; }
 
 private:
 	void Init() override;
