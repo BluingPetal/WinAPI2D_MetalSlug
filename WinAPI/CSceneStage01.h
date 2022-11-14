@@ -5,6 +5,7 @@ class CPlayer;
 class CImageObject;
 class CColliderObject;
 class CFontImageObj;
+class CConga;
 
 class CSceneStage01 : public CScene
 {
@@ -16,11 +17,19 @@ private:
 	CPlayer* m_pPlayer;
 	float m_fPlayerMaxPosX;
 	float m_fAccTime;
+	float m_fMissionAccTime;
+	bool m_bIsStarted;
 
 	CFontImageObj* m_pInsertCoinImgObj;
-	CFontImageObj* m_pMissionImgObj;
+
+	CFontImageObj* m_pMissionImgObj1;
+	CFontImageObj* m_pMissionImgObj2;
+	Vector m_vecStartPos1;
+	Vector m_vecStartPos2;
+
 	CImageObject* m_pBackGround;
 	CColliderObject* m_pObstacle;
+	CConga* m_pConga;
 
 private:
 	void Init()		override;

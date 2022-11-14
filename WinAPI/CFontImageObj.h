@@ -28,6 +28,8 @@ private:
 	vector<Vector> m_vecTime;
 
 	queue<CImageObject*> m_queueImgObj;
+	map<const wstring&, queue<CImageObject*>> m_mapFont;
+	Vector m_vecStartPos;
 
 private:
 	void InitFont(const wstring& name, FontType font);
@@ -37,16 +39,19 @@ private:
 	UINT FindImgInScore(const wchar_t str);
 	UINT FindImgInUi(const wchar_t str);
 	UINT FindImgInTime(const wchar_t str);
+
 	void Init() override;
 	void Update() override;
 	void Render() override;
 	void Release() override;
 
 public:
-	void CreateImg(const wstring& content, Vector startPos, int count, FontType font);
+	void CreateImgObj(const wstring& content, const wstring& name, Vector startPos, int count, FontType font);
 	void SetInterval(float interval) { m_fInterval = interval; }
 	void SetFixed(bool fixed) { m_bIsFixed = fixed; }
-	const queue<CImageObject*>& GetImageObj() { return m_queueImgObj; }
+	queue<CImageObject*> FindImgObjQueue(const wstring& name);
+	//queue<CImageObject*> GetImageObj(const wstring& name);// { return m_queueImgObj; }
+	void Show(const wstring& name);
 	void DeleteObj();
 };
 

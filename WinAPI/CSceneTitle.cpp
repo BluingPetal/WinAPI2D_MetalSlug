@@ -37,33 +37,33 @@ void CSceneTitle::Init()
 	fontImgStartObj->SetExtension(extension+1);
 	AddGameObject(fontImgStartObj);
 	fontImgStartObj->SetInterval(1.f); // 글자 간격 -> create하기 전에 변화해주기
-	fontImgStartObj->CreateImg(L"press 1p to start", Vector(WINSIZEX * 0.3, WINSIZEY * 0.88), 17, FontType::Default);
+	fontImgStartObj->CreateImgObj(L"press 1p to start", L"press 1p to start", Vector(WINSIZEX * 0.3, WINSIZEY * 0.88), 17, FontType::Default);
 
 	CFontImageObj* fontImgCreditObj = new CFontImageObj;
 	fontImgCreditObj->SetExtension(extension + 1);
 	AddGameObject(fontImgCreditObj);
 	fontImgCreditObj->SetInterval(1.f); // 글자 간격 -> create하기 전에 변화해주기
-	fontImgCreditObj->CreateImg(L"credit", Vector(WINSIZEX * 0.75, WINSIZEY * 0.95), 6, FontType::Default);
+	fontImgCreditObj->CreateImgObj( L"credit",L"creditLetter", Vector(WINSIZEX * 0.75, WINSIZEY * 0.95), 6, FontType::Default);
 
 	fontImgCredit = new CFontImageObj;
 	fontImgCredit->SetExtension(extension + 1);
 	AddGameObject(fontImgCredit);
 	wstring creditStr = to_wstring(m_credit);
 	fontImgCredit->SetInterval(1.f);
-	fontImgCredit->CreateImg(creditStr, Vector(WINSIZEX * 0.92, WINSIZEY * 0.95), 2, FontType::Default);
+	fontImgCredit->CreateImgObj(creditStr,L"credit",  Vector(WINSIZEX * 0.92, WINSIZEY * 0.95), 2, FontType::Default);
 
 	CFontImageObj* fontImgTimeObj = new CFontImageObj;
 	fontImgTimeObj->SetExtension(extension + 1);
 	AddGameObject(fontImgTimeObj);
 	fontImgTimeObj->SetInterval(1.f); // 글자 간격 -> create하기 전에 변화해주기
-	fontImgTimeObj->CreateImg(L"time", Vector(WINSIZEX * 0.46, WINSIZEY * 0.73), 4, FontType::Default);
+	fontImgTimeObj->CreateImgObj( L"time",L"timeLetter", Vector(WINSIZEX * 0.46, WINSIZEY * 0.73), 4, FontType::Default);
 
 	fontImgTime = new CFontImageObj;
 	fontImgTime->SetExtension(extension + 1);
 	AddGameObject(fontImgTime);
 	wstring timeStr = to_wstring(m_time);
 	fontImgTime->SetInterval(1.f);
-	fontImgTime->CreateImg(timeStr, Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
+	fontImgTime->CreateImgObj( timeStr,L"time", Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
 }
 
 void CSceneTitle::Enter()
@@ -81,10 +81,10 @@ void CSceneTitle::Update()
 			m_time--;
 
 			wstring timeStr = to_wstring(m_time);
-			fontImgTime->CreateImg(timeStr, Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
+			fontImgTime->CreateImgObj(timeStr,L"time",  Vector(WINSIZEX * 0.49, WINSIZEY * 0.8), 2, FontType::Default);
 
 			// "press 1p to start" blink
-			queue<CImageObject*> queueImgObj = fontImgStartObj->GetImageObj();
+			queue<CImageObject*> queueImgObj = fontImgStartObj->FindImgObjQueue(L"press 1p to start");
 			while (!queueImgObj.empty())
 			{
 				CImageObject* imgObj = queueImgObj.front();
@@ -107,7 +107,7 @@ void CSceneTitle::Update()
 			m_credit++;
 
 			wstring creditStr = to_wstring(m_credit);
-			fontImgCredit->CreateImg(creditStr, Vector(WINSIZEX * 0.92, WINSIZEY * 0.95), 2, FontType::Default);
+			fontImgCredit->CreateImgObj( creditStr,L"credit", Vector(WINSIZEX * 0.92, WINSIZEY * 0.95), 2, FontType::Default);
 		}
 	}
 

@@ -16,16 +16,29 @@ CFontImageObj::~CFontImageObj()
 {
 }
 
-void CFontImageObj::CreateImg(const wstring& content, Vector startPos, int count, FontType font)
+// 외부에서 쓸 함수, create img object -> 해당 name이 존재할 경우 무시, 없을 경우에만 만들어서 map에 넣음
+void CFontImageObj::CreateImgObj(const wstring& content, const wstring& name,Vector startPos, int count, FontType font)
 {
-	if (m_queueImgObj.size() != 0)
-		DeleteObj();
+	// 자료구조에 해당 이름의 queue가 있었을 경우
+	if (FindImgObjQueue(name) != queue<CImageObject*>()) // -> 이때 덮어쓰기 가능하도록 설정
+	{
+		CImageObject* firstImgObj = m_mapFont[name].front();
+		Vector offset = startPos - firstImgObj->GetPos();
+
+		for (int i = 0; i < count; i++)
+		{
+			CImageObject* imgObj = m_mapFont[name].front();
+			imgObj->SetPos(imgObj->GetPos() + offset);
+		}
+		return;
+	}
+	//if (m_queueImgObj.size() != 0)
+	//	DeleteObj();
 
 	for (int i = 0; i < count; i++)
 	{
 		CImageObject* imgObj = new CImageObject;
 		imgObj->SetImage(m_pImage);
-		m_queueImgObj.push(imgObj);
 
 		int index = -1;
 		switch (font)
@@ -63,22 +76,25 @@ void CFontImageObj::CreateImg(const wstring& content, Vector startPos, int count
 			imgObj->SetRenderAsFrame(true);
 			imgObj->SetLayer(Layer::ForeGround);
 			imgObj->SetSourceInfo((*m_curFont)[index].x, (*m_curFont)[index].y, (*m_curFont)[index + 1].x, (*m_curFont)[index + 1].y);
+			m_queueImgObj.push(imgObj);
 			//imgObj->SetAlpha(0);
-			ADDOBJECT(imgObj);
+			//ADDOBJECT(imgObj);
 		}
 		else // 띄어쓰기
 		{
 			startPos.x += ((*m_curFont)[index + 2].x * m_fExtension * m_fInterval);
 		}
 	}
+	m_mapFont.insert(make_pair(name, m_queueImgObj));
 }
 
 void CFontImageObj::DeleteObj()
 {
 	while (!m_queueImgObj.empty())
 	{
-		if(!(m_queueImgObj.front()->GetReserveDelete()))
-			m_queueImgObj.front()->SetReserveDelete();
+		if (!(m_queueImgObj.front()->GetReserveDelete()))
+			//m_queueImgObj.front()->SetReserveDelete();
+			DELETEOBJECT(m_queueImgObj.front());
 		m_queueImgObj.pop();
 	}
 	/*
@@ -492,6 +508,14 @@ UINT CFontImageObj::FindImgInTime(const wchar_t str)
 	}
 }
 
+queue<CImageObject*> CFontImageObj::FindImgObjQueue(const wstring& name)
+{
+	if (m_mapFont[name].size() != 0)
+		return m_mapFont[name];
+	else
+		return NULL;
+}
+
 void CFontImageObj::Init()
 {
 	InitFont(L"Default", FontType::Default);
@@ -512,4 +536,17 @@ void CFontImageObj::Render()
 
 void CFontImageObj::Release()
 {
+}
+
+void CFontImageObj::Show(const wstring& name)
+{
+	queue<CImageObject*> imgObjQueue = FindImgObjQueue(name);
+	if (imgObjQueue == queue<CImageObject*>())
+		assert(0 && L"No font image queue");
+
+	while (!imgObjQueue.empty())
+	{
+		ADDOBJECT(imgObjQueue.front());
+		imgObjQueue.pop();
+	}
 }

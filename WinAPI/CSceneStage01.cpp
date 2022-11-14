@@ -17,8 +17,12 @@ CSceneStage01::CSceneStage01()
 	m_pBackGround = nullptr;
 	m_pObstacle = nullptr;
 	m_pInsertCoinImgObj = nullptr;
+	m_pMissionImgObj1 = nullptr;
+
+	m_bIsStarted = true;
 	
 	m_fAccTime = 0;
+	m_fMissionAccTime = 0;
 	m_fPlayerMaxPosX = 0;
 }
 
@@ -79,13 +83,19 @@ void CSceneStage01::Init()
 	m_pPlayer->SetExtension(extension);
 	m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
 
-	CConga* pConga = new CConga;
-	pConga->SetPos(WINSIZEX * 0.8f, WINSIZEY * 0.5f);
-	pConga->SetExtension(extension);
+	m_pConga = new CConga;
+	m_pConga->SetPos(WINSIZEX * 0.8f, WINSIZEY * 0.5f);
+	m_pConga->SetExtension(extension);
 
 	m_pInsertCoinImgObj = new CFontImageObj;
 	m_pInsertCoinImgObj->SetFixed(true);
 	m_pInsertCoinImgObj->SetExtension(extension + 1);
+
+	m_pMissionImgObj1 = new CFontImageObj;
+	m_pMissionImgObj1->SetExtension(extension);
+
+	m_pMissionImgObj2 = new CFontImageObj;
+	m_pMissionImgObj2->SetExtension(extension);
 
 #pragma endregion
 
@@ -117,11 +127,13 @@ void CSceneStage01::Init()
 	AddGameObject(pFrontOceanObj2);
 
 	AddGameObject(m_pPlayer);
-	AddGameObject(pConga);
+	AddGameObject(m_pConga);
 	AddGameObject(pFrontOceanCollider);
 	AddGameObject(m_pObstacle);
 
 	AddGameObject(m_pInsertCoinImgObj);
+	AddGameObject(m_pMissionImgObj1);
+	AddGameObject(m_pMissionImgObj2);
 
 #pragma endregion
 	// CCameraController* pCamController = new CCameraController;
@@ -132,9 +144,16 @@ void CSceneStage01::Enter()
 {
 	CAMERA->FadeIn(1.f);
 
-
 	m_pInsertCoinImgObj->SetInterval(1.1f);
-	m_pInsertCoinImgObj->CreateImg(L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);
+	m_pInsertCoinImgObj->CreateImgObj(L"insert coin", L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);
+
+	m_vecStartPos1 = Vector(-WINSIZEX * 0.3f, WINSIZEY * 0.3f);
+	m_pMissionImgObj1->SetInterval(1.1f);
+	m_pMissionImgObj1->CreateImgObj(L"mission", L"mission", m_vecStartPos1, 7, FontType::Mission); // Vector(WINSIZEX * 0.3f, WINSIZEY * 0.3f)
+
+	m_vecStartPos2 = Vector(-WINSIZEX * 0.25f, WINSIZEY * 0.5f);
+	m_pMissionImgObj2->SetInterval(1.f);
+	m_pMissionImgObj2->CreateImgObj(L"start", L"start", m_vecStartPos2, 5, FontType::Mission); //, Vector(WINSIZEX * 0.35f, WINSIZEY * 0.5f)
 }
 
 void CSceneStage01::Update()
@@ -144,31 +163,56 @@ void CSceneStage01::Update()
 	// insert coin 깜박거리는 효과
 	if (m_fAccTime >= 1.f)
 	{
-		queue<CImageObject*> queueImgObj = m_pInsertCoinImgObj->GetImageObj();
-		while(!queueImgObj.empty())
+		queue<CImageObject*> queueInsertCoinImgObj = m_pInsertCoinImgObj->FindImgObjQueue(L"insert coin");
+		while(!queueInsertCoinImgObj.empty())
 		{
-			CImageObject* imgObj = queueImgObj.front();
+			CImageObject* imgObj = queueInsertCoinImgObj.front();
 			imgObj->SetAlpha(!(imgObj->GetAlpha()));
-			queueImgObj.pop();
+			queueInsertCoinImgObj.pop();
 		}
 		m_fAccTime = 0;
 	}
-	/*
-	for (int i = 0; i < m_pFontImgObj->GetImageObj().size(); i++)
+
+	if (m_pMissionImgObj1 != nullptr && m_pMissionImgObj2 != nullptr)
 	{
-		CImageObject* imgObj = m_pFontImgObj->GetImageObj()[i];
-		if (i != 0)
+		Vector m_vecTargetPos1, m_vecTargetPos2;
+		if (m_bIsStarted)
 		{
-			CImageObject* prevObj = m_pFontImgObj->GetImageObj()[i-1];
-			Vector posDiff = imgObj->GetPos() - prevObj->GetPos();
-			imgObj->SetPos(prevObj->GetPos() + CAMERA->ScreenToWorldPoint(posDiff * i));
+			m_vecTargetPos1 = Vector(WINSIZEX * 0.3f, WINSIZEY * 0.3f);
+			m_vecTargetPos2 = Vector(WINSIZEX * 0.35f, WINSIZEY * 0.5f);
 		}
 		else
 		{
-			imgObj->SetPos(CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f)));
+			m_vecTargetPos1 = Vector(WINSIZEX * 1.3f, WINSIZEY * 0.3f);
+			m_vecTargetPos2 = Vector(WINSIZEX * 1.35f, WINSIZEY * 0.5f);
 		}
+
+		m_vecStartPos1 += (m_vecTargetPos1 - m_vecStartPos1) * 3.f * DT; // 소리에 따라서는 3초 조절 필요
+		m_vecStartPos2 += (m_vecTargetPos2 - m_vecStartPos2) * 3.f * DT; 
+		if ((m_vecTargetPos1.x - m_vecStartPos1.x) < 1.f && (m_vecTargetPos2.x - m_vecStartPos2.x) < 1.f && m_bIsStarted)
+		{
+			Logger::Debug(L"here"+ to_wstring(m_fMissionAccTime));
+			m_fMissionAccTime += DT;
+			if (m_fMissionAccTime >= 2.0f)
+				m_bIsStarted = false;
+		}
+		else if ((m_vecTargetPos1.x - m_vecStartPos1.x) < 1.f && (m_vecTargetPos1.x - m_vecStartPos2.x) < 1.f && !m_bIsStarted)
+		{
+			while (!m_pMissionImgObj1->FindImgObjQueue(L"insert coin").empty())
+			{
+				m_pMissionImgObj1->FindImgObjQueue(L"insert coin").front()->SetAlpha(0);
+				m_pMissionImgObj1->FindImgObjQueue(L"insert coin").pop();
+			}
+			while (!m_pMissionImgObj2->FindImgObjQueue(L"start").empty())
+			{
+				m_pMissionImgObj2->FindImgObjQueue(L"start").front()->SetAlpha(0);
+				m_pMissionImgObj2->FindImgObjQueue(L"start").pop();
+			}
+		}
+		m_pMissionImgObj1->Show(L"mission");
+		m_pMissionImgObj2->Show(L"start");
 	}
-	*/
+
 	if (BUTTONDOWN(VK_ESCAPE))
 	{
 		CAMERA->FadeOut(0.25f);
