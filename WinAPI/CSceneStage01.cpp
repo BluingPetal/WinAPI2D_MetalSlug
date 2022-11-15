@@ -145,7 +145,9 @@ void CSceneStage01::Enter()
 	CAMERA->FadeIn(1.f);
 
 	m_pInsertCoinImgObj->SetInterval(1.1f);
-	m_pInsertCoinImgObj->CreateImgObj(L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);
+	Vector startPos = Vector(WINSIZEX * 0.35f, WINSIZEY * 0.05f);
+	m_pInsertCoinImgObj->SetPos(startPos);
+	m_pInsertCoinImgObj->CreateImgObj(L"insert coin", startPos, 11, FontType::Coin);
 
 	m_vecStartPos1 = Vector(-WINSIZEX * 0.3f, WINSIZEY * 0.3f);
 	m_pMissionImgObj1->SetInterval(1.1f);
@@ -155,6 +157,7 @@ void CSceneStage01::Enter()
 	m_pMissionImgObj2->SetInterval(1.f);
 	m_pMissionImgObj2->CreateImgObj(L"start", m_vecStartPos2, 5, FontType::Mission); //, Vector(WINSIZEX * 0.35f, WINSIZEY * 0.5f)
 	
+	m_pInsertCoinImgObj->Show();
 	m_pMissionImgObj1->Show();
 	m_pMissionImgObj2->Show();
 }
@@ -190,14 +193,14 @@ void CSceneStage01::Update()
 
 		m_vecStartPos1 += (m_vecTargetPos1 - m_vecStartPos1) * 3.f * DT; // 소리에 따라서는 3초 조절 필요
 		m_vecStartPos2 += (m_vecTargetPos2 - m_vecStartPos2) * 3.f * DT;
+		m_pMissionImgObj1->SetPos(m_vecStartPos1);
+		m_pMissionImgObj2->SetPos(m_vecStartPos2);
 		//m_pMissionImgObj1->DeleteObj();
 		//m_pMissionImgObj2->DeleteObj();
 
 		if ((m_vecTargetPos1.x - m_vecStartPos1.x) < 1.f && (m_vecTargetPos2.x - m_vecStartPos2.x) < 1.f && m_bIsStarted)
 		{
 			m_fMissionAccTime += DT;
-			m_pMissionImgObj1->SetPos(m_vecStartPos1);
-			m_pMissionImgObj2->SetPos(m_vecStartPos2);
 			if (m_fMissionAccTime >= 2.0f)
 				m_bIsStarted = false;
 		}
