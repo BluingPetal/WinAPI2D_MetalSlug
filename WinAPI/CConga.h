@@ -38,6 +38,8 @@ public:
 	void SetHp(int hp) { m_hp = hp; }
 	int GetHp() { return m_hp; }
 
+	void CongaAddObject();
+
 private:
 	void Init() override;
 	void Update() override;

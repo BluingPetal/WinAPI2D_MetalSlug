@@ -448,8 +448,13 @@ void CFontImageObj::CreateImgObj(const wstring& content,Vector startPos, int cou
 	//if (FindImgObjQueue(name) != nullptr)
 	//	return;
 
-	if (m_vecImgObj.size() != 0)					// 이미 보관중인 이미지가 있다면 무시
-		return;
+	//if (m_vecImgObj.size() != 0)					// 이미 보관중인 이미지가 있다면 무시
+	//{
+	//	//for (auto imgObj : m_vecImgObj)
+	//	//	if(!imgObj->GetReserveDelete())
+	//	//		DELETEOBJECT(imgObj);
+	//	return;
+	//}
 
 	for (int i = 0; i < count; i++)					// 띄어쓰기 포함해서 넣기
 	{
@@ -519,9 +524,12 @@ void CFontImageObj::Init()
 
 void CFontImageObj::Update()
 {
-	Vector startPosDiff = m_vecPos - m_vecImgObj[0]->GetPos();
-	for (int i = 0; i < m_vecImgObj.size(); i++)
-		m_vecImgObj[i]->SetPos(m_vecImgObj[i]->GetPos() + startPosDiff);
+	if (!m_vecImgObj.empty())
+	{
+		Vector startPosDiff = m_vecPos - m_vecImgObj[0]->GetPos();
+		for (int i = 0; i < m_vecImgObj.size(); i++)
+			m_vecImgObj[i]->SetPos(m_vecImgObj[i]->GetPos() + startPosDiff);
+	}
 }
 
 void CFontImageObj::Render()
@@ -530,7 +538,6 @@ void CFontImageObj::Render()
 
 void CFontImageObj::Release()
 {
-	DeleteObj();
 }
 
 void CFontImageObj::Show()
@@ -547,9 +554,12 @@ void CFontImageObj::DeleteObj()
 	//m_mapFont.erase(name);
 	for (int i = 0; i < m_vecImgObj.size(); i++)
 	{
-		if(!m_vecImgObj[i]->GetReserveDelete())
+		if (!m_vecImgObj[i]->GetReserveDelete())
+		{
 			DELETEOBJECT(m_vecImgObj[i]);
+		}
 	}
+	m_vecImgObj.clear();
 	/*
 	while (!m_vecImgObj.empty())
 	{

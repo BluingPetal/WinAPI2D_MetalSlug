@@ -51,7 +51,7 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
     if (m_strName == L"FarColliderObj")
     {
         CConga* pOwner = dynamic_cast<CConga*>(m_pOwner);
-        if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() !=CongaStatus::Death))
+        if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() != CongaStatus::Death))
             pOwner->SetTarget(pOtherCollider->GetOwner());
     }
     if (m_strName == L"NearColliderObj")

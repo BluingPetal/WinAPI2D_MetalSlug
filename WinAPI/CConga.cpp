@@ -54,13 +54,11 @@ void CConga::Init()
 	//m_pFarColliderObj->SetExtension(m_fExtension);
 	//m_pFarColliderObj->SetScale(m_vecScale);
 	m_pFarColliderObj->SetScale(Vector(230, m_pAnimator->GetFirstAniFrame().slice.y * 1.5) * m_fExtension);
-	ADDOBJECT(m_pFarColliderObj);
 
 	m_pNearColliderObj = new CColliderObject;
 	m_pNearColliderObj->SetName(L"NearColliderObj");
 	m_pNearColliderObj->SetOwner(this);
 	m_pNearColliderObj->SetScale(m_pAnimator->GetFirstAniFrame().slice * 0.4f * m_fExtension);
-	ADDOBJECT(m_pNearColliderObj);
 
 	AddCollider(ColliderType::Rect, Vector(90, 90), Vector(0, 0));
 
@@ -234,4 +232,10 @@ void CConga::AnimationUpdate()
 			m_pAnimator->Play(L"Monster\\Conga\\CongaDeathL");
 		break;
 	}
+}
+
+void CConga::CongaAddObject()
+{
+	ADDOBJECT(m_pFarColliderObj);
+	ADDOBJECT(m_pNearColliderObj);
 }

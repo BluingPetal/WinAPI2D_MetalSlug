@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	setlocale(LC_ALL, "Korean");
 	// 메모리 누수 체크
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//_CrtSetBreakAlloc(3713);
+	//_CrtSetBreakAlloc(1561);
 
 	// 사용하지 않은 매개변수 정의
 	// 불필요한 매개변수이지만 구버전 윈도우를 지원하기 위해 그대로 둠

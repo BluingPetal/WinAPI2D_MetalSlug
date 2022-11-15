@@ -160,6 +160,8 @@ void CSceneStage01::Enter()
 	m_pInsertCoinImgObj->Show();
 	m_pMissionImgObj1->Show();
 	m_pMissionImgObj2->Show();
+
+	m_pConga->CongaAddObject();
 }
 
 void CSceneStage01::Update()
