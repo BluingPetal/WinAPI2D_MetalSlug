@@ -60,7 +60,13 @@ private:
 	void KeyUpdate();
 	void BehaviorUpdate();
 	void AnimatorUpdate();
+	void StatusUpdate();
 	void CreateMissile();
+
+	void HeavyGunGoingDown(wstring RorL);
+	void HeavyGunGoingDownPlace(wstring RorL);
+	void HeavyGunGoingUp(wstring RorL);
+	void HeavyGunGoingUpPlace(wstring RorL);
 
 	void OnCollisionEnter(CCollider* pOtherCollider) override;
 	void OnCollisionStay(CCollider* pOtherCollider) override;

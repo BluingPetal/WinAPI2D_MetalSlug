@@ -30,6 +30,7 @@ private:
 	UINT				m_iCount;
 	float				m_fExtension;
 	AniFrame			m_FirstAniFrame;
+	bool				m_bReversePlay;
 
 	Vector*				m_vecReadAni;					// 읽어온 애니메이션
 public:
@@ -37,6 +38,7 @@ public:
 
 private:
 	void SetName(const wstring& name);
+	void SetReversePlay(bool reversePlay) { m_bReversePlay = reversePlay; }
 	void SetExtension(float extension) { m_fExtension = extension; }
 	void LoadAni(const wstring& aniName);
 

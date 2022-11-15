@@ -13,6 +13,7 @@ private:
 public:
 	void SetVelocity(float velocity) { m_fVelY = velocity; }
 	float GetVelocity() { return m_fVelY; }
+	void SetGravity(float gravity) { m_fGravity = gravity; }
 
 private:
 	void Init()				override;

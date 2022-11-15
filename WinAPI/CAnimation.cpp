@@ -16,6 +16,7 @@ CAnimation::CAnimation()
 	m_fAccTime = 0;
 	m_bRepeat = true;
 	m_fExtension = 1;
+	m_bReversePlay = false;
 }
 
 CAnimation::~CAnimation()
@@ -97,7 +98,10 @@ void CAnimation::Create(CImage* pImg, float duration, bool repeat)
 void CAnimation::Replay()
 {
 	// 애니메이션 재시작 : 현재 프레임과 누적시간을 초기화
-	m_iCurFrame = 0;
+	if (!m_bReversePlay)
+		m_iCurFrame = 0;
+	else if (m_bReversePlay)
+		m_iCurFrame = m_vecFrame.size()-1;
 	m_fAccTime = 0;
 }
 
@@ -109,23 +113,43 @@ void CAnimation::Update()
 {
 	// 현재 플레이중인 프레임의 누적시간
 	m_fAccTime += DT;
-
-	// 누적시간이 현재 플레이중인 프레임의 지속시간보다 커졌을 경우
-	// -> 다음 프레임을 보여줘야 하는 경우
-	if (m_vecFrame[m_iCurFrame].duration < m_fAccTime)
+	
+	if (!m_bReversePlay)
 	{
-		m_iCurFrame++;	// 현재 플레이중인 프레임의 인덱스를 하나 증가
-		m_fAccTime = 0;	// 현재 플레이중인 프레임의 누적시간 초기화
-
-		// 만약 플레이중인 프레임이 마지막 프레임이었을 경우
-		if (m_iCurFrame == m_vecFrame.size())
+		// 누적시간이 현재 플레이중인 프레임의 지속시간보다 커졌을 경우
+		// -> 다음 프레임을 보여줘야 하는 경우
+		if (m_vecFrame[m_iCurFrame].duration < m_fAccTime)
 		{
-			// 반복 애니메이션이라면 처음부터, 아니라면 마지막을 다시 재생
-			if (m_bRepeat)	m_iCurFrame = 0;
-			else			m_iCurFrame--;
+			m_iCurFrame++;	// 현재 플레이중인 프레임의 인덱스를 하나 증가
+			m_fAccTime = 0;	// 현재 플레이중인 프레임의 누적시간 초기화
+
+			// 만약 플레이중인 프레임이 마지막 프레임이었을 경우
+			if (m_iCurFrame == m_vecFrame.size())
+			{
+				// 반복 애니메이션이라면 처음부터, 아니라면 마지막을 다시 재생
+				if (m_bRepeat)	m_iCurFrame = 0;
+				else			m_iCurFrame--;
+			}
 		}
 	}
+	else if (m_bReversePlay)
+	{
+		// 누적시간이 현재 플레이중인 프레임의 지속시간보다 커졌을 경우
+		// -> 다음 프레임을 보여줘야 하는 경우
+		if (m_vecFrame[m_iCurFrame].duration < m_fAccTime)
+		{
+			m_iCurFrame--;	// 현재 플레이중인 프레임의 인덱스를 하나 증가
+			m_fAccTime = 0;	// 현재 플레이중인 프레임의 누적시간 초기화
 
+			// 만약 플레이중인 프레임이 마지막 프레임이었을 경우
+			if (m_iCurFrame == 0)
+			{
+				// 반복 애니메이션이라면 처음부터, 아니라면 마지막을 다시 재생
+				if (m_bRepeat)	m_iCurFrame = m_vecFrame.size()-1;
+				else			m_iCurFrame--;
+			}
+		}
+	}
 	m_fExtension = m_pAnimator->GetOwner()->GetExtension();
 }
 

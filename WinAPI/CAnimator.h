@@ -31,6 +31,7 @@ public:
 	wstring GetCurAniName();
 
 	void Play(const wstring& aniName, bool trigger = false);	// 애니메이션 재생
+	void ReversePlay(const wstring& aniName, bool trigger = false);
 	void Stop();												// 애니메이션 종료
 };
 

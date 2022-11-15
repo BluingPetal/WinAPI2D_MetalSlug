@@ -101,6 +101,25 @@ void CAnimator::Play(const wstring& aniName, bool trigger)
 	m_pCurAni = pAnimation;
 }
 
+void CAnimator::ReversePlay(const wstring& aniName, bool trigger)
+{
+	// 현재 애니메이션이 플레이하고자 하는 애니메이션이며
+	// Trigger가 아닐 경우 현재 애니메이션을 변경하지 않음
+	// Trigger : 같은 애니메이션을 처음부터 재생 (ex. 공격 모션처럼 누를때마다 처음부터 재생해야하는 애니메이션)
+	if (nullptr != m_pCurAni && aniName == m_pCurAni->GetName() && !trigger)
+		return;
+
+	// 애니메이션 자료구조에서 애니메이션을 탐색
+	CAnimation* pAnimation = FindAnimation(aniName);
+	pAnimation->SetReversePlay(true);
+	// 탐색한 결과 애니메이션이 없는 경우 프로그램 경고
+	assert(nullptr != pAnimation && L"Animation no exist");
+	// 트리거 타입일 경우이거나 애니메이션이 바뀌었을 경우 애니메이션을 처음부터 재생
+	if (trigger || m_pCurAni != pAnimation) pAnimation->Replay();
+	// 현재 애니메이션을 탐색한 애니메이션으로 교체
+	m_pCurAni = pAnimation;
+}
+
 void CAnimator::Stop()
 {
 	// 현재 애니메이션이 없도록 하여 정지

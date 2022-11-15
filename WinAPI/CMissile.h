@@ -32,4 +32,5 @@ public:
 	void SetDir(Vector dir);
 	void SetVelocity(float velocity);
 	void SetOwner(CGameObject* owner) { m_pOwner = owner; }
+	CGameObject* GetOwner() { return m_pOwner; }
 };

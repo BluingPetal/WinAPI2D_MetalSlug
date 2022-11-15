@@ -6,7 +6,7 @@
 CGravity::CGravity()
 {
 	m_fVelY = 0;
-	m_fGravity = 550;
+	m_fGravity = 600;
 }
 
 CGravity::~CGravity()

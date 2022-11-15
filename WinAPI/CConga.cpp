@@ -9,6 +9,7 @@
 #include "CGravity.h"
 #include "CColliderObject.h"
 #include "CPlayer.h"
+#include "CMissile.h"
 
 CConga::CConga()
 {
@@ -105,6 +106,11 @@ void CConga::Release()
 
 void CConga::OnCollisionEnter(CCollider* pOtherCollider)
 {
+	if (pOtherCollider->GetObjName() == L"PlayerMissile")
+	{
+		CMissile* pMissile = dynamic_cast<CMissile*>(pOtherCollider->GetOwner());
+		SetTarget(pMissile->GetOwner());
+	}
 }
 
 void CConga::OnCollisionStay(CCollider* pOtherCollider)
