@@ -11,15 +11,10 @@ public:
 	virtual ~CFontImageObj();
 
 private:
-	// Left top과 Size를 담을 벡터
-	//map<const wstring&, vector<Vector>>m_mapFont;
-	CImage* m_pImage;
-	float m_fInterval;
-
-	bool m_bIsFixed;
+	CImage* m_pImage; // -> font image
 
 	vector<Vector>* m_curFont;
-
+	// source의 left top, size, offset을 담은 벡터 자료구조
 	vector<Vector> m_vecDefault;
 	vector<Vector> m_vecMission;
 	vector<Vector> m_vecCoin;
@@ -27,8 +22,11 @@ private:
 	vector<Vector> m_vecUi;
 	vector<Vector> m_vecTime;
 
-	queue<CImageObject*> m_queueImgObj;
-	map<const wstring&, queue<CImageObject*>> m_mapFont;
+	float m_fInterval;	// 자간
+	bool m_bIsFixed;	// 화면 고정 여부
+
+	//map<const wstring&, queue<CImageObject*>> m_mapFont;
+	vector<CImageObject*> m_vecImgObj;
 	Vector m_vecStartPos;
 
 private:
@@ -46,12 +44,15 @@ private:
 	void Release() override;
 
 public:
-	void CreateImgObj(const wstring& content, const wstring& name, Vector startPos, int count, FontType font);
+	//queue<CImageObject*>* FindImgObjQueue(const wstring& name);
 	void SetInterval(float interval) { m_fInterval = interval; }
 	void SetFixed(bool fixed) { m_bIsFixed = fixed; }
-	queue<CImageObject*> FindImgObjQueue(const wstring& name);
 	//queue<CImageObject*> GetImageObj(const wstring& name);// { return m_queueImgObj; }
-	void Show(const wstring& name);
+	vector<CImageObject*> GetImageObj() { return m_vecImgObj; }
+
+public:
+	void CreateImgObj(const wstring& content, Vector startPos, int count, FontType font);
+	void Show();
 	void DeleteObj();
 };
 

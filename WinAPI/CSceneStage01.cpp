@@ -145,15 +145,18 @@ void CSceneStage01::Enter()
 	CAMERA->FadeIn(1.f);
 
 	m_pInsertCoinImgObj->SetInterval(1.1f);
-	m_pInsertCoinImgObj->CreateImgObj(L"insert coin", L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);
+	m_pInsertCoinImgObj->CreateImgObj(L"insert coin", Vector(WINSIZEX * 0.65f, WINSIZEY * 0.05f), 11, FontType::Coin);
 
 	m_vecStartPos1 = Vector(-WINSIZEX * 0.3f, WINSIZEY * 0.3f);
 	m_pMissionImgObj1->SetInterval(1.1f);
-	m_pMissionImgObj1->CreateImgObj(L"mission", L"mission", m_vecStartPos1, 7, FontType::Mission); // Vector(WINSIZEX * 0.3f, WINSIZEY * 0.3f)
+	m_pMissionImgObj1->CreateImgObj(L"mission", m_vecStartPos1, 7, FontType::Mission); // Vector(WINSIZEX * 0.3f, WINSIZEY * 0.3f)
 
 	m_vecStartPos2 = Vector(-WINSIZEX * 0.25f, WINSIZEY * 0.5f);
 	m_pMissionImgObj2->SetInterval(1.f);
-	m_pMissionImgObj2->CreateImgObj(L"start", L"start", m_vecStartPos2, 5, FontType::Mission); //, Vector(WINSIZEX * 0.35f, WINSIZEY * 0.5f)
+	m_pMissionImgObj2->CreateImgObj(L"start", m_vecStartPos2, 5, FontType::Mission); //, Vector(WINSIZEX * 0.35f, WINSIZEY * 0.5f)
+	
+	m_pMissionImgObj1->Show();
+	m_pMissionImgObj2->Show();
 }
 
 void CSceneStage01::Update()
@@ -163,17 +166,15 @@ void CSceneStage01::Update()
 	// insert coin 깜박거리는 효과
 	if (m_fAccTime >= 1.f)
 	{
-		queue<CImageObject*> queueInsertCoinImgObj = m_pInsertCoinImgObj->FindImgObjQueue(L"insert coin");
-		while(!queueInsertCoinImgObj.empty())
+		vector<CImageObject*> vecInsertCoinImgObj = m_pInsertCoinImgObj->GetImageObj();
+		for (int i = 0; i < vecInsertCoinImgObj.size(); i++)
 		{
-			CImageObject* imgObj = queueInsertCoinImgObj.front();
-			imgObj->SetAlpha(!(imgObj->GetAlpha()));
-			queueInsertCoinImgObj.pop();
+			vecInsertCoinImgObj[i]->SetAlpha(!(vecInsertCoinImgObj[i]->GetAlpha()));
 		}
 		m_fAccTime = 0;
 	}
 
-	if (m_pMissionImgObj1 != nullptr && m_pMissionImgObj2 != nullptr)
+	if (!m_pMissionImgObj1->GetReserveDelete() && !m_pMissionImgObj2->GetReserveDelete())
 	{
 		Vector m_vecTargetPos1, m_vecTargetPos2;
 		if (m_bIsStarted)
@@ -188,29 +189,45 @@ void CSceneStage01::Update()
 		}
 
 		m_vecStartPos1 += (m_vecTargetPos1 - m_vecStartPos1) * 3.f * DT; // 소리에 따라서는 3초 조절 필요
-		m_vecStartPos2 += (m_vecTargetPos2 - m_vecStartPos2) * 3.f * DT; 
+		m_vecStartPos2 += (m_vecTargetPos2 - m_vecStartPos2) * 3.f * DT;
+		//m_pMissionImgObj1->DeleteObj();
+		//m_pMissionImgObj2->DeleteObj();
+
 		if ((m_vecTargetPos1.x - m_vecStartPos1.x) < 1.f && (m_vecTargetPos2.x - m_vecStartPos2.x) < 1.f && m_bIsStarted)
 		{
-			Logger::Debug(L"here"+ to_wstring(m_fMissionAccTime));
 			m_fMissionAccTime += DT;
+			m_pMissionImgObj1->SetPos(m_vecStartPos1);
+			m_pMissionImgObj2->SetPos(m_vecStartPos2);
 			if (m_fMissionAccTime >= 2.0f)
 				m_bIsStarted = false;
 		}
 		else if ((m_vecTargetPos1.x - m_vecStartPos1.x) < 1.f && (m_vecTargetPos1.x - m_vecStartPos2.x) < 1.f && !m_bIsStarted)
 		{
-			while (!m_pMissionImgObj1->FindImgObjQueue(L"insert coin").empty())
-			{
-				m_pMissionImgObj1->FindImgObjQueue(L"insert coin").front()->SetAlpha(0);
-				m_pMissionImgObj1->FindImgObjQueue(L"insert coin").pop();
-			}
-			while (!m_pMissionImgObj2->FindImgObjQueue(L"start").empty())
-			{
-				m_pMissionImgObj2->FindImgObjQueue(L"start").front()->SetAlpha(0);
-				m_pMissionImgObj2->FindImgObjQueue(L"start").pop();
-			}
+			for (int i = 0; i < m_pMissionImgObj1->GetImageObj().size(); i++)
+				m_pMissionImgObj1->DeleteObj();
+			for (int i = 0; i < m_pMissionImgObj2->GetImageObj().size(); i++)
+				m_pMissionImgObj2->DeleteObj();
+
+			//if (!m_pMissionImgObj1->GetReserveDelete() && !m_pMissionImgObj2->GetReserveDelete())
+			//{
+				DELETEOBJECT(m_pMissionImgObj1);
+				//m_pMissionImgObj1 = nullptr;
+				DELETEOBJECT(m_pMissionImgObj1);
+				//m_pMissionImgObj2 = nullptr;
+			//}
+			//while (!m_pMissionImgObj1->GetImageObj(L"insert coin").empty())
+			//{
+			//	m_pMissionImgObj1->FindImgObjQueue(L"insert coin").front()->SetAlpha(0);
+			//	m_pMissionImgObj1->FindImgObjQueue(L"insert coin").pop();
+			//}
+			//while (!m_pMissionImgObj2->FindImgObjQueue(L"start").empty())
+			//{
+			//	m_pMissionImgObj2->FindImgObjQueue(L"start").front()->SetAlpha(0);
+			//	m_pMissionImgObj2->FindImgObjQueue(L"start").pop();
+			//}
 		}
-		m_pMissionImgObj1->Show(L"mission");
-		m_pMissionImgObj2->Show(L"start");
+		//m_pMissionImgObj1->Show();
+		//m_pMissionImgObj2->Show();
 	}
 
 	if (BUTTONDOWN(VK_ESCAPE))

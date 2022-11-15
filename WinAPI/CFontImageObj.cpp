@@ -16,96 +16,7 @@ CFontImageObj::~CFontImageObj()
 {
 }
 
-// 외부에서 쓸 함수, create img object -> 해당 name이 존재할 경우 무시, 없을 경우에만 만들어서 map에 넣음
-void CFontImageObj::CreateImgObj(const wstring& content, const wstring& name,Vector startPos, int count, FontType font)
-{
-	// 자료구조에 해당 이름의 queue가 있었을 경우
-	if (FindImgObjQueue(name) != queue<CImageObject*>()) // -> 이때 덮어쓰기 가능하도록 설정
-	{
-		CImageObject* firstImgObj = m_mapFont[name].front();
-		Vector offset = startPos - firstImgObj->GetPos();
-
-		for (int i = 0; i < count; i++)
-		{
-			CImageObject* imgObj = m_mapFont[name].front();
-			imgObj->SetPos(imgObj->GetPos() + offset);
-		}
-		return;
-	}
-	//if (m_queueImgObj.size() != 0)
-	//	DeleteObj();
-
-	for (int i = 0; i < count; i++)
-	{
-		CImageObject* imgObj = new CImageObject;
-		imgObj->SetImage(m_pImage);
-
-		int index = -1;
-		switch (font)
-		{
-		case FontType::Default:
-			m_curFont = &m_vecDefault;
-			index = FindImgInDefault(content[i]);			
-			break;
-		case FontType::Mission:
-			m_curFont = &m_vecMission;
-			index = FindImgInMission(content[i]);
-			break;
-		case FontType::Coin:
-			m_curFont = &m_vecCoin;
-			index = FindImgInCoin(content[i]);
-			break;
-		case FontType::Score:
-			index = FindImgInScore(content[i]);
-			break;
-		case FontType::Ui:
-			index = FindImgInUi(content[i]);
-			break;
-		case FontType::Time:
-			m_curFont = &m_vecTime;
-			index = FindImgInTime(content[i]);
-			break;
-		}
-
-		if (index >= 0)
-		{
-			imgObj->SetPos(startPos.x, startPos.y);
-			startPos.x += ((*m_curFont)[index + 1].x * m_fExtension * m_fInterval);
-			imgObj->SetFixed(m_bIsFixed);
-			imgObj->SetExtension(m_fExtension);
-			imgObj->SetRenderAsFrame(true);
-			imgObj->SetLayer(Layer::ForeGround);
-			imgObj->SetSourceInfo((*m_curFont)[index].x, (*m_curFont)[index].y, (*m_curFont)[index + 1].x, (*m_curFont)[index + 1].y);
-			m_queueImgObj.push(imgObj);
-			//imgObj->SetAlpha(0);
-			//ADDOBJECT(imgObj);
-		}
-		else // 띄어쓰기
-		{
-			startPos.x += ((*m_curFont)[index + 2].x * m_fExtension * m_fInterval);
-		}
-	}
-	m_mapFont.insert(make_pair(name, m_queueImgObj));
-}
-
-void CFontImageObj::DeleteObj()
-{
-	while (!m_queueImgObj.empty())
-	{
-		if (!(m_queueImgObj.front()->GetReserveDelete()))
-			//m_queueImgObj.front()->SetReserveDelete();
-			DELETEOBJECT(m_queueImgObj.front());
-		m_queueImgObj.pop();
-	}
-	/*
-	for (int i = 0; i < m_vecImgObj.size(); i++)
-	{
-		m_vecImgObj[i]->SetReserveDelete();
-	}
-	m_vecImgObj.clear();
-	*/
-}
-
+// 파일에 저장되어 있는 source 정보들을 vector 자료구조에 저장
 void CFontImageObj::InitFont(const wstring& name, FontType font)
 {
 	FILE* pFile = nullptr;
@@ -163,6 +74,7 @@ void CFontImageObj::InitFont(const wstring& name, FontType font)
 	fclose(pFile);
 }
 
+// 해당 이미지의 lt, slice, offset을 담은 index를 반환
 UINT CFontImageObj::FindImgInDefault(const wchar_t str)
 {
 	switch (str)
@@ -461,7 +373,6 @@ UINT CFontImageObj::FindImgInUi(const wchar_t str)
 	return 0;
 }
 
-// 해당 이미지의 lt, slice, offset을 담은 처음 index를 반환
 UINT CFontImageObj::FindImgInTime(const wchar_t str)
 {
 	switch (str)
@@ -507,13 +418,93 @@ UINT CFontImageObj::FindImgInTime(const wchar_t str)
 		break;
 	}
 }
-
-queue<CImageObject*> CFontImageObj::FindImgObjQueue(const wstring& name)
+/*
+queue<CImageObject*>* CFontImageObj::FindImgObjQueue(const wstring& name)
 {
 	if (m_mapFont[name].size() != 0)
-		return m_mapFont[name];
+		return &m_mapFont[name];
 	else
-		return NULL;
+		return nullptr;
+}
+*/
+// 외부에서 쓸 함수, create img object -> 해당 name이 존재할 경우 무시, 없을 경우에만 만들어서 map에 넣음
+void CFontImageObj::CreateImgObj(const wstring& content,Vector startPos, int count, FontType font)
+{
+	// 자료구조에 해당 이름의 queue가 있었을 경우
+	//if (FindImgObjQueue(name) != nullptr) // -> 이때 덮어쓰기 가능하도록 설정
+	//{
+	//	CImageObject* firstImgObj = m_mapFont[name].front();
+	//	Vector offset = startPos - firstImgObj->GetPos();
+	//
+	//	for (int i = 0; i < count; i++)
+	//	{
+	//		CImageObject* imgObj = m_mapFont[name].front();
+	//		imgObj->SetPos(imgObj->GetPos() + offset);
+	//	}
+	//	return;
+	//}
+	//if (m_queueImgObj.size() != 0)
+	//	DeleteObj();
+	//if (FindImgObjQueue(name) != nullptr)
+	//	return;
+
+	if (m_vecImgObj.size() != 0)					// 이미 보관중인 이미지가 있다면 무시
+		return;
+
+	for (int i = 0; i < count; i++)					// 띄어쓰기 포함해서 넣기
+	{
+		m_vecPos = startPos;						// FontImageObj 위치는 imageObject들의 처음 lt 위치로 설정
+		CImageObject* imgObj = new CImageObject;
+		imgObj->SetImage(m_pImage);
+
+		int index = -1;
+		switch (font)
+		{
+		case FontType::Default:
+			m_curFont = &m_vecDefault;
+			index = FindImgInDefault(content[i]);			
+			break;
+		case FontType::Mission:
+			m_curFont = &m_vecMission;
+			index = FindImgInMission(content[i]);
+			break;
+		case FontType::Coin:
+			m_curFont = &m_vecCoin;
+			index = FindImgInCoin(content[i]);
+			break;
+		case FontType::Score:
+			m_curFont = &m_vecScore;
+			index = FindImgInScore(content[i]);
+			break;
+		case FontType::Ui:
+			m_curFont = &m_vecUi;
+			index = FindImgInUi(content[i]);
+			break;
+		case FontType::Time:
+			m_curFont = &m_vecTime;
+			index = FindImgInTime(content[i]);
+			break;
+		}
+
+		if (index >= 0) // 찾았을 경우
+		{
+			imgObj->SetPos(m_vecPos);
+			startPos.x += ((*m_curFont)[index + 1].x * m_fExtension * m_fInterval);
+			imgObj->SetFixed(m_bIsFixed);
+			imgObj->SetExtension(m_fExtension);
+			imgObj->SetRenderAsFrame(true);
+			imgObj->SetLayer(Layer::ForeGround);
+			imgObj->SetSourceInfo((*m_curFont)[index].x, (*m_curFont)[index].y, (*m_curFont)[index + 1].x, (*m_curFont)[index + 1].y); // lt와 slice
+			m_vecImgObj.push_back(imgObj);
+			//ADDOBJECT(imgObj);
+		}
+		else // 찾지 못했을 경우
+		{
+			delete imgObj; // 동적할당했던 메모리 지워주기
+			startPos.x += ((*m_curFont)[index + 2].x * m_fExtension * m_fInterval);
+		}
+	}
+	//m_mapFont.insert(make_pair(name, m_queueImgObj));
 }
 
 void CFontImageObj::Init()
@@ -528,6 +519,9 @@ void CFontImageObj::Init()
 
 void CFontImageObj::Update()
 {
+	Vector startPosDiff = m_vecPos - m_vecImgObj[0]->GetPos();
+	for (int i = 0; i < m_vecImgObj.size(); i++)
+		m_vecImgObj[i]->SetPos(m_vecImgObj[i]->GetPos() + startPosDiff);
 }
 
 void CFontImageObj::Render()
@@ -536,17 +530,40 @@ void CFontImageObj::Render()
 
 void CFontImageObj::Release()
 {
+	DeleteObj();
 }
 
-void CFontImageObj::Show(const wstring& name)
+void CFontImageObj::Show()
 {
-	queue<CImageObject*> imgObjQueue = FindImgObjQueue(name);
-	if (imgObjQueue == queue<CImageObject*>())
-		assert(0 && L"No font image queue");
+	//queue<CImageObject*> imgObjQueue = FindImgObjQueue(name);
+	//if (imgObjQueue == queue<CImageObject*>())
+	//	assert(0 && L"No font image queue");
+	for (int i = 0; i < m_vecImgObj.size(); i++)
+		ADDOBJECT(m_vecImgObj[i]);
+}
 
-	while (!imgObjQueue.empty())
+void CFontImageObj::DeleteObj()
+{
+	//m_mapFont.erase(name);
+	for (int i = 0; i < m_vecImgObj.size(); i++)
 	{
-		ADDOBJECT(imgObjQueue.front());
-		imgObjQueue.pop();
+		if(!m_vecImgObj[i]->GetReserveDelete())
+			DELETEOBJECT(m_vecImgObj[i]);
 	}
+	/*
+	while (!m_vecImgObj.empty())
+	{
+		if (!(m_vecImgObj.front()->GetReserveDelete()))
+			//m_queueImgObj.front()->SetReserveDelete();
+			DELETEOBJECT(m_vecImgObj.front());
+		m_vecImgObj.pop();
+	}
+	*/
+	/*
+	for (int i = 0; i < m_vecImgObj.size(); i++)
+	{
+		m_vecImgObj[i]->SetReserveDelete();
+	}
+	m_vecImgObj.clear();
+	*/
 }
