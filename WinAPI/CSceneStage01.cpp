@@ -24,6 +24,9 @@ CSceneStage01::CSceneStage01()
 	m_fAccTime = 0;
 	m_fMissionAccTime = 0;
 	m_fPlayerMaxPosX = 0;
+	m_iTimeCount = 1;
+
+	m_fTime = 60;
 }
 
 CSceneStage01::~CSceneStage01()
@@ -74,6 +77,27 @@ void CSceneStage01::Init()
 	pFrontOceanObj1->SetPosWithFirstLt();
 	pFrontOceanObj2->SetPosWithFirstLt();
 
+	CImageObject* pPlayerStatusObj = new CImageObject;
+	CImage* pStatusImg = RESOURCE->LoadImg(L"PlayerStatus", L"Image\\Font\\PlayerStatus.png");
+	pPlayerStatusObj->SetImage(pStatusImg);
+	pPlayerStatusObj->SetExtension(extension+1);
+	pPlayerStatusObj->SetFixed(true);
+	pPlayerStatusObj->SetLayer(Layer::ForeGround);
+	pPlayerStatusObj->SetPos(WINSIZEX * 0.25f, 20);
+	float sourcePlayerStatusInfo[4] = { 0, 0, 64, 19 };
+	pPlayerStatusObj->SetRenderAsFrame(true);
+	pPlayerStatusObj->SetSourceInfo(sourcePlayerStatusInfo[0], sourcePlayerStatusInfo[1], sourcePlayerStatusInfo[2], sourcePlayerStatusInfo[3]);
+
+	CImageObject* pPlayerBarObj = new CImageObject;
+	pPlayerBarObj->SetImage(pStatusImg);
+	pPlayerBarObj->SetExtension(extension + 1);
+	pPlayerBarObj->SetFixed(true);
+	pPlayerBarObj->SetLayer(Layer::ForeGround);
+	pPlayerBarObj->SetPos(20, 20);
+	float sourcePlayerBarInfo[4] = { 0, 19, 63, 10 };
+	pPlayerBarObj->SetRenderAsFrame(true);
+	pPlayerBarObj->SetSourceInfo(sourcePlayerBarInfo[0], sourcePlayerBarInfo[1], sourcePlayerBarInfo[2], sourcePlayerBarInfo[3]);
+
 #pragma endregion
 
 #pragma region OBJECT
@@ -96,6 +120,14 @@ void CSceneStage01::Init()
 
 	m_pMissionImgObj2 = new CFontImageObj;
 	m_pMissionImgObj2->SetExtension(extension);
+
+	m_pTimeImgObj = new CFontImageObj;
+	m_pTimeImgObj->SetFixed(true);
+	m_pTimeImgObj->SetExtension(extension + 0.5);
+
+	m_pBarFontObj = new CFontImageObj;
+	m_pBarFontObj->SetFixed(true);
+	m_pBarFontObj->SetExtension(extension-1);
 
 #pragma endregion
 
@@ -134,6 +166,10 @@ void CSceneStage01::Init()
 	AddGameObject(m_pInsertCoinImgObj);
 	AddGameObject(m_pMissionImgObj1);
 	AddGameObject(m_pMissionImgObj2);
+	AddGameObject(m_pTimeImgObj);
+	AddGameObject(pPlayerStatusObj);
+	AddGameObject(pPlayerBarObj);
+	AddGameObject(m_pBarFontObj);
 
 #pragma endregion
 	// CCameraController* pCamController = new CCameraController;
@@ -145,7 +181,7 @@ void CSceneStage01::Enter()
 	CAMERA->FadeIn(1.f);
 
 	m_pInsertCoinImgObj->SetInterval(1.1f);
-	Vector startPos = Vector(WINSIZEX * 0.35f, WINSIZEY * 0.05f);
+	Vector startPos = Vector(WINSIZEX * 0.35f, WINSIZEY * 0.03f);
 	m_pInsertCoinImgObj->SetPos(startPos);
 	m_pInsertCoinImgObj->CreateImgObj(L"insert coin", startPos, 11, FontType::Coin);
 
@@ -156,10 +192,23 @@ void CSceneStage01::Enter()
 	m_vecStartPos2 = Vector(-WINSIZEX * 0.25f, WINSIZEY * 0.5f);
 	m_pMissionImgObj2->SetInterval(1.f);
 	m_pMissionImgObj2->CreateImgObj(L"start", m_vecStartPos2, 5, FontType::Mission); //, Vector(WINSIZEX * 0.35f, WINSIZEY * 0.5f)
+
+	m_pTimeImgObj->SetInterval(1.f);
+	Vector timeStartPos = Vector(WINSIZEX * 0.45f, 20);
+	m_pTimeImgObj->SetPos(timeStartPos);
+	wstring time = to_wstring(m_fTime);
+	m_pTimeImgObj->CreateImgObj(time, timeStartPos, 2, FontType::Time);
+
+	m_pBarFontObj->SetInterval(1.1f);
+	Vector startbarFontPos = Vector(-35, 65);
+	m_pBarFontObj->SetPos(startbarFontPos);
+	m_pBarFontObj->CreateImgObj(L"1up2", startbarFontPos, 4, FontType::Default);
 	
 	m_pInsertCoinImgObj->Show();
 	m_pMissionImgObj1->Show();
 	m_pMissionImgObj2->Show();
+	m_pTimeImgObj->Show();
+	m_pBarFontObj->Show();
 
 	m_pConga->CongaAddObject();
 }
@@ -176,7 +225,18 @@ void CSceneStage01::Update()
 		{
 			vecInsertCoinImgObj[i]->SetAlpha(!(vecInsertCoinImgObj[i]->GetAlpha()));
 		}
-		m_fAccTime = 0;
+		m_fAccTime = 0; m_iTimeCount++; // timeout µÇ¸é gameoverÃ¢
+
+		if (m_iTimeCount % 4 == 0)
+		{
+			m_fTime--;
+
+			wstring timeStr = to_wstring(m_fTime);
+			Vector timeStartPos = Vector(WINSIZEX * 0.45f, 20);
+			m_pTimeImgObj->DeleteObj();
+			m_pTimeImgObj->CreateImgObj(timeStr, timeStartPos, 2, FontType::Time);
+			m_pTimeImgObj->Show();
+		}
 	}
 
 	if (!m_pMissionImgObj1->GetReserveDelete() && !m_pMissionImgObj2->GetReserveDelete())

@@ -66,7 +66,10 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
         {
             CPlayer* pPlayer = dynamic_cast<CPlayer*>(pOtherCollider->GetOwner());
             if (!pPlayer->GetIsDead())
+            {
+               // pOwner->SetAccTime(0);
                 pOwner->SetCongaState(CongaStatus::NearAttack);
+            }
         }
     }
 }
@@ -96,6 +99,9 @@ void CColliderObject::OnCollisionExit(CCollider* pOtherCollider)
     {
         CConga* pOwner = dynamic_cast<CConga*>(m_pOwner);
         if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() != CongaStatus::Death))
+        {
+            pOwner->SetAccTime(0);
             pOwner->SetCongaState(CongaStatus::Walk);
+        }
     }
 }

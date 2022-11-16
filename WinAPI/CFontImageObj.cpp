@@ -365,7 +365,54 @@ UINT CFontImageObj::FindImgInCoin(const wchar_t str)
 
 UINT CFontImageObj::FindImgInScore(const wchar_t str)
 {
-	return 0;
+	switch (str)
+	{
+	case 'b':
+		return 0 * 3;
+		break;
+	case 'o':
+		return 1 * 3;
+		break;
+	case 'm':
+		return 2 * 3;
+		break;
+	case '1':
+		return 3 * 3;
+		break;
+	case '2':
+		return 4 * 3;
+		break;
+	case '3':
+		return 5 * 3;
+		break;
+	case '4':
+		return 6 * 3;
+		break;
+	case '5':
+		return 7 * 3;
+		break;
+	case '6':
+		return 8 * 3;
+		break;
+	case '7':
+		return 9 * 3;
+		break;
+	case '8':
+		return 10 * 3;
+		break;
+	case '9':
+		return 11 * 3;
+		break;
+	case '0':
+		return 12 * 3;
+		break;
+	case '!':
+		return 13 * 3;
+		break;
+	default:
+		return -1;
+		break;
+	}
 }
 
 UINT CFontImageObj::FindImgInUi(const wchar_t str)
@@ -517,7 +564,7 @@ void CFontImageObj::Init()
 	InitFont(L"Default", FontType::Default);
 	InitFont(L"Mission", FontType::Mission);
 	InitFont(L"Coin", FontType::Coin);
-	//InitFont(L"Score", FontType::Score);
+	InitFont(L"Score", FontType::Score);
 	//InitFont(L"Ui", FontType::Ui);
 	InitFont(L"Time", FontType::Time);
 }

@@ -18,12 +18,18 @@ private:
 	float m_fPlayerMaxPosX;
 	float m_fAccTime;
 	float m_fMissionAccTime;
+	int m_fTime;
+	int m_iTimeCount;
 	bool m_bIsStarted;
 
 	CFontImageObj* m_pInsertCoinImgObj;
 
 	CFontImageObj* m_pMissionImgObj1;
 	CFontImageObj* m_pMissionImgObj2;
+	CFontImageObj* m_pTimeImgObj;
+	CFontImageObj* m_pBarFontObj;
+	CFontImageObj* m_pBulletObj;
+	CFontImageObj* m_pBombObj;
 	Vector m_vecStartPos1;
 	Vector m_vecStartPos2;
 

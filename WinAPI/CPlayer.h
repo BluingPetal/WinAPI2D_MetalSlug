@@ -35,6 +35,7 @@ private:
 	bool m_bIsDead;
 	bool m_bIsAttack;
 	bool m_bIsShoot;
+	bool m_bIsSit;
 
 	bool m_bIsPrevCurLookSame;
 

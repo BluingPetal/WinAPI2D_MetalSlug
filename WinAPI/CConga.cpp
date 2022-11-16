@@ -23,7 +23,7 @@ CConga::CConga()
 	m_vecLookDir = Vector(-1, 0);
 	m_fSpeed = 200.f;
 	m_fAccTime = 0.f;
-	m_hp = 5;
+	m_hp = 10;
 	m_isAttack = false;
 }
 
@@ -52,8 +52,6 @@ void CConga::Init()
 	m_pFarColliderObj = new CColliderObject;
 	m_pFarColliderObj->SetName(L"FarColliderObj");
 	m_pFarColliderObj->SetOwner(this);
-	//m_pFarColliderObj->SetExtension(m_fExtension);
-	//m_pFarColliderObj->SetScale(m_vecScale);
 	m_pFarColliderObj->SetScale(Vector(230, m_pAnimator->GetFirstAniFrame().slice.y * 1.5) * m_fExtension);
 
 	m_pNearColliderObj = new CColliderObject;
@@ -92,17 +90,16 @@ void CConga::Update()
 				else
 					m_vecMoveDir.x = 0;
 			}
-			else
-			{
-				m_pTargetObj = nullptr;
-			}
+			//else
+			//{
+			//	m_pTargetObj = nullptr;
+			//}
 		}
 		else
 		{
 			m_fSpeed = 200.f;
 		}
 	}
-
 	AnimationUpdate();
 	StateUpdate();
 }
@@ -143,8 +140,8 @@ void CConga::StateUpdate()
 		{
 			m_fAccTime = 0;
 			m_congaState = CongaStatus::Death;
+			break;
 		}
-
 		if (m_pTargetObj != nullptr || m_fAccTime >= 2.f)
 		{
 			m_fAccTime = 0;
@@ -156,8 +153,8 @@ void CConga::StateUpdate()
 		{
 			m_fAccTime = 0;
 			m_congaState = CongaStatus::Death;
+			break;
 		}
-
 		if (m_pTargetObj != nullptr)
 		{
 			m_vecPos.x += m_vecLookDir.x * m_fSpeed * DT;
@@ -178,28 +175,41 @@ void CConga::StateUpdate()
 		{
 			m_fAccTime = 0;
 			m_congaState = CongaStatus::Death;
+			break;
 		}
+		Logger::Debug(to_wstring(m_fAccTime));
 		if (m_fAccTime < 1.3f)
 		{
-			if (!m_isAttack && m_pTargetObj != nullptr)
+			//if (dynamic_cast<CPlayer*>(m_pTargetObj)->GetIsDead())
+			//{
+			//	m_pTargetObj = nullptr;
+			//	m_congaState = CongaStatus::Idle;
+			//}
+			if (!m_isAttack) // player가 near attack 중에 death state로 갔을 경우도 제외
 			{
-				m_isAttack = true;
-				CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pTargetObj);
+				//Logger::Debug(to_wstring(m_fAccTime));
+				//Logger::Debug(L"Here");
+				
+  				m_isAttack = true;
+	 			CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pTargetObj);
 				pPlayer->SetHp(dynamic_cast<CPlayer*>(m_pTargetObj)->GetHp() - 1);
-				if(pPlayer->GetIsDead())
-					m_congaState = CongaStatus::Idle;
-				Logger::Debug(to_wstring(dynamic_cast<CPlayer*>(m_pTargetObj)->GetHp()));
-				Logger::Debug(to_wstring(m_hp));
+				Logger::Debug(to_wstring(pPlayer->GetHp()));
 			}
 		}
-		if (m_fAccTime >= 1.3f)
+		else//if (m_fAccTime >= 1.3f)
 		{
 			m_isAttack = false;
 			m_fAccTime = 0;
+			CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pTargetObj);
+			if (pPlayer->GetHp() == 0)
+			{
+				m_fAccTime = 0;
+				m_pTargetObj = nullptr;
+				m_congaState = CongaStatus::Idle;
+			}
 		}
 		break;
 	case CongaStatus::Death:
-
 		m_pTargetObj = nullptr;
 		DELETEOBJECT(m_pFarColliderObj);
 		DELETEOBJECT(m_pNearColliderObj);
@@ -233,13 +243,11 @@ void CConga::AnimationUpdate()
 			else
 				m_pAnimator->Play(L"Monster\\Conga\\CongaAttackL1");
 		}
+		else
+		{
+			m_pAnimator->Stop();
+		}
 		break;
-	//case CongaStatus::FarAttack:
-	//	if (m_vecLookDir.x > 0)
-	//		m_pAnimator->Play(L"Monster\\Conga\\CongaAttackR2");
-	//	else
-	//		m_pAnimator->Play(L"Monster\\Conga\\CongaAttackL2");
-	//	break;
 	case CongaStatus::Death:
 		if (m_vecLookDir.x > 0)
 			m_pAnimator->Play(L"Monster\\Conga\\CongaDeathR");

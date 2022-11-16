@@ -239,14 +239,6 @@ void CPlayer::KeyUpdate()
 				m_status = PlayerStatus::Jump;
 				m_gravity->SetVelocity(-400);
 			}
-			/*
-			if (!m_bIsJump)
-			{
-				m_status = PlayerStatus::Jump;
-				m_gravity->SetVelocity(-400);
-				m_bIsJump = true;
-			}
-			*/
 		}
 
 		if (BUTTONDOWN('A'))
@@ -268,7 +260,6 @@ void CPlayer::KeyUpdate()
 			m_fAcctime = 0;
 			m_bIsAttack = true;
 			m_bIsShoot = true;
-			//Logger::Debug(L"prev : " + to_wstring(m_vecPrevLookDir.y) + L"cur : " + to_wstring(m_vecLookDir.y));
 		}
 		if (BUTTONDOWN('F'))
 		{
@@ -277,27 +268,11 @@ void CPlayer::KeyUpdate()
 			m_bIsAttack = true;
 			m_bIsShoot = true;
 		}
-
-		//if (BUTTONDOWN('Q'))
-		//{
-		//	m_bIsDead = true;
-		//}
-
-
 		// PrevLookDir.y Á¤ÀÇ
 		if (tempLookDir.y != m_vecLookDir.y)
 		{
 			m_vecPrevLookDir.y = tempLookDir.y;
 		}
-
-
-		/*
-
-		if (BUTTONDOWN(VK_SPACE))
-		{
-			CreateMissile();
-		}
-		*/
 	}
 	if (BUTTONDOWN('Q'))
 	{
@@ -1550,9 +1525,10 @@ void CPlayer::BehaviorUpdate()
 		break;
 	case PlayerStatus::Attack:
 		m_vecPos.x += m_vecMoveDir.x * m_fSpeed * DT;
+
 		break;
 	case PlayerStatus::SitAttack:
-		//m_vecPos.x += -1 * m_vecMoveDir.x * 200 * DT;
+		m_bIsSit = true;
 		break;
 	case PlayerStatus::Dead:
 		if (!m_bIsDead)
@@ -1773,6 +1749,7 @@ void CPlayer::StatusUpdate()
 		{
 			m_status = PlayerStatus::Dead;
 			m_fAcctime = 0;
+			m_bIsSit = false;
 			break;
 		}
 		//if (m_vecMoveDir.y < 0)
@@ -1792,6 +1769,7 @@ void CPlayer::StatusUpdate()
 			else
 				m_status = PlayerStatus::Idle;
 			m_fAcctime = 0;
+			m_bIsSit = false;
 			//else if (m_vecMoveDir.x == 0 && m_vecMoveDir.y <= 0)
 			//	m_status = PlayerStatus::Idle;
 		}
@@ -1809,7 +1787,35 @@ void CPlayer::CreateMissile()
 	CMissile* pMissile = new CMissile();
 	pMissile->SetName(L"PlayerMissile");
 	pMissile->SetPos(m_vecPos);
-	pMissile->SetDir(m_vecLookDir);
+
+	if (m_vecLookDir.y < 0)
+	{
+		if (m_bIsSit)
+			pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+		else
+			pMissile->SetDir(Vector(0, m_vecLookDir.y));
+	}
+	else if (m_vecLookDir.y > 0)
+	{
+		if(m_bIsJump)
+			pMissile->SetDir(Vector(0, m_vecLookDir.y));
+		else
+			pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+	}
+	else
+	{
+		pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+	}
+	/*
+	if (m_vecLookDir.y < 0)
+		pMissile->SetDir(Vector(0, m_vecLookDir.y));
+	else if (m_bIsJump && m_vecLookDir.y > 0)
+		pMissile->SetDir(Vector(0, m_vecLookDir.y));
+	else if(m_vecLookDir.x > 0)
+		pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+	else if (m_vecLookDir.x < 0)
+		pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+		*/
 	pMissile->SetOwner(this);
 	pMissile->SetExtension(m_fExtension);
 	ADDOBJECT(pMissile);

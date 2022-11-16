@@ -128,7 +128,7 @@ void CSceneTitle::Update()
 	{
 		if (BUTTONDOWN(VK_SPACE) || m_time == 0)
 		{
-			if(!m_bStopUpdate)
+			if (!m_bStopUpdate)
 				m_fAccTime = 0;
 
 			m_time--;
