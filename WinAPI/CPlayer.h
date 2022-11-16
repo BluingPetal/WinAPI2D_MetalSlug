@@ -24,6 +24,7 @@ private:
 
 	CGravity* m_gravity;
 
+	PlayerStatus m_prevStatus;
 	PlayerStatus m_status;
 
 	Vector m_vecMoveDir;
@@ -40,7 +41,6 @@ private:
 	int m_hp;
 	float m_fSpeed;
 	float m_fAcctime;
-	float m_fAttackAccTime;
 
 	PlayerWeapon m_curWeapon;
 
