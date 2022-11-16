@@ -3,6 +3,7 @@
 
 #include "CCollider.h"
 #include "CConga.h"
+#include "CPlayer.h"
 
 CColliderObject::CColliderObject()
 {
@@ -52,13 +53,21 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
     {
         CConga* pOwner = dynamic_cast<CConga*>(m_pOwner);
         if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() != CongaStatus::Death))
-            pOwner->SetTarget(pOtherCollider->GetOwner());
+        {
+            CPlayer* pPlayer = dynamic_cast<CPlayer*>(pOtherCollider->GetOwner());
+            if(!pPlayer->GetIsDead())
+                pOwner->SetTarget(pOtherCollider->GetOwner());
+        }
     }
     if (m_strName == L"NearColliderObj")
     {
         CConga* pOwner = dynamic_cast<CConga*>(m_pOwner);
         if (pOtherCollider->GetObjName() == L"Player" && (pOwner->GetCongaState() != CongaStatus::Death))
-            pOwner->SetCongaState(CongaStatus::NearAttack);
+        {
+            CPlayer* pPlayer = dynamic_cast<CPlayer*>(pOtherCollider->GetOwner());
+            if (!pPlayer->GetIsDead())
+                pOwner->SetCongaState(CongaStatus::NearAttack);
+        }
     }
 }
 

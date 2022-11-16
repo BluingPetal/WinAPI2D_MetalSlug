@@ -6,7 +6,7 @@ class CAnimator;
 class CGravity;
 class CColliderObject;
 class CGameObject;
-enum class CongaStatus { Idle, Walk, NearAttack, FarAttack, Death };
+enum class CongaStatus { Idle, Walk, NearAttack, Death };
 
 class CConga : public CMonster
 {

@@ -127,7 +127,7 @@ void CSceneStage01::Init()
 	AddGameObject(pFrontOceanObj2);
 
 	AddGameObject(m_pPlayer);
-	//AddGameObject(m_pConga);
+	AddGameObject(m_pConga);
 	AddGameObject(pFrontOceanCollider);
 	AddGameObject(m_pObstacle);
 
@@ -161,7 +161,7 @@ void CSceneStage01::Enter()
 	m_pMissionImgObj1->Show();
 	m_pMissionImgObj2->Show();
 
-	//m_pConga->CongaAddObject();
+	m_pConga->CongaAddObject();
 }
 
 void CSceneStage01::Update()

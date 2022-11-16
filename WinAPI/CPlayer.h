@@ -49,6 +49,7 @@ public:
 	bool GetIsJump() { return m_bIsJump; }
 	float GetSpeed() { return m_fSpeed; }
 	Vector GetMoveDir() { return m_vecMoveDir; }
+	bool GetIsDead() { return m_bIsDead; }
 	void SetHp(int hp) { m_hp = hp; }
 	int GetHp() { return m_hp; }
 

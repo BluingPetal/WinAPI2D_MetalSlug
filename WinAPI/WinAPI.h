@@ -81,6 +81,7 @@ enum class PlayerStatus
 	Move,
 	Jump,
 	Attack,
+	SitAttack,
 
 	Dead,
 };
