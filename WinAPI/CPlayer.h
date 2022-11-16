@@ -41,6 +41,7 @@ private:
 	int m_hp;
 	float m_fSpeed;
 	float m_fAcctime;
+	float m_fShootTime;
 
 	PlayerWeapon m_curWeapon;
 

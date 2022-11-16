@@ -103,15 +103,15 @@ void CPlayer::Init()
 	// Attack Animation
 		// TOP - L
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriAttackL_1", m_pAttackLImage, 0.1f, false);
-	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL1_1", m_pAttackLImage, 0.1f);
-	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL2_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL1_1", m_pAttackLImage, 0.1f, false);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriKnifeMotionL2_1", m_pAttackLImage, 0.1f, false);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriBombL_1", m_pAttackLImage, 0.1f, false);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriUpAttackL_1", m_pAttackLImage, 0.1f, false);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriDownAttackL_1", m_pAttackLImage, 0.1f, false);
 
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunAttackL_1", m_pAttackLImage, 0.1f, false);
-	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunKnifeMotionL1_1", m_pAttackLImage, 0.1f);
-	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunKnifeMotionL2_1", m_pAttackLImage, 0.1f);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunKnifeMotionL1_1", m_pAttackLImage, 0.1f, false);
+	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunKnifeMotionL2_1", m_pAttackLImage, 0.1f, false);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunGoingUpL_1", m_pAttackLImage, 0.03f, false);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunUpL_1", m_pAttackLImage, 0.1f, false);
 	m_pAnimator1->CreateAnimation(L"Player\\Attack\\EriHeavyGunGoingUpPlaceL_1", m_pAttackLImage, 0.03f, false);
@@ -432,13 +432,13 @@ void CPlayer::AnimatorUpdate()
 
 				if (m_curWeapon == PlayerWeapon::Pistol)
 				{
-					float shootTime = 0.1f * 10;
+					m_fShootTime = 0.1f * 10;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriUpAttackR_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -447,25 +447,25 @@ void CPlayer::AnimatorUpdate()
 						HeavyGunGoingUp(L"R");
 					else if (m_vecPrevLookDir.y < 0)
 					{
-						float shootTime = 0.1f * 4;
+						m_fShootTime = 0.1f * 4;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpR_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
 				else if (m_curWeapon == PlayerWeapon::Bomb)
 				{
-					float shootTime = 0.1f * 6;
+					m_fShootTime = 0.1f * 6;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriBombR_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::Knife)
@@ -474,24 +474,24 @@ void CPlayer::AnimatorUpdate()
 					int playAnimatorNum = rand() % 2;
 					if (playAnimatorNum == 0)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR1_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR2_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -508,13 +508,13 @@ void CPlayer::AnimatorUpdate()
 
 				if (m_curWeapon == PlayerWeapon::Pistol)
 				{
-					float shootTime = 0.1f * 10;
+					m_fShootTime = 0.1f * 10;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriAttackR_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime > shootTime)
+					if (m_fAcctime > m_fShootTime)
 					{
 						m_bIsAttack = false;
 					}
@@ -531,13 +531,13 @@ void CPlayer::AnimatorUpdate()
 					}
 					else
 					{
-						float shootTime = 0.1f * 4;
+						m_fShootTime = 0.1f * 4;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackR_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime > shootTime)
+						if (m_fAcctime > m_fShootTime)
 						{
 							m_bIsAttack = false;
 						}
@@ -545,13 +545,13 @@ void CPlayer::AnimatorUpdate()
 				}
 				else if (m_curWeapon == PlayerWeapon::Bomb)
 				{
-					float shootTime = 0.1f * 6;
+					m_fShootTime = 0.1f * 6;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriBombR_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::Knife)
@@ -560,24 +560,24 @@ void CPlayer::AnimatorUpdate()
 					int playAnimatorNum = rand() % 2;
 					if (playAnimatorNum == 0)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR1_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR2_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -593,13 +593,13 @@ void CPlayer::AnimatorUpdate()
 
 					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriDownAttackR_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -608,25 +608,25 @@ void CPlayer::AnimatorUpdate()
 							HeavyGunGoingDown(L"R");
 						else if (m_vecPrevLookDir.y > 0)
 						{
-							float shootTime = 0.1f * 4;
+							m_fShootTime = 0.1f * 4;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunDownR_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
 					else if (m_curWeapon == PlayerWeapon::Bomb)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriBombR_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Knife)
@@ -635,24 +635,24 @@ void CPlayer::AnimatorUpdate()
 						int playAnimatorNum = rand() % 2;
 						if (playAnimatorNum == 0)
 						{
-							float shootTime = 0.1f * 6;
+							m_fShootTime = 0.1f * 6;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR1_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else
 						{
-							float shootTime = 0.1f * 9;
+							m_fShootTime = 0.1f * 9;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR2_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
@@ -665,46 +665,46 @@ void CPlayer::AnimatorUpdate()
 					}
 					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitAttackR", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
 					{
-						float shootTime = 0.1f * 7;
+						m_fShootTime = 0.1f * 7;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitHeavyGunR", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Bomb)
 					{
-						float shootTime = 0.1f * 8;
+						m_fShootTime = 0.1f * 8;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitBombR", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Knife)
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
-							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR", true);
+							m_pAnimator1->Play(L"Player\\Attack\\EriSitKnifeR", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -724,13 +724,13 @@ void CPlayer::AnimatorUpdate()
 
 				if (m_curWeapon == PlayerWeapon::Pistol)
 				{
-					float shootTime = 0.1f * 10;
+					m_fShootTime = 0.1f * 10;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriUpAttackL_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -739,25 +739,25 @@ void CPlayer::AnimatorUpdate()
 						HeavyGunGoingUp(L"L");
 					else if (m_vecPrevLookDir.y < 0)
 					{
-						float shootTime = 0.1f * 4;
+						m_fShootTime = 0.1f * 4;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpL_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
 				else if (m_curWeapon == PlayerWeapon::Bomb)
 				{
-					float shootTime = 0.1f * 6;
+					m_fShootTime = 0.1f * 6;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriBombL_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::Knife)
@@ -766,24 +766,24 @@ void CPlayer::AnimatorUpdate()
 					int playAnimatorNum = rand() % 2;
 					if (playAnimatorNum == 0)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL1_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL2_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -800,13 +800,13 @@ void CPlayer::AnimatorUpdate()
 
 				if (m_curWeapon == PlayerWeapon::Pistol)
 				{
-					float shootTime = 0.1f * 10;
+					m_fShootTime = 0.1f * 10;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriAttackL_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime > shootTime)
+					if (m_fAcctime > m_fShootTime)
 					{
 						m_bIsAttack = false;
 					}
@@ -823,13 +823,13 @@ void CPlayer::AnimatorUpdate()
 					}
 					else
 					{
-						float shootTime = 0.1f * 4;
+						m_fShootTime = 0.1f * 4;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackL_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime > shootTime)
+						if (m_fAcctime > m_fShootTime)
 						{
 							m_bIsAttack = false;
 						}
@@ -837,13 +837,13 @@ void CPlayer::AnimatorUpdate()
 				}
 				else if (m_curWeapon == PlayerWeapon::Bomb)
 				{
-					float shootTime = 0.1f * 6;
+					m_fShootTime = 0.1f * 6;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriBombL_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::Knife)
@@ -852,24 +852,24 @@ void CPlayer::AnimatorUpdate()
 					int playAnimatorNum = rand() % 2;
 					if (playAnimatorNum == 0)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL1_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL2_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -885,13 +885,13 @@ void CPlayer::AnimatorUpdate()
 
 					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriDownAttackL_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -900,25 +900,25 @@ void CPlayer::AnimatorUpdate()
 							HeavyGunGoingDown(L"L");
 						else if (m_vecPrevLookDir.y > 0)
 						{
-							float shootTime = 0.1f * 4;
+							m_fShootTime = 0.1f * 4;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunDownL_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
 					else if (m_curWeapon == PlayerWeapon::Bomb)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriBombL_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Knife)
@@ -927,24 +927,24 @@ void CPlayer::AnimatorUpdate()
 						int playAnimatorNum = rand() % 2;
 						if (playAnimatorNum == 0)
 						{
-							float shootTime = 0.1f * 6;
+							m_fShootTime = 0.1f * 6;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL1_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else
 						{
-							float shootTime = 0.1f * 9;
+							m_fShootTime = 0.1f * 9;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL2_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
@@ -957,46 +957,46 @@ void CPlayer::AnimatorUpdate()
 					}
 					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitAttackL", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
 					{
-						float shootTime = 0.1f * 7;
+						m_fShootTime = 0.1f * 7;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitHeavyGunL", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Bomb)
 					{
-						float shootTime = 0.1f * 8;
+						m_fShootTime = 0.1f * 8;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitBombL", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Knife)
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
-							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL", true);
+							m_pAnimator1->Play(L"Player\\Attack\\EriSitKnifeL", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -1018,13 +1018,13 @@ void CPlayer::AnimatorUpdate()
 
 					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						float shootTime = 0.1f * 10;
+						m_fShootTime = 0.1f * 10;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriUpAttackR_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -1033,25 +1033,25 @@ void CPlayer::AnimatorUpdate()
 							HeavyGunGoingUp(L"R");
 						else if (m_vecPrevLookDir.y < 0)
 						{
-							float shootTime = 0.1f * 4;
+							m_fShootTime = 0.1f * 4;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpR_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
 					else if (m_curWeapon == PlayerWeapon::Bomb)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriBombR_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Knife)
@@ -1060,24 +1060,24 @@ void CPlayer::AnimatorUpdate()
 						int playAnimatorNum = rand() % 2;
 						if (playAnimatorNum == 0)
 						{
-							float shootTime = 0.1f * 6;
+							m_fShootTime = 0.1f * 6;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR1_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else
 						{
-							float shootTime = 0.1f * 9;
+							m_fShootTime = 0.1f * 9;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR2_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
@@ -1094,13 +1094,13 @@ void CPlayer::AnimatorUpdate()
 
 					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						float shootTime = 0.1f * 10;
+						m_fShootTime = 0.1f * 10;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriAttackR_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime > shootTime)
+						if (m_fAcctime > m_fShootTime)
 						{
 							m_bIsAttack = false;
 						}
@@ -1117,13 +1117,13 @@ void CPlayer::AnimatorUpdate()
 						}
 						else
 						{
-							float shootTime = 0.1f * 4;
+							m_fShootTime = 0.1f * 4;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackR_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime > shootTime)
+							if (m_fAcctime > m_fShootTime)
 							{
 								m_bIsAttack = false;
 							}
@@ -1131,13 +1131,13 @@ void CPlayer::AnimatorUpdate()
 					}
 					else if (m_curWeapon == PlayerWeapon::Bomb)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriBombR_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Knife)
@@ -1146,24 +1146,24 @@ void CPlayer::AnimatorUpdate()
 						int playAnimatorNum = rand() % 2;
 						if (playAnimatorNum == 0)
 						{
-							float shootTime = 0.1f * 6;
+							m_fShootTime = 0.1f * 6;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR1_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else
 						{
-							float shootTime = 0.1f * 9;
+							m_fShootTime = 0.1f * 9;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR2_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
@@ -1179,13 +1179,13 @@ void CPlayer::AnimatorUpdate()
 
 						if (m_curWeapon == PlayerWeapon::Pistol)
 						{
-							float shootTime = 0.1f * 6;
+							m_fShootTime = 0.1f * 6;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriDownAttackR_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -1194,25 +1194,25 @@ void CPlayer::AnimatorUpdate()
 								HeavyGunGoingDown(L"R");
 							else if (m_vecPrevLookDir.y > 0)
 							{
-								float shootTime = 0.1f * 4;
+								m_fShootTime = 0.1f * 4;
 								if (m_bIsShoot)
 								{
 									m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunDownR_1", true);
 									m_bIsShoot = false;
 								}
-								if (m_fAcctime >= shootTime)
+								if (m_fAcctime >= m_fShootTime)
 									m_bIsAttack = false;
 							}
 						}
 						else if (m_curWeapon == PlayerWeapon::Bomb)
 						{
-							float shootTime = 0.1f * 6;
+							m_fShootTime = 0.1f * 6;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriBombR_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else if (m_curWeapon == PlayerWeapon::Knife)
@@ -1221,24 +1221,24 @@ void CPlayer::AnimatorUpdate()
 							int playAnimatorNum = rand() % 2;
 							if (playAnimatorNum == 0)
 							{
-								float shootTime = 0.1f * 6;
+								m_fShootTime = 0.1f * 6;
 								if (m_bIsShoot)
 								{
 									m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR1_1", true);
 									m_bIsShoot = false;
 								}
-								if (m_fAcctime >= shootTime)
+								if (m_fAcctime >= m_fShootTime)
 									m_bIsAttack = false;
 							}
 							else
 							{
-								float shootTime = 0.1f * 9;
+								m_fShootTime = 0.1f * 9;
 								if (m_bIsShoot)
 								{
 									m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR2_1", true);
 									m_bIsShoot = false;
 								}
-								if (m_fAcctime >= shootTime)
+								if (m_fAcctime >= m_fShootTime)
 									m_bIsAttack = false;
 							}
 						}
@@ -1251,46 +1251,46 @@ void CPlayer::AnimatorUpdate()
 						}
 						if (m_curWeapon == PlayerWeapon::Pistol)
 						{
-							float shootTime = 0.1f * 9;
+							m_fShootTime = 0.1f * 9;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriSitAttackR", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
 						{
-							float shootTime = 0.1f * 7;
+							m_fShootTime = 0.1f * 7;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriSitHeavyGunR", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else if (m_curWeapon == PlayerWeapon::Bomb)
 						{
-							float shootTime = 0.1f * 8;
+							m_fShootTime = 0.1f * 8;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriSitBombR", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else if (m_curWeapon == PlayerWeapon::Knife)
 						{
-							float shootTime = 0.1f * 9;
+							m_fShootTime = 0.1f * 9;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionR", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
@@ -1310,13 +1310,13 @@ void CPlayer::AnimatorUpdate()
 
 				if (m_curWeapon == PlayerWeapon::Pistol)
 				{
-					float shootTime = 0.1f * 10;
+					m_fShootTime = 0.1f * 10;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriUpAttackL_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -1325,25 +1325,25 @@ void CPlayer::AnimatorUpdate()
 						HeavyGunGoingUp(L"L");
 					else if (m_vecPrevLookDir.y < 0)
 					{
-						float shootTime = 0.1f * 4;
+						m_fShootTime = 0.1f * 4;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunUpL_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
 				else if (m_curWeapon == PlayerWeapon::Bomb)
 				{
-					float shootTime = 0.1f * 6;
+					m_fShootTime = 0.1f * 6;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriBombL_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::Knife)
@@ -1352,24 +1352,24 @@ void CPlayer::AnimatorUpdate()
 					int playAnimatorNum = rand() % 2;
 					if (playAnimatorNum == 0)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL1_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL2_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -1386,13 +1386,13 @@ void CPlayer::AnimatorUpdate()
 
 				if (m_curWeapon == PlayerWeapon::Pistol)
 				{
-					float shootTime = 0.1f * 10;
+					m_fShootTime = 0.1f * 10;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriAttackL_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime > shootTime)
+					if (m_fAcctime > m_fShootTime)
 					{
 						m_bIsAttack = false;
 					}
@@ -1409,13 +1409,13 @@ void CPlayer::AnimatorUpdate()
 					}
 					else
 					{
-						float shootTime = 0.1f * 4;
+						m_fShootTime = 0.1f * 4;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunAttackL_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime > shootTime)
+						if (m_fAcctime > m_fShootTime)
 						{
 							m_bIsAttack = false;
 						}
@@ -1423,13 +1423,13 @@ void CPlayer::AnimatorUpdate()
 				}
 				else if (m_curWeapon == PlayerWeapon::Bomb)
 				{
-					float shootTime = 0.1f * 6;
+					m_fShootTime = 0.1f * 6;
 					if (m_bIsShoot)
 					{
 						m_pAnimator1->Play(L"Player\\Attack\\EriBombL_1", true);
 						m_bIsShoot = false;
 					}
-					if (m_fAcctime >= shootTime)
+					if (m_fAcctime >= m_fShootTime)
 						m_bIsAttack = false;
 				}
 				else if (m_curWeapon == PlayerWeapon::Knife)
@@ -1438,24 +1438,24 @@ void CPlayer::AnimatorUpdate()
 					int playAnimatorNum = rand() % 2;
 					if (playAnimatorNum == 0)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL1_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL2_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -1471,13 +1471,13 @@ void CPlayer::AnimatorUpdate()
 
 					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriDownAttackL_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -1486,25 +1486,25 @@ void CPlayer::AnimatorUpdate()
 							HeavyGunGoingDown(L"L");
 						else if (m_vecPrevLookDir.y > 0)
 						{
-							float shootTime = 0.1f * 4;
+							m_fShootTime = 0.1f * 4;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunDownL_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
 					else if (m_curWeapon == PlayerWeapon::Bomb)
 					{
-						float shootTime = 0.1f * 6;
+						m_fShootTime = 0.1f * 6;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriBombL_1", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Knife)
@@ -1513,24 +1513,24 @@ void CPlayer::AnimatorUpdate()
 						int playAnimatorNum = rand() % 2;
 						if (playAnimatorNum == 0)
 						{
-							float shootTime = 0.1f * 6;
+							m_fShootTime = 0.1f * 6;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL1_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 						else
 						{
-							float shootTime = 0.1f * 9;
+							m_fShootTime = 0.1f * 9;
 							if (m_bIsShoot)
 							{
 								m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL2_1", true);
 								m_bIsShoot = false;
 							}
-							if (m_fAcctime >= shootTime)
+							if (m_fAcctime >= m_fShootTime)
 								m_bIsAttack = false;
 						}
 					}
@@ -1543,46 +1543,46 @@ void CPlayer::AnimatorUpdate()
 					}
 					if (m_curWeapon == PlayerWeapon::Pistol)
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitAttackL", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::HeavyMachineGun)
 					{
-						float shootTime = 0.1f * 7;
+						m_fShootTime = 0.1f * 7;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitHeavyGunL", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Bomb)
 					{
-						float shootTime = 0.1f * 8;
+						m_fShootTime = 0.1f * 8;
 						if (m_bIsShoot)
 						{
 							m_pAnimator1->Play(L"Player\\Attack\\EriSitBombL", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 					else if (m_curWeapon == PlayerWeapon::Knife)
 					{
-						float shootTime = 0.1f * 9;
+						m_fShootTime = 0.1f * 9;
 						if (m_bIsShoot)
 						{
-							m_pAnimator1->Play(L"Player\\Attack\\EriKnifeMotionL", true);
+							m_pAnimator1->Play(L"Player\\Attack\\EriSitKnifeL", true);
 							m_bIsShoot = false;
 						}
-						if (m_fAcctime >= shootTime)
+						if (m_fAcctime >= m_fShootTime)
 							m_bIsAttack = false;
 					}
 				}
@@ -1614,6 +1614,8 @@ void CPlayer::BehaviorUpdate()
 		break;
 	case PlayerStatus::Attack:
 		m_vecPos.x += m_vecMoveDir.x * m_fSpeed * DT;
+		if(!m_bIsJump && m_vecLookDir.y > 0)
+			m_vecPos.x -= m_vecMoveDir.x * m_fSpeed * DT;
 		break;
 	case PlayerStatus::Dead:
 		break;
@@ -1626,7 +1628,7 @@ void CPlayer::BehaviorUpdate()
 void CPlayer::HeavyGunGoingDownPlace(wstring RorL)
 {
 	float goingDownPlaceTime = 0.03f * 2;
-	float shootTime = 0.1f * 4;
+	m_fShootTime = 0.1f * 4;
 
 	if (m_bIsJump)
 	{
@@ -1634,7 +1636,7 @@ void CPlayer::HeavyGunGoingDownPlace(wstring RorL)
 			m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDownPlace" + RorL + L"_1");
 		else
 		{
-			if (m_fAcctime >= goingDownPlaceTime && m_fAcctime < goingDownPlaceTime + shootTime)
+			if (m_fAcctime >= goingDownPlaceTime && m_fAcctime < goingDownPlaceTime + m_fShootTime)
 			{
 				if (m_bIsShoot)
 				{
@@ -1642,7 +1644,7 @@ void CPlayer::HeavyGunGoingDownPlace(wstring RorL)
 					m_bIsShoot = false;
 				}
 			}
-			if (m_fAcctime >= goingDownPlaceTime + shootTime)
+			if (m_fAcctime >= goingDownPlaceTime + m_fShootTime)
 			{
 				m_bIsAttack = false;
 			}
@@ -1653,7 +1655,7 @@ void CPlayer::HeavyGunGoingDownPlace(wstring RorL)
 void CPlayer::HeavyGunGoingDown(wstring RorL)
 {
 	float goingDownTime = 0.03f * 2;
-	float shootTime = 0.1f * 4;
+	m_fShootTime = 0.1f * 4;
 
 	if (m_bIsJump)
 	{
@@ -1661,7 +1663,7 @@ void CPlayer::HeavyGunGoingDown(wstring RorL)
 			m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingDown" + RorL + L"_1");
 		else
 		{
-			if (m_fAcctime >= goingDownTime && m_fAcctime < goingDownTime + shootTime)
+			if (m_fAcctime >= goingDownTime && m_fAcctime < goingDownTime + m_fShootTime)
 			{
 				if (m_bIsShoot)
 				{
@@ -1669,7 +1671,7 @@ void CPlayer::HeavyGunGoingDown(wstring RorL)
 					m_bIsShoot = false;
 				}
 			}
-			if (m_fAcctime >= goingDownTime + shootTime)
+			if (m_fAcctime >= goingDownTime + m_fShootTime)
 			{
 				m_bIsAttack = false;
 			}
@@ -1680,13 +1682,13 @@ void CPlayer::HeavyGunGoingDown(wstring RorL)
 void CPlayer::HeavyGunGoingUpPlace(wstring RorL)
 {
 	float goingUpPlaceTime = 0.02f * 2;
-	float shootTime = 0.1f * 4;
+	m_fShootTime = 0.1f * 4;
 
 	if (m_fAcctime < goingUpPlaceTime)
 		m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingUpPlace" + RorL + L"_1");
 	else
 	{
-		if (m_fAcctime >= goingUpPlaceTime && m_fAcctime < goingUpPlaceTime + shootTime)
+		if (m_fAcctime >= goingUpPlaceTime && m_fAcctime < goingUpPlaceTime + m_fShootTime)
 		{
 			if (m_bIsShoot)
 			{
@@ -1694,7 +1696,7 @@ void CPlayer::HeavyGunGoingUpPlace(wstring RorL)
 				m_bIsShoot = false;
 			}
 		}
-		if (m_fAcctime >= goingUpPlaceTime + shootTime)
+		if (m_fAcctime >= goingUpPlaceTime + m_fShootTime)
 		{
 			m_bIsAttack = false;
 		}
@@ -1704,13 +1706,13 @@ void CPlayer::HeavyGunGoingUpPlace(wstring RorL)
 void CPlayer::HeavyGunGoingUp(wstring RorL)
 {
 	float goingUpTime = 0.03f * 2;
-	float shootTime = 0.1f * 4;
+	m_fShootTime = 0.1f * 4;
 
 	if (m_fAcctime < goingUpTime)
 		m_pAnimator1->Play(L"Player\\Attack\\EriHeavyGunGoingUp" + RorL + L"_1");
 	else
 	{
-		if (m_fAcctime >= goingUpTime && m_fAcctime < goingUpTime + shootTime)
+		if (m_fAcctime >= goingUpTime && m_fAcctime < goingUpTime + m_fShootTime)
 		{
 			if (m_bIsShoot)
 			{
@@ -1718,7 +1720,7 @@ void CPlayer::HeavyGunGoingUp(wstring RorL)
 				m_bIsShoot = false;
 			}
 		}
-		if (m_fAcctime >= goingUpTime + shootTime)
+		if (m_fAcctime >= goingUpTime + m_fShootTime)
 		{
 			m_bIsAttack = false;
 		}
