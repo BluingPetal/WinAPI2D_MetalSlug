@@ -406,7 +406,7 @@ UINT CFontImageObj::FindImgInScore(const wchar_t str)
 	case '0':
 		return 12 * 3;
 		break;
-	case '!':
+	case 'z':
 		return 13 * 3;
 		break;
 	default:

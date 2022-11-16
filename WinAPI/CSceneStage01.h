@@ -22,6 +22,9 @@ private:
 	int m_iTimeCount;
 	bool m_bIsStarted;
 
+	int prevBomb;
+	int prevBullet;
+
 	CFontImageObj* m_pInsertCoinImgObj;
 
 	CFontImageObj* m_pMissionImgObj1;
@@ -34,8 +37,12 @@ private:
 	Vector m_vecStartPos2;
 
 	CImageObject* m_pBackGround;
+	CAniObject* pWaterAniObj;
 	CColliderObject* m_pObstacle;
 	CConga* m_pConga;
+
+public:
+	CAniObject* GetWaterAni();
 
 private:
 	void Init()		override;

@@ -45,6 +45,18 @@ void CScene::SceneUpdate()
 	// 씬 내에 삭제해도 안전한 게임오브젝트를 삭제
 	for (int layer = 0; layer < (int)Layer::Size; layer++)
 	{
+		m_listObj[layer].erase(remove_if(m_listObj[layer].begin(), m_listObj[layer].end(), [](CGameObject* target)
+			{
+				if (target->GetSafeToDelete())
+				{
+					target->GameObjectRelease();
+					delete target;
+					return true;
+				}
+				else
+					return false;
+			}), m_listObj[layer].end());
+		/*
 		m_listObj[layer].remove_if([](CGameObject* target)
 			{
 				if (target->GetSafeToDelete())
@@ -56,6 +68,7 @@ void CScene::SceneUpdate()
 				else
 					return false;
 			});
+			*/
 	}
 
 	// 씬 내에 모든 게임오브젝트 로직갱신

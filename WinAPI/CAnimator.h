@@ -4,6 +4,7 @@
 class CAnimation;
 class CImage;
 class CAniObject;
+class CAnimation;
 
 class CAnimator : public CComponent
 {
@@ -27,6 +28,7 @@ public:
 		 float duration, bool repeat = true);
 	void RemoveAnimation(const wstring& aniName);				// 애니메이션 삭제
 	CAnimation* FindAnimation(const wstring& aniName);			// 애니메이션 탐색
+	CAnimation* GetCurAni();			
 	AniFrame GetFirstAniFrame();
 	wstring GetCurAniName();
 

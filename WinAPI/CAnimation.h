@@ -31,10 +31,12 @@ private:
 	float				m_fExtension;
 	AniFrame			m_FirstAniFrame;
 	bool				m_bReversePlay;
+	float				m_fAlpha;
 
 	Vector*				m_vecReadAni;					// 읽어온 애니메이션
 public:
 	const wstring& GetName();
+	void SetAlpha(float alpha) { m_fAlpha = alpha; }
 
 private:
 	void SetName(const wstring& name);

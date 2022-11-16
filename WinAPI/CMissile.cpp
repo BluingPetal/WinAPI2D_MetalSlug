@@ -88,6 +88,7 @@ void CMissile::OnCollisionEnter(CCollider* pOtherCollider)
 			if (pOtherObj->GetCongaState() != CongaStatus::Death && !pOtherObj->GetReserveDelete())
 			{
 				pOtherObj->SetHp(pOtherObj->GetHp() - 1);
+				m_fVelocity = 0;
 				if (m_vecDir.x > 0)
 					m_pAnimator->Play(L"Missile\\CongaHurtL");
 				else
@@ -108,10 +109,10 @@ void CMissile::OnCollisionStay(CCollider* pOtherCollider)
 	{
 		if (pOtherCollider->GetObjName() == L"Conga")
 		{
-			if (m_fAccTime >= 0.05f * 9)
+			if (m_fAccTime >= 0.05f * 8)
 			{
 				DELETEOBJECT(this);
-				m_fAccTime = 0;
+				//m_fAccTime = 0;
 			}
 		}
 	}

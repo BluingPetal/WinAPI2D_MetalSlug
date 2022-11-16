@@ -2,6 +2,7 @@
 #include "CAniObject.h"
 
 #include "CAnimator.h"
+#include "CAnimation.h"
 
 CAniObject::CAniObject()
 {
@@ -10,6 +11,7 @@ CAniObject::CAniObject()
 	m_pImg = nullptr;
 	m_vecOffset = Vector(0, 0);
 	m_pAnimator = new CAnimator;
+	m_fAlpha = 1;
 }
 
 CAniObject::~CAniObject()
@@ -34,6 +36,10 @@ void CAniObject::Init()
 
 void CAniObject::Update()
 {
+	if (m_pAnimator->GetCurAni() != nullptr)
+	{
+		m_pAnimator->GetCurAni()->SetAlpha(m_fAlpha);
+	}
 }
 
 void CAniObject::Render()

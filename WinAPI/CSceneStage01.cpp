@@ -68,6 +68,7 @@ void CSceneStage01::Init()
 	Vector frontOceanPos2 = Vector(0, frontOceanPos1.y + 24);
 	pFrontOceanObj2->SetImage(pFrontOceanImage);
 	pFrontOceanObj2->SetOffset(frontOceanPos2);
+	pFrontOceanObj2->SetLayer(Layer::ForeGround);
 	pFrontOceanObj2->SetExtension(extension);
 
 	pFrontOceanObj1->GetAnimator()->CreateAnimation(L"BackGround\\FrontOcean1", pFrontOceanImage, 0.1f);
@@ -111,6 +112,17 @@ void CSceneStage01::Init()
 	m_pConga->SetPos(WINSIZEX * 0.8f, WINSIZEY * 0.5f);
 	m_pConga->SetExtension(extension);
 
+	pWaterAniObj = new CAniObject;
+	CImage* pWaterAniImg = RESOURCE->LoadImg(L"WaterAni", L"Image\\BackGround\\WaterAni.png");
+	Vector waterAniPos = m_pPlayer->GetPos();
+	pWaterAniObj->SetImage(pWaterAniImg);
+	pWaterAniObj->SetPos(waterAniPos + Vector(0, 30));
+	pWaterAniObj->SetExtension(extension - 2);
+	pWaterAniObj->SetAlpha(0);
+	pWaterAniObj->GetAnimator()->CreateAnimation(L"BackGround\\WaterAni", pWaterAniImg, 0.1f);
+	pWaterAniObj->GetAnimator()->Play(L"BackGround\\WaterAni");
+	pWaterAniObj->SetLayer(Layer::ForeGround);
+
 	m_pInsertCoinImgObj = new CFontImageObj;
 	m_pInsertCoinImgObj->SetFixed(true);
 	m_pInsertCoinImgObj->SetExtension(extension + 1);
@@ -128,6 +140,14 @@ void CSceneStage01::Init()
 	m_pBarFontObj = new CFontImageObj;
 	m_pBarFontObj->SetFixed(true);
 	m_pBarFontObj->SetExtension(extension-1);
+
+	m_pBulletObj = new CFontImageObj;
+	m_pBulletObj->SetFixed(true);
+	m_pBulletObj->SetExtension(extension);
+
+	m_pBombObj = new CFontImageObj;
+	m_pBombObj->SetFixed(true);
+	m_pBombObj->SetExtension(extension);
 
 #pragma endregion
 
@@ -161,6 +181,7 @@ void CSceneStage01::Init()
 	AddGameObject(m_pPlayer);
 	AddGameObject(m_pConga);
 	AddGameObject(pFrontOceanCollider);
+	AddGameObject(pWaterAniObj);
 	AddGameObject(m_pObstacle);
 
 	AddGameObject(m_pInsertCoinImgObj);
@@ -170,6 +191,8 @@ void CSceneStage01::Init()
 	AddGameObject(pPlayerStatusObj);
 	AddGameObject(pPlayerBarObj);
 	AddGameObject(m_pBarFontObj);
+	AddGameObject(m_pBulletObj);
+	AddGameObject(m_pBombObj);
 
 #pragma endregion
 	// CCameraController* pCamController = new CCameraController;
@@ -197,18 +220,40 @@ void CSceneStage01::Enter()
 	Vector timeStartPos = Vector(WINSIZEX * 0.45f, 20);
 	m_pTimeImgObj->SetPos(timeStartPos);
 	wstring time = to_wstring(m_fTime);
-	m_pTimeImgObj->CreateImgObj(time, timeStartPos, 2, FontType::Time);
+	m_pTimeImgObj->CreateImgObj(time, timeStartPos, time.size(), FontType::Time);
 
 	m_pBarFontObj->SetInterval(1.1f);
 	Vector startbarFontPos = Vector(-35, 65);
 	m_pBarFontObj->SetPos(startbarFontPos);
 	m_pBarFontObj->CreateImgObj(L"1up2", startbarFontPos, 4, FontType::Default);
+
+	m_pBulletObj->SetInterval(1.f);
+	Vector startBulletObjPos = Vector(WINSIZEX * 0.3, 60);
+	m_pBulletObj->SetPos(startBulletObjPos);
+	wstring bullet;
+	if (m_pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
+		bullet = L"z";
+	else if (m_pPlayer->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+	{
+		bullet = to_wstring(m_pPlayer->GetBullet());
+		if(bullet==L"0")
+			bullet = L"z";
+	}
+	m_pBulletObj->CreateImgObj(bullet, startBulletObjPos, bullet.size(), FontType::Score);
+
+	m_pBombObj->SetInterval(1.f);
+	Vector startBombObjPos = Vector(WINSIZEX * 0.37, 60);
+	m_pBombObj->SetPos(startBombObjPos);
+	wstring bomb = to_wstring(m_pPlayer->GetBomb());
+	m_pBombObj->CreateImgObj(bomb, startBombObjPos, bomb.size(), FontType::Score);
 	
 	m_pInsertCoinImgObj->Show();
 	m_pMissionImgObj1->Show();
 	m_pMissionImgObj2->Show();
 	m_pTimeImgObj->Show();
 	m_pBarFontObj->Show();
+	m_pBulletObj->Show();
+	m_pBombObj->Show();
 
 	m_pConga->CongaAddObject();
 }
@@ -216,6 +261,9 @@ void CSceneStage01::Enter()
 void CSceneStage01::Update()
 {
 	m_fAccTime += DT;
+	
+	prevBomb = m_pPlayer->GetBomb();
+	prevBullet = m_pPlayer->GetBullet();
 
 	// insert coin 깜박거리는 효과
 	if (m_fAccTime >= 1.f)
@@ -234,7 +282,7 @@ void CSceneStage01::Update()
 			wstring timeStr = to_wstring(m_fTime);
 			Vector timeStartPos = Vector(WINSIZEX * 0.45f, 20);
 			m_pTimeImgObj->DeleteObj();
-			m_pTimeImgObj->CreateImgObj(timeStr, timeStartPos, 2, FontType::Time);
+			m_pTimeImgObj->CreateImgObj(timeStr, timeStartPos, timeStr.size(), FontType::Time);
 			m_pTimeImgObj->Show();
 		}
 	}
@@ -321,6 +369,34 @@ void CSceneStage01::Update()
 	{
 		m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
 	}
+
+	if (m_pPlayer->GetBombDiff())
+	{
+		Vector startBombObjPos = Vector(WINSIZEX * 0.37, 60);
+		wstring bomb = to_wstring(m_pPlayer->GetBomb());
+		m_pBombObj->DeleteObj();
+		m_pBombObj->CreateImgObj(bomb, startBombObjPos, bomb.size(), FontType::Score);
+		m_pBombObj->Show();
+	}
+	if (m_pPlayer->GetBulletDiff())
+	{
+		Vector startBulletObjPos = Vector(WINSIZEX * 0.3, 60);
+		wstring bullet;
+		if (m_pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
+			bullet = L"z";
+		else if (m_pPlayer->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+		{
+			bullet = to_wstring(m_pPlayer->GetBullet());
+			if (bullet == L"0")
+				bullet = L"z";
+		}
+		m_pBulletObj->DeleteObj();
+		m_pBulletObj->CreateImgObj(bullet, startBulletObjPos, bullet.size(), FontType::Score);
+		m_pBulletObj->Show();
+	}
+
+	Vector waterAniPos = m_pPlayer->GetPos();
+	pWaterAniObj->SetPos(waterAniPos + Vector(30, 30));
 	/*
 	// Zoom In/Out
 	if (BUTTONSTAY(VK_F1))
@@ -351,4 +427,9 @@ void CSceneStage01::Exit()
 
 void CSceneStage01::Release()
 {
+}
+
+CAniObject* CSceneStage01::GetWaterAni()
+{
+	return pWaterAniObj;
 }

@@ -72,6 +72,11 @@ CAnimation* CAnimator::FindAnimation(const wstring& aniName)
 		return m_mapAni[aniName];
 }
 
+CAnimation* CAnimator::GetCurAni()
+{
+	return m_pCurAni;
+}
+
 AniFrame CAnimator::GetFirstAniFrame()
 {
 	if(m_pCurAni != nullptr)

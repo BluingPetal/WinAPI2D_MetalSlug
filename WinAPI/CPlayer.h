@@ -44,6 +44,12 @@ private:
 	float m_fAcctime;
 	float m_fShootTime;
 
+	int m_iBomb;
+	int m_iBullet;
+
+	bool m_bBombDiff;
+	bool m_bBulletDiff;
+
 	PlayerWeapon m_curWeapon;
 
 public:
@@ -53,6 +59,11 @@ public:
 	bool GetIsDead() { return m_bIsDead; }
 	void SetHp(int hp) { m_hp = hp; }
 	int GetHp() { return m_hp; }
+	int GetBullet() { return m_iBullet; }
+	int GetBomb() { return m_iBomb; }
+	bool GetBulletDiff() { return m_bBulletDiff; }
+	bool GetBombDiff() { return m_bBombDiff; }
+	PlayerWeapon GetCurWeapon() { return m_curWeapon; }
 
 private:
 	void Init() override;

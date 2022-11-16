@@ -16,6 +16,7 @@ CAnimation::CAnimation()
 	m_fAccTime = 0;
 	m_bRepeat = true;
 	m_fExtension = 1;
+	m_fAlpha = 1;
 	m_bReversePlay = false;
 }
 
@@ -168,7 +169,8 @@ void CAnimation::Render()
 		frame.lt.x,
 		frame.lt.y,
 		frame.lt.x + frame.slice.x,
-		frame.lt.y + frame.slice.y
+		frame.lt.y + frame.slice.y,
+		m_fAlpha
 	);
 }
 

@@ -4,6 +4,8 @@
 #include "CCollider.h"
 #include "CConga.h"
 #include "CPlayer.h"
+#include "CAniObject.h"
+#include "CSceneStage01.h"
 
 CColliderObject::CColliderObject()
 {
@@ -72,10 +74,47 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
             }
         }
     }
+    //if (m_strName == L"frontOcean")
+    //{
+    //    if (pOtherCollider->GetObjName() == L"Player")
+    //    {
+    //        CAniObject* pWaterAniObj = new CAniObject;
+    //        CImage* pWaterAniImg = RESOURCE->LoadImg(L"WaterAni", L"Image\\BackGround\\WaterAni.png");
+    //        Vector waterAniPos = pOtherCollider->GetOwner()->GetPos();
+    //        pWaterAniObj->SetImage(pWaterAniImg);
+    //        pWaterAniObj->SetPos(waterAniPos + Vector(0, 30));
+    //        pWaterAniObj->SetExtension(m_fExtension -2);
+    //        pWaterAniObj->GetAnimator()->CreateAnimation(L"BackGround\\WaterAni", pWaterAniImg, 0.1f);
+    //        pWaterAniObj->GetAnimator()->Play(L"BackGround\\WaterAni");
+    //        pWaterAniObj->SetLayer(Layer::ForeGround);
+    //        ADDOBJECT(pWaterAniObj);
+    //    }
+    //}
+    if (m_strName == L"frontOcean")
+    {
+        if (pOtherCollider->GetObjName() == L"Player")
+        {
+            // TODO : 바다 나갔을 때 위치 계산해서 예외처리해주기
+            CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
+            aniObj->SetAlpha(1);
+        }
+    }
 }
 
 void CColliderObject::OnCollisionStay(CCollider* pOtherCollider)
 {
+    //if (m_strName == L"frontOcean")
+    //{
+    //    CAniObject * pWaterAniObj = new CAniObject;
+    //    CImage* pWaterAniImg = RESOURCE->LoadImg(L"WaterAni", L"Image\\BackGround\\WaterAni.png");
+    //    Vector waterAniPos = pOtherCollider->GetOwner()->GetPos();
+    //    pWaterAniObj->SetImage(pWaterAniImg);
+    //    pWaterAniObj->SetOffset(waterAniPos);
+    //    pWaterAniObj->SetExtension(m_fExtension);
+    //    pWaterAniObj->GetAnimator()->CreateAnimation(L"BackGround\\WaterAni", pWaterAniImg, 0.1f);
+    //    pWaterAniObj->GetAnimator()->Play(L"BackGround\\WaterAni");
+    //    ADDOBJECT(pWaterAniObj);
+    //}
     //if (m_strName == L"NearColliderObj")
     //{
     //    if (pOtherCollider->GetObjName() == L"Player")
@@ -102,6 +141,14 @@ void CColliderObject::OnCollisionExit(CCollider* pOtherCollider)
         {
             pOwner->SetAccTime(0);
             pOwner->SetCongaState(CongaStatus::Walk);
+        }
+    }
+    if (m_strName == L"frontOcean")
+    {
+        if (pOtherCollider->GetObjName() == L"Player")
+        {
+            CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
+            aniObj->SetAlpha(0);
         }
     }
 }
