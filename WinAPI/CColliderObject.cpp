@@ -99,19 +99,31 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
     //        ADDOBJECT(pWaterAniObj);
     //    }
     //}
-    if (m_strName == L"frontOcean")
-    {
-        if (pOtherCollider->GetObjName() == L"Player")
-        {
-            // TODO : 바다 나갔을 때 위치 계산해서 예외처리해주기
-            CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
-            aniObj->SetAlpha(1);
-        }
-    }
+    //if (m_strName == L"ground")
+    //{
+    //    if (pOtherCollider->GetObjName() == L"Player" && pOtherCollider->GetPos().x <= 1010)
+    //    {
+    //        // TODO : 바다 나갔을 때 위치 계산해서 예외처리해주기
+    //        CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
+    //        aniObj->SetAlpha(1);
+    //    }
+    //}
+   
 }
 
 void CColliderObject::OnCollisionStay(CCollider* pOtherCollider)
 {
+    if (m_strName == L"ground")
+    {
+        if (pOtherCollider->GetObjName() == L"Player")
+        {
+            CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
+            if (pOtherCollider->GetPos().x > 1010)
+                aniObj->SetAlpha(0);
+            else
+                aniObj->SetAlpha(1);
+        }
+    }
     /* 근접 공격 추가 시 실행
     if (m_strName == L"NearColliderObj")
     {
@@ -142,12 +154,16 @@ void CColliderObject::OnCollisionExit(CCollider* pOtherCollider)
             pOwner->SetCongaState(CongaStatus::Walk);
         }
     }
-    if (m_strName == L"frontOcean")
+    if (m_strName == L"ground")
     {
         if (pOtherCollider->GetObjName() == L"Player")
         {
             CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
             aniObj->SetAlpha(0);
         }
+    }
+    else if (m_strName == L"OBB")
+    {
+        Logger::Debug(pOtherCollider->GetObjName() + L"OUT");
     }
 }

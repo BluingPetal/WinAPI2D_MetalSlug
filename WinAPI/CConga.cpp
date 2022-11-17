@@ -120,11 +120,22 @@ void CConga::OnCollisionEnter(CCollider* pOtherCollider)
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
 		SetTarget(pPlayer);
 	}
+	else if (pOtherCollider->GetObjName() == L"obstacle")
+	{
+		m_vecLookDir.x *= -1;
+	}
+	else if(pOtherCollider->GetObjName() == L"ground")
+	{
+		m_pGravity->SetVelocity(0);
+	}
 }
 
 void CConga::OnCollisionStay(CCollider* pOtherCollider)
 {
-	m_pGravity->SetVelocity(0);
+	if (pOtherCollider->GetObjName() == L"ground")
+	{
+		m_pGravity->SetVelocity(0);
+	}
 }
 
 void CConga::OnCollisionExit(CCollider* pOtherCollider)

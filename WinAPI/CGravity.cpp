@@ -50,11 +50,11 @@ void CGravity::PhysicsUpdate()
 			m_fVelY = 1000;
 	}
 	*/
-	if (pOwner->GetName() == L"Player")
-	{
-		if (!dynamic_cast<CPlayer*>(pOwner)->GetIsJump())
-			m_fVelY = 0;
-	}
+	//if (pOwner->GetName() == L"Player")
+	//{
+	//	if (!dynamic_cast<CPlayer*>(pOwner)->GetIsJump())
+	//		m_fVelY = 0;
+	//}
 
 	Vector vecOwnerPos;
 	vecOwnerPos.x = pOwner->GetPos().x;

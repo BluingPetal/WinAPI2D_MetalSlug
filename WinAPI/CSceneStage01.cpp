@@ -25,6 +25,7 @@ CSceneStage01::CSceneStage01()
 	m_fMissionAccTime = 0;
 	m_fPlayerMaxPosX = 0;
 	m_iTimeCount = 1;
+	countBullet = 0;
 
 	m_fTime = 60;
 }
@@ -48,12 +49,10 @@ void CSceneStage01::Init()
 
 	// ImageObject ¼³Á¤
 	m_pBackGround->SetImage(pBackGroundImg);
-	m_pBackGround->SetPos(Vector(0,0));
 	m_pBackGround->SetOffset(backGroundOffset);
 	m_pBackGround->SetExtension(extension);
 
 	pFrontGround->SetImage(pFrontGroundImg);
-	pFrontGround->SetPos(Vector(0, 0));
 	pFrontGround->SetOffset(frontGroundOffset);
 	pFrontGround->SetExtension(extension);
 
@@ -93,11 +92,30 @@ void CSceneStage01::Init()
 	pPlayerBarObj->SetImage(pStatusImg);
 	pPlayerBarObj->SetExtension(extension + 1);
 	pPlayerBarObj->SetFixed(true);
-	pPlayerBarObj->SetLayer(Layer::ForeGround);
+	pPlayerBarObj->SetLayer(Layer::BackGround);
 	pPlayerBarObj->SetPos(20, 20);
 	float sourcePlayerBarInfo[4] = { 0, 19, 63, 10 };
 	pPlayerBarObj->SetRenderAsFrame(true);
 	pPlayerBarObj->SetSourceInfo(sourcePlayerBarInfo[0], sourcePlayerBarInfo[1], sourcePlayerBarInfo[2], sourcePlayerBarInfo[3]);
+
+	CImageObject* pFishBack = new CImageObject;
+	CImageObject* pFishFront = new CImageObject;
+	CImage* pFishImg = RESOURCE->LoadImg(L"fish", L"Image\\BackGround\\Fish.png");
+	pFishBack->SetImage(pFishImg);
+	pFishBack->SetExtension(extension);
+	pFishBack->SetPos(459 * extension, 146 * extension);
+	float sourceFishBackInfo[4] = { 16, 24, 86, 43 };
+	pFishBack->SetRenderAsFrame(true);
+	pFishBack->SetSourceInfo(sourceFishBackInfo[0], sourceFishBackInfo[1], sourceFishBackInfo[2], sourceFishBackInfo[3]);
+
+	pFishFront->SetImage(pFishImg);
+	pFishFront->SetExtension(extension);
+	pFishFront->SetLayer(Layer::ForeGround);
+	pFishFront->SetPos(pFishBack->GetPos());
+	pFishFront->SetOffset(Vector(30, 0));
+	float sourceFishFrontInfo[4] = { 102, 24, 57, 43 };
+	pFishFront->SetRenderAsFrame(true);
+	pFishFront->SetSourceInfo(sourceFishFrontInfo[0], sourceFishFrontInfo[1], sourceFishFrontInfo[2], sourceFishFrontInfo[3]);
 
 #pragma endregion
 
@@ -154,20 +172,45 @@ void CSceneStage01::Init()
 #pragma region COLLIDER
 
 	CColliderObject* pFrontOceanCollider = new CColliderObject;
-	pFrontOceanCollider->SetName(L"frontOcean");
+	pFrontOceanCollider->SetName(L"ground");
 	pFrontOceanCollider->SetExtension(extension);
 	Vector frontOceanOffset = pFrontOceanObj2->GetAnimator()->GetFirstAniFrame().offset;
 	pFrontOceanCollider->SetOffset(frontOceanOffset);
-	pFrontOceanCollider->SetPos(pFrontOceanObj2->GetPos());
-	pFrontOceanCollider->SetScale(pFrontOceanObj2->GetAnimator()->GetFirstAniFrame().slice);
-	pFrontOceanCollider->SetLayer(Layer::ForeGround);
+	pFrontOceanCollider->SetPos(pFrontOceanObj2->GetPos() + Vector(-300, -30));
+	pFrontOceanCollider->SetScale(pFrontOceanObj2->GetAnimator()->GetFirstAniFrame().slice.x - 200, 10);
 
 	m_pObstacle = new CColliderObject;
 	m_pObstacle->SetName(L"obstacle");
 	m_pObstacle->SetExtension(extension);
 	m_pObstacle->SetPos(0, WINSIZEY * 0.5f);
 	m_pObstacle->SetScale(5, WINSIZEY / extension);
-	m_pObstacle->SetLayer(Layer::ForeGround);
+
+	CColliderObject* pGround1 = new CColliderObject;
+	pGround1->SetName(L"slopeGround");
+	pGround1->SetExtension(extension);
+	pGround1->SetPos(pFrontOceanCollider->GetPos().x + pFrontOceanCollider->GetScale().x + 350, pFrontOceanCollider->GetPos().y + 20);
+	pGround1->SetScale(90, 10);
+	pGround1->SetType(ColliderType::Obb);
+	pGround1->SetRot(-15);
+
+	CColliderObject* pGround2 = new CColliderObject;
+	pGround2->SetName(L"slopeGround");
+	pGround2->SetExtension(extension);
+	pGround2->SetPos(2000, WINSIZEY - 180);
+	pGround2->SetScale(330, 10);
+	pGround2->SetType(ColliderType::Obb);
+	pGround2->SetRot(-2);
+
+	CColliderObject* pGround3 = new CColliderObject;
+	pGround3->SetName(L"slopeGround");
+	pGround3->SetExtension(extension);
+	pGround3->SetPos(2900, 610);
+	pGround3->SetScale(230, 10);
+	pGround3->SetType(ColliderType::Obb);
+	pGround3->SetRot(13);
+
+
+	//Logger::Debug(to_wstring(pFrontOceanCollider->GetPos().x) + L", !" + to_wstring(pGround1->GetPos().x));
 
 #pragma endregion
 
@@ -177,6 +220,11 @@ void CSceneStage01::Init()
 	AddGameObject(pFrontGround);
 	AddGameObject(pFrontOceanObj1);
 	AddGameObject(pFrontOceanObj2);
+	AddGameObject(pGround1);
+	AddGameObject(pGround2);
+	AddGameObject(pGround3);
+	AddGameObject(pFishBack);
+	AddGameObject(pFishFront);
 
 	AddGameObject(m_pPlayer);
 	AddGameObject(m_pConga);
@@ -257,19 +305,22 @@ void CSceneStage01::Enter()
 
 	m_pConga->CongaAddObject();
 
-	CColliderObject* temp = new CColliderObject;
-	temp->SetPos(300, 300);
-	temp->SetScale(200, 200);
-	temp->SetType(ColliderType::Obb);
-	temp->SetRot(45);
-	//temp->SetLayer(Layer::ForeGround);
-	AddGameObject(temp);
+	//CColliderObject* temp = new CColliderObject;
+	//temp->SetPos(300, 300);
+	//temp->SetScale(200, 200);
+	//temp->SetType(ColliderType::Obb);
+	//temp->SetName(L"OBB");
+	//temp->SetRot(45);
+	////temp->SetLayer(Layer::ForeGround);
+	//AddGameObject(temp);
 }
 
 void CSceneStage01::Update()
 {
 	m_fAccTime += DT;
 	
+	Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
+
 	prevBomb = m_pPlayer->GetBomb();
 	prevBullet = m_pPlayer->GetBullet();
 

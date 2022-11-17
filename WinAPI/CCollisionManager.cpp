@@ -21,9 +21,10 @@ void CCollisionManager::Init()
 {
 	CheckLayer(Layer::Monster, Layer::Missile);
 	CheckLayer(Layer::Monster, Layer::Player);
-	CheckLayer(Layer::ForeGround, Layer::Player);
-	CheckLayer(Layer::ForeGround, Layer::Monster);
+	//CheckLayer(Layer::ForeGround, Layer::Player);
+	//CheckLayer(Layer::ForeGround, Layer::Monster);
 	CheckLayer(Layer::Player, Layer::Collider);
+	CheckLayer(Layer::Monster, Layer::Collider);
 }
 
 void CCollisionManager::Update()
@@ -283,13 +284,14 @@ bool CCollisionManager::RectCircleCollision(Vector rectPos, Vector rectScale, Ve
 
 bool CCollisionManager::OBBCollision(Vector leftPos, Vector leftScale, float leftRocation, Vector rightPos, Vector rightScale, float rightRocation)
 {
-	Vector distance = (leftPos + leftScale * 0.5f) - (rightPos + rightScale * 0.5f);
+	//Vector distance = (leftPos + leftScale * 0.5f) - (rightPos + rightScale * 0.5f);
+	Vector distance = leftPos - rightPos;
 
 	// rect와 obb의 width, height Vector 정의
 	Vector leftHeightVec = Vector(cos((leftRocation - 90) / 180 * PI), sin((leftRocation - 90) / 180 * PI)) * leftScale.y * 0.5f;
-	Vector leftWidthVec = Vector(cos((leftRocation - 90) / 180 * PI), sin((leftRocation - 90) / 180 * PI)) * leftScale.x * 0.5f;
+	Vector leftWidthVec = Vector(cos((leftRocation) / 180 * PI), sin((leftRocation) / 180 * PI)) * leftScale.x * 0.5f;
 	Vector rightHeightVec = Vector(cos((rightRocation - 90) / 180 * PI), sin((rightRocation - 90) / 180 * PI)) * rightScale.y * 0.5f;
-	Vector rightWidthVec = Vector(cos((rightRocation - 90) / 180 * PI), sin((rightRocation - 90) / 180 * PI)) * rightScale.x * 0.5f;
+	Vector rightWidthVec = Vector(cos((rightRocation) / 180 * PI), sin((rightRocation) / 180 * PI)) * rightScale.x * 0.5f;
 
 	Vector vecArr[4] = { leftHeightVec , leftWidthVec, rightHeightVec, rightWidthVec};
 	Vector normalizedVec;

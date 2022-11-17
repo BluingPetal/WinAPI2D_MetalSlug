@@ -25,6 +25,8 @@ private:
 	int prevBomb;
 	int prevBullet;
 
+	int countBullet;
+
 	CFontImageObj* m_pInsertCoinImgObj;
 
 	CFontImageObj* m_pMissionImgObj1;

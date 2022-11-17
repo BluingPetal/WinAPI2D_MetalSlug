@@ -268,7 +268,7 @@ void CPlayer::KeyUpdate()
 
 			CreateMissile();
 			// TODO : 총알에 따른 무기 정해주기
-			m_curWeapon = PlayerWeapon::Pistol;
+			m_curWeapon = PlayerWeapon::HeavyMachineGun;
 			m_fAcctime = 0;
 			m_bIsAttack = true;
 			m_bIsShoot = true;
@@ -1840,15 +1840,23 @@ void CPlayer::CreateMissile()
 
 void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 {
-	if (pOtherCollider->GetObjName() == L"frontOcean")
+	if (pOtherCollider->GetObjName() == L"ground")
 	{
 		m_bIsJump = false;
-		m_vecMoveDir.y = 0;
 		m_bIsAttack = false;
-		if (m_status == PlayerStatus::Dead)
-			m_fSpeed = 0;
+		m_vecMoveDir.y = 0;
+		m_vecLookDir.y = 0;
+		m_gravity->SetVelocity(0);
 	}
-	else if (pOtherCollider->GetObjName() == L"obstacle")
+	if (pOtherCollider->GetObjName() == L"slopeGround")
+	{
+		m_bIsJump = false;
+		//m_bIsAttack = false;
+		m_vecMoveDir.y = 0;
+		m_vecLookDir.y = 0;
+		m_gravity->SetVelocity(0);
+	}
+	if (pOtherCollider->GetObjName() == L"obstacle")
 	{
 		m_fSpeed = 0;
 		m_vecPos.x += 5;
@@ -1857,6 +1865,52 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 
 void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 {
+	if (pOtherCollider->GetObjName() == L"ground")
+	{
+		if (m_status == PlayerStatus::Dead)
+			m_fSpeed = 0;
+		if(!m_bIsJump)
+			m_gravity->SetVelocity(0);
+	}
+	if (pOtherCollider->GetObjName() == L"slopeGround")
+	{
+		if (m_status == PlayerStatus::Dead)
+			m_fSpeed = 0;
+		if (pOtherCollider->GetRotation() < 0)
+		{
+			if (m_vecMoveDir.x > 0)
+			{
+				if (!m_bIsJump)
+					m_gravity->SetVelocity(0);
+				m_vecPos.y += pOtherCollider->GetScale().x * sin(pOtherCollider->GetRotation()) * m_vecLookDir.x * DT;
+			}
+			else if (m_vecMoveDir.x == 0)
+			{
+				if (!m_bIsJump)
+					m_gravity->SetVelocity(0);
+			}
+
+			if (m_bIsSit)
+				m_gravity->SetVelocity(0);
+		}
+		else
+		{
+			if (m_vecMoveDir.x < 0)
+			{
+				if (!m_bIsJump)
+					m_gravity->SetVelocity(0);
+				m_vecPos.y += pOtherCollider->GetScale().x * sin(pOtherCollider->GetRotation()) * m_vecLookDir.x * DT;
+			}
+			else if (m_vecMoveDir.x == 0)
+			{
+				if (!m_bIsJump)
+					m_gravity->SetVelocity(0);
+			}
+
+			if (m_bIsSit)
+				m_gravity->SetVelocity(0);
+		}
+	}
 }
 
 void CPlayer::OnCollisionExit(CCollider* pOtherCollider)

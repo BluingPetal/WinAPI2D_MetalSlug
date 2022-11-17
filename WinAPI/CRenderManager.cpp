@@ -352,7 +352,7 @@ void CRenderManager::FrameObb(float startX, float startY, float endX, float endY
 		(FLOAT)color.b / 255.f,
 		color.a));
 	m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(rot, D2D1::Point2F(middle.x, middle.y))); // rotation은 degree단위
-	m_pRenderTarget->DrawRectangle(rect, m_pDefaultBrush, 1.f);
+	m_pRenderTarget->DrawRectangle(rect, m_pCurBrush, 1.f);
 	m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity()); // rotation은 degree단위
 }
 
