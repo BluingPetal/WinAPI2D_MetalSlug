@@ -117,6 +117,15 @@ void CSceneStage01::Init()
 	pFishFront->SetRenderAsFrame(true);
 	pFishFront->SetSourceInfo(sourceFishFrontInfo[0], sourceFishFrontInfo[1], sourceFishFrontInfo[2], sourceFishFrontInfo[3]);
 
+	CImageObject* pBoat = new CImageObject;
+	CImage* pBoatImg = RESOURCE->LoadImg(L"boat", L"Image\\BackGround\\Boat.png");
+	pBoat->SetImage(pBoatImg);
+	pBoat->SetExtension(extension);
+	pBoat->SetPos(pFishBack->GetPos());
+	float sourceBoatInfo[4] = { 1, 143, 305, 310 };
+	pBoat->SetRenderAsFrame(true);
+	pBoat->SetSourceInfo(sourceBoatInfo[0], sourceBoatInfo[1], sourceBoatInfo[2], sourceBoatInfo[3]);
+
 #pragma endregion
 
 #pragma region OBJECT
@@ -225,6 +234,7 @@ void CSceneStage01::Init()
 	AddGameObject(pGround3);
 	AddGameObject(pFishBack);
 	AddGameObject(pFishFront);
+	AddGameObject(pBoat);
 
 	AddGameObject(m_pPlayer);
 	AddGameObject(m_pConga);
