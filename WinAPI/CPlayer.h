@@ -51,6 +51,7 @@ private:
 	bool m_bBulletDiff;
 
 	PlayerWeapon m_curWeapon;
+	PlayerWeapon m_curGun;
 
 public:
 	bool GetIsJump() { return m_bIsJump; }
@@ -64,6 +65,7 @@ public:
 	bool GetBulletDiff() { return m_bBulletDiff; }
 	bool GetBombDiff() { return m_bBombDiff; }
 	PlayerWeapon GetCurWeapon() { return m_curWeapon; }
+	void SetCurWeapon(PlayerWeapon weapon) { m_curWeapon = weapon; }
 
 private:
 	void Init() override;

@@ -103,27 +103,17 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
 
 void CColliderObject::OnCollisionStay(CCollider* pOtherCollider)
 {
-    //if (m_strName == L"frontOcean")
-    //{
-    //    CAniObject * pWaterAniObj = new CAniObject;
-    //    CImage* pWaterAniImg = RESOURCE->LoadImg(L"WaterAni", L"Image\\BackGround\\WaterAni.png");
-    //    Vector waterAniPos = pOtherCollider->GetOwner()->GetPos();
-    //    pWaterAniObj->SetImage(pWaterAniImg);
-    //    pWaterAniObj->SetOffset(waterAniPos);
-    //    pWaterAniObj->SetExtension(m_fExtension);
-    //    pWaterAniObj->GetAnimator()->CreateAnimation(L"BackGround\\WaterAni", pWaterAniImg, 0.1f);
-    //    pWaterAniObj->GetAnimator()->Play(L"BackGround\\WaterAni");
-    //    ADDOBJECT(pWaterAniObj);
-    //}
-    //if (m_strName == L"NearColliderObj")
-    //{
-    //    if (pOtherCollider->GetObjName() == L"Player")
-    //        if (dynamic_cast<CConga*>(m_pOwner)->GetAccTime() > 1.3f)
-    //        {
-    //            dynamic_cast<CConga*>(m_pOwner)->SetAccTime(0);
-    //            dynamic_cast<CConga*>(m_pOwner)->SetCongaState(CongaStatus::Idle);
-    //        }
-    //}
+    /* 근접 공격 추가 시 실행
+    if (m_strName == L"NearColliderObj")
+    {
+        if (pOtherCollider->GetObjName() == L"Player")
+        {
+            Logger::Debug(L"here");
+            CPlayer* pPlayer = dynamic_cast<CPlayer*>(pOtherCollider->GetOwner());
+            pPlayer->SetCurWeapon(PlayerWeapon::Knife);
+        }
+    }
+    */
 }
 
 void CColliderObject::OnCollisionExit(CCollider* pOtherCollider)

@@ -186,10 +186,14 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
+	if (m_curWeapon == PlayerWeapon::Pistol || m_curWeapon == PlayerWeapon::HeavyMachineGun)
+		m_curGun = m_curWeapon;
 	KeyUpdate();
 	BehaviorUpdate();
 	StatusUpdate();
 	AnimatorUpdate();
+	if (m_curWeapon == PlayerWeapon::Bomb || m_curWeapon == PlayerWeapon::Knife)
+		m_curWeapon = m_curGun;
 }
 
 void CPlayer::Render()
@@ -463,7 +467,9 @@ void CPlayer::AnimatorUpdate()
 						m_bIsShoot = false;
 					}
 					if (m_fAcctime >= m_fShootTime)
+					{
 						m_bIsAttack = false;
+					}
 				}
 				else if (m_curWeapon == PlayerWeapon::Knife)
 				{
@@ -1537,7 +1543,6 @@ void CPlayer::BehaviorUpdate()
 		break;
 	case PlayerStatus::Attack:
 		m_vecPos.x += m_vecMoveDir.x * m_fSpeed * DT;
-
 		break;
 	case PlayerStatus::SitAttack:
 		m_bIsSit = true;

@@ -213,6 +213,9 @@
     <ClInclude Include="CImageUI.h">
       <Filter>Engine\Asset\UI</Filter>
     </ClInclude>
+    <ClInclude Include="CBomb.h">
+      <Filter>GameObject\Stage01</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinAPI.cpp">
@@ -355,6 +358,9 @@
     </ClCompile>
     <ClCompile Include="CImageUI.cpp">
       <Filter>Engine\Asset\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="CBomb.cpp">
+      <Filter>GameObject\Stage01</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
