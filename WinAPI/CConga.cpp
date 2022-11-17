@@ -11,6 +11,8 @@
 #include "CPlayer.h"
 #include "CMissile.h"
 
+#define PI 3.141592
+
 CConga::CConga()
 {
 	m_pAnimator = nullptr;
@@ -150,12 +152,12 @@ void CConga::OnCollisionStay(CCollider* pOtherCollider)
 		if (pOtherCollider->GetRotation() < 0)
 		{
 			if (m_vecMoveDir.x > 0)
-				m_vecPos.y += pOtherCollider->GetScale().x * sin(pOtherCollider->GetRotation()) * m_vecLookDir.x * DT;
+				m_vecPos.y += m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 		}
 		else
 		{
 			if (m_vecMoveDir.x < 0)
-				m_vecPos.y += pOtherCollider->GetScale().x * sin(pOtherCollider->GetRotation()) * m_vecLookDir.x * DT;
+				m_vecPos.y -= m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 		}
 	}
 }

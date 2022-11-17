@@ -121,12 +121,11 @@ void CSceneStage01::Init()
 	CImage* pBoatImg = RESOURCE->LoadImg(L"boat", L"Image\\BackGround\\Boat.png");
 	pBoat->SetImage(pBoatImg);
 	pBoat->SetExtension(extension);
-	pBoat->SetPos(2025,180);
-	float sourceBoatInfo[4] = { 1, 143, 304, 167 };
+	pBoat->SetPos(2240,175);
+	float sourceBoatInfo[4] = { 10, 144, 181, 142 };
 	pBoat->SetRenderAsFrame(true);
 	pBoat->SetSourceInfo(sourceBoatInfo[0], sourceBoatInfo[1], sourceBoatInfo[2], sourceBoatInfo[3]);
-	pBoat->SetAlpha(1);
-
+	pBoat->SetAlpha(0);
 
 #pragma endregion
 
@@ -226,6 +225,21 @@ void CSceneStage01::Init()
 	pBrokenBoat->SetPos(3200, 560);
 	pBrokenBoat->SetScale(10, 40);
 
+	CColliderObject* pGround4 = new CColliderObject;
+	pGround4->SetName(L"ground");
+	pGround4->SetExtension(extension);
+	pGround4->SetPos(pBrokenBoat->GetPos().x + 150, pBrokenBoat->GetPos().y - 55);
+	pGround4->SetScale(100, 10);
+
+	CColliderObject* pGround5 = new CColliderObject;
+	pGround5->SetName(L"slopeGround");
+	pGround5->SetExtension(extension);
+	pGround5->SetPos(pGround4->GetPos().x + 630, pGround4->GetPos().y + 90);
+	pGround5->SetScale(300, 10);
+	pGround5->SetType(ColliderType::Obb);
+	pGround5->SetRot(10);
+
+
 
 	//Logger::Debug(to_wstring(pFrontOceanCollider->GetPos().x) + L", !" + to_wstring(pGround1->GetPos().x));
 
@@ -240,6 +254,8 @@ void CSceneStage01::Init()
 	AddGameObject(pGround1);
 	AddGameObject(pGround2);
 	AddGameObject(pGround3);
+	AddGameObject(pGround4);
+	AddGameObject(pGround5);
 	AddGameObject(pFishBack);
 	AddGameObject(pFishFront);
 	AddGameObject(pBoat);

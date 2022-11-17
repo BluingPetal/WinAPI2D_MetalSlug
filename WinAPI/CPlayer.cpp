@@ -15,6 +15,8 @@
 
 #include "CMissile.h"
 
+#define PI 3.141592
+
 CPlayer::CPlayer()
 {
 	m_vecPos = Vector(0, 0);
@@ -1877,21 +1879,27 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 	if (pOtherCollider->GetObjName() == L"ground")
 	{
 		if (m_status == PlayerStatus::Dead)
+		{
 			m_fSpeed = 0;
+			m_gravity->SetVelocity(0);
+		}
 		if(!m_bIsJump)
 			m_gravity->SetVelocity(0);
 	}
 	if (pOtherCollider->GetObjName() == L"slopeGround")
 	{
 		if (m_status == PlayerStatus::Dead)
+		{
 			m_fSpeed = 0;
+			m_gravity->SetVelocity(0);
+		}
 		if (pOtherCollider->GetRotation() < 0)
 		{
 			if (m_vecMoveDir.x > 0)
 			{
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
-				m_vecPos.y += pOtherCollider->GetScale().x * sin(pOtherCollider->GetRotation()) * m_vecLookDir.x * DT;
+				m_vecPos.y += m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 			}
 			else if (m_vecMoveDir.x == 0)
 			{
@@ -1908,7 +1916,7 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 			{
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
-				m_vecPos.y += pOtherCollider->GetScale().x * sin(pOtherCollider->GetRotation()) * m_vecLookDir.x * DT;
+				m_vecPos.y -= m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 			}
 			else if (m_vecMoveDir.x == 0)
 			{
