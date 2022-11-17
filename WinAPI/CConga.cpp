@@ -128,13 +128,35 @@ void CConga::OnCollisionEnter(CCollider* pOtherCollider)
 	{
 		m_pGravity->SetVelocity(0);
 	}
+	if (pOtherCollider->GetObjName() == L"slopeGround")
+	{
+		m_pGravity->SetVelocity(0);
+	}
 }
 
 void CConga::OnCollisionStay(CCollider* pOtherCollider)
 {
 	if (pOtherCollider->GetObjName() == L"ground")
 	{
+		if (m_congaState == CongaStatus::Death)
+			m_fSpeed = 0;
 		m_pGravity->SetVelocity(0);
+	}
+	if (pOtherCollider->GetObjName() == L"slopeGround")
+	{
+		m_pGravity->SetVelocity(0);
+		if (m_congaState == CongaStatus::Death)
+			m_fSpeed = 0;
+		if (pOtherCollider->GetRotation() < 0)
+		{
+			if (m_vecMoveDir.x > 0)
+				m_vecPos.y += pOtherCollider->GetScale().x * sin(pOtherCollider->GetRotation()) * m_vecLookDir.x * DT;
+		}
+		else
+		{
+			if (m_vecMoveDir.x < 0)
+				m_vecPos.y += pOtherCollider->GetScale().x * sin(pOtherCollider->GetRotation()) * m_vecLookDir.x * DT;
+		}
 	}
 }
 

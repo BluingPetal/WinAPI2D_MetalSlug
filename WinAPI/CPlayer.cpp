@@ -1850,16 +1850,25 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 	}
 	if (pOtherCollider->GetObjName() == L"slopeGround")
 	{
-		m_bIsJump = false;
-		//m_bIsAttack = false;
+		if (m_bIsJump)
+		{
+			m_bIsJump = false;
+			m_bIsAttack = false;
+		}
 		m_vecMoveDir.y = 0;
 		m_vecLookDir.y = 0;
 		m_gravity->SetVelocity(0);
 	}
 	if (pOtherCollider->GetObjName() == L"obstacle")
 	{
+		//m_gravity->SetVelocity(0); // 벽에 붙음
+		if(m_vecPos.x > pOtherCollider->GetPos().x)
+			m_vecPos.x += m_fSpeed * DT + 1;
+		else
+			m_vecPos.x -= m_fSpeed * DT + 1;
+		if(!m_bIsJump)
+			m_gravity->SetVelocity(0);
 		m_fSpeed = 0;
-		m_vecPos.x += 5;
 	}
 }
 

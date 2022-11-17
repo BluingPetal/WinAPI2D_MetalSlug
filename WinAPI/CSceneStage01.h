@@ -39,6 +39,7 @@ private:
 	Vector m_vecStartPos2;
 
 	CImageObject* m_pBackGround;
+	CImageObject* pBoat;
 	CAniObject* pWaterAniObj;
 	CColliderObject* m_pObstacle;
 	CConga* m_pConga;
