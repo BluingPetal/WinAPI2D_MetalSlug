@@ -11,19 +11,22 @@ CColliderObject::CColliderObject()
 {
     m_strName = L"ColliderObj";
     m_layer = Layer::Collider;
-    m_pCollider = new CCollider;
+    //m_pCollider = new CCollider;
     m_vecOffset = Vector(0, 0);
     m_pOwner = nullptr;
+    m_fRot = 0;
+    m_colliderType = ColliderType::Rect;
+    AddCollider(m_colliderType, m_vecScale * m_fExtension, m_vecOffset * m_fExtension);
 }
 
 CColliderObject::~CColliderObject()
 {
 }
 
-CCollider* CColliderObject::GetCollider()
-{
-    return m_pCollider;
-}
+//CCollider* CColliderObject::GetCollider()
+//{
+//    return m_pCollider;
+//}
 
 CGameObject* CColliderObject::GetColliderObjOwner()
 {
@@ -32,9 +35,15 @@ CGameObject* CColliderObject::GetColliderObjOwner()
 
 void CColliderObject::Init()
 {
-    m_pCollider->SetPos(m_vecPos + m_vecOffset * m_fExtension);
-    m_pCollider->SetScale(m_vecScale);
-    AddCollider(ColliderType::Rect, m_vecScale * m_fExtension, m_vecOffset * m_fExtension);
+    //AddCollider(m_colliderType, m_vecScale * m_fExtension, m_vecOffset * m_fExtension);
+    //m_pCollider->SetPos(m_vecPos + m_vecOffset * m_fExtension);
+    //m_pCollider->SetScale(m_vecScale);
+    //m_pCollider->SetRotation(m_fRot);
+    GetCollider()->SetPos(m_vecPos + m_vecOffset * m_fExtension);
+    GetCollider()->SetScale(m_vecScale * m_fExtension);
+    GetCollider()->SetOffsetPos(m_vecOffset * m_fExtension);
+    GetCollider()->SetColliderType(m_colliderType);
+    GetCollider()->SetRotation(m_fRot);
 }
 
 void CColliderObject::Update()

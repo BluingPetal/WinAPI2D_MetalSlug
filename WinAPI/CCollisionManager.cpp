@@ -6,6 +6,8 @@
 #include "CScene.h"
 #include "CCollider.h"
 
+#define PI 3.141592
+
 CCollisionManager::CCollisionManager()
 {
 	m_arrLayer[0][0] = { 0 };
@@ -170,6 +172,17 @@ bool CCollisionManager::IsCollision(CCollider* pLeftCollider, CCollider* pRightC
 			pLeftCollider->GetScale().x
 		);
 	}
+	else if (leftType == ColliderType::Obb || rightType == ColliderType::Obb)
+	{
+		return OBBCollision(
+			pLeftCollider->GetPos(),
+			pLeftCollider->GetScale(),
+			pLeftCollider->GetRotation(),
+			pRightCollider->GetPos(),
+			pRightCollider->GetScale(),
+			pRightCollider->GetRotation()
+		);
+	}
 	else
 	{
 		return false;
@@ -266,6 +279,32 @@ bool CCollisionManager::RectCircleCollision(Vector rectPos, Vector rectScale, Ve
 	}
 
 	return false;
+}
+
+bool CCollisionManager::OBBCollision(Vector leftPos, Vector leftScale, float leftRocation, Vector rightPos, Vector rightScale, float rightRocation)
+{
+	Vector distance = (leftPos + leftScale * 0.5f) - (rightPos + rightScale * 0.5f);
+
+	// rect와 obb의 width, height Vector 정의
+	Vector leftHeightVec = Vector(cos((leftRocation - 90) / 180 * PI), sin((leftRocation - 90) / 180 * PI)) * leftScale.y * 0.5f;
+	Vector leftWidthVec = Vector(cos((leftRocation - 90) / 180 * PI), sin((leftRocation - 90) / 180 * PI)) * leftScale.x * 0.5f;
+	Vector rightHeightVec = Vector(cos((rightRocation - 90) / 180 * PI), sin((rightRocation - 90) / 180 * PI)) * rightScale.y * 0.5f;
+	Vector rightWidthVec = Vector(cos((rightRocation - 90) / 180 * PI), sin((rightRocation - 90) / 180 * PI)) * rightScale.x * 0.5f;
+
+	Vector vecArr[4] = { leftHeightVec , leftWidthVec, rightHeightVec, rightWidthVec};
+	Vector normalizedVec;
+	for (int i = 0; i < 4; i++)
+	{
+		float sum = 0;
+		normalizedVec = vecArr[i].Normalized();
+		for (int j = 0; j < 4; j++)
+		{
+			sum += abs(vecArr[j].x * normalizedVec.x + vecArr[j].y * normalizedVec.y);
+		}
+		if (abs(distance.x * normalizedVec.x + distance.y * normalizedVec.y) > sum)
+			return false;
+	}
+	return true;
 }
 
 void CCollisionManager::CheckLayer(Layer left, Layer right)

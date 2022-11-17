@@ -334,6 +334,28 @@ void CRenderManager::FrameRect(float startX, float startY, float endX, float end
 	m_pRenderTarget->DrawRectangle(rect, m_pCurBrush, strokeWidth);
 }
 
+void CRenderManager::FrameObb(float startX, float startY, float endX, float endY, float rot, Color color)
+{
+	Vector start = CAMERA->WorldToScreenPoint(Vector(startX, startY));
+	startX = start.x;
+	startY = start.y;
+	Vector end = CAMERA->WorldToScreenPoint(Vector(endX, endY));
+	endX = end.x;
+	endY = end.y;
+	Vector middle = start + (end - start) * 0.5f;
+
+	D2D1_RECT_F rect = { startX, startY, endX, endY };
+
+	m_pCurBrush->SetColor(D2D1::ColorF(
+		(FLOAT)color.r / 255.f,
+		(FLOAT)color.g / 255.f,
+		(FLOAT)color.b / 255.f,
+		color.a));
+	m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Rotation(rot, D2D1::Point2F(middle.x, middle.y))); // rotation은 degree단위
+	m_pRenderTarget->DrawRectangle(rect, m_pDefaultBrush, 1.f);
+	m_pRenderTarget->SetTransform(D2D1::Matrix3x2F::Identity()); // rotation은 degree단위
+}
+
 void CRenderManager::FillRect(float startX, float startY, float endX, float endY)
 {
 	Vector start = CAMERA->WorldToScreenPoint(Vector(startX, startY));

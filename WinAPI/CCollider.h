@@ -4,7 +4,7 @@
 class CCollisionManager;
 class CGameObject;
 
-enum class ColliderType { Rect, Circle };
+enum class ColliderType { Rect, Circle, Obb };
 
 class CCollider : public CComponent
 {
@@ -23,12 +23,14 @@ private:
 	Vector m_vecPos;		// 충돌체의 위치
 	Vector m_vecOffsetPos;	// 충돌체의 변위차(수정값)
 	Vector m_vecScale;		// 충돌체의 크기
+	float m_fRot;
 
 public:
-	void SetType(ColliderType type);
 	void SetPos(Vector pos);
 	void SetOffsetPos(Vector offset);
 	void SetScale(Vector scale);
+	void SetRotation(float rot) { m_fRot = rot; }
+	void SetColliderType(ColliderType type) { m_type = type; }
 
 public:
 	ColliderType GetType();
@@ -37,6 +39,7 @@ public:
 	Vector GetPos();
 	Vector GetOffsetPos();
 	Vector GetScale();
+	float GetRotation() { return m_fRot; }
 
 private:
 	void Init() override;

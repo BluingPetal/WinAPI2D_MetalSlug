@@ -15,6 +15,7 @@ CCollider::CCollider()
 	m_vecPos = Vector(0, 0);
 	m_vecOffsetPos = Vector(0, 0);
 	m_vecScale = Vector(0, 0);
+	m_fRot = 0;
 }
 
 CCollider::~CCollider()
@@ -41,10 +42,10 @@ Vector CCollider::GetPos()
 	return m_vecPos;
 }
 
-void CCollider::SetType(ColliderType type)
-{
-	m_type = type;
-}
+//void CCollider::SetType(ColliderType type)
+//{
+//	m_type = type;
+//}
 
 void CCollider::SetPos(Vector pos)
 {
@@ -113,6 +114,16 @@ void CCollider::Render()
 			m_vecScale.x,
 			color
 		);
+	}
+	else if (m_type == ColliderType::Obb)
+	{
+		RENDER->FrameObb(
+			m_vecPos.x - m_vecScale.x * 0.5f,
+			m_vecPos.y - m_vecScale.y * 0.5f,
+			m_vecPos.x + m_vecScale.x * 0.5f,
+			m_vecPos.y + m_vecScale.y * 0.5f,
+			m_fRot,
+			color);
 	}
 }
 

@@ -26,6 +26,7 @@ private:
 	bool RectCollision(Vector leftPos, Vector leftScale, Vector rightPos, Vector rightScale);
 	bool CircleCollision(Vector leftPos, float leftScale, Vector rightPos, float rightScale);
 	bool RectCircleCollision(Vector rectPos, Vector rectScale, Vector circlePos, float circleScale);
+	bool OBBCollision(Vector leftPos, Vector leftScale, float leftRocation, Vector rightPos, Vector rightScale, float rightRocation);
 
 	void CheckLayer(Layer left, Layer right);
 	void UnCheckLayer(Layer left, Layer right);

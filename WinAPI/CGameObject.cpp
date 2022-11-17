@@ -111,7 +111,7 @@ void CGameObject::AddCollider(ColliderType type, Vector scale, Vector offsetPos)
 		return;
 
 	m_pCollider = new CCollider();
-	m_pCollider->SetType(type);
+	m_pCollider->SetColliderType(type);
 	m_pCollider->SetScale(scale);
 	m_pCollider->SetOffsetPos(offsetPos);
 	AddComponent(m_pCollider);

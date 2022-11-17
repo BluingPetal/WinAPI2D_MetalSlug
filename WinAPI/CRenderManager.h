@@ -50,6 +50,7 @@ public:
 
 	void FrameRect(float startX, float startY, float endX, float endY);
 	void FrameRect(float startX, float startY, float endX, float endY, Color color, float strokeWidth = 1.f);
+	void FrameObb(float startX, float startY, float endX, float endY, float rot, Color color);
 	void FillRect(float startX, float startY, float endX, float endY);
 	void FillRect(float startX, float startY, float endX, float endY, Color color);
 

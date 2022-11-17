@@ -11,16 +11,20 @@ public:
 	virtual ~CColliderObject(); 
 
 private:
-	CCollider* m_pCollider;
+	//CCollider* m_pCollider;
 	Vector m_vecOffset;
 	CGameObject* m_pOwner;
+	ColliderType m_colliderType;
+	float m_fRot;
 
 public:
-	CCollider* GetCollider();
+	//CCollider* GetCollider();
 
 	void SetOffset(Vector offset) { m_vecOffset = offset; }
 	CGameObject* GetColliderObjOwner();
 	void SetOwner(CGameObject* pOwner) { m_pOwner = pOwner; }
+	void SetType(ColliderType type) { m_colliderType = type; }
+	void SetRot(float rotation) { m_fRot = rotation; }
 
 private:
 	void Init() override;

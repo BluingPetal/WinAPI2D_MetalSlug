@@ -256,6 +256,14 @@ void CSceneStage01::Enter()
 	m_pBombObj->Show();
 
 	m_pConga->CongaAddObject();
+
+	CColliderObject* temp = new CColliderObject;
+	temp->SetPos(300, 300);
+	temp->SetScale(200, 200);
+	temp->SetType(ColliderType::Obb);
+	temp->SetRot(45);
+	//temp->SetLayer(Layer::ForeGround);
+	AddGameObject(temp);
 }
 
 void CSceneStage01::Update()
