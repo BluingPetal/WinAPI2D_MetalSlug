@@ -1,10 +1,16 @@
 #pragma once
 #include "CMonster.h"
+
+enum class BossStatus { Idle, Walk, NearAttack, Death };
+
 class CBoss : public CMonster
 {
 public:
 	CBoss();
 	virtual ~CBoss();
+
+private:
+	CAnimator* m_pAnimator;
 
 private:
 	void Init() override;

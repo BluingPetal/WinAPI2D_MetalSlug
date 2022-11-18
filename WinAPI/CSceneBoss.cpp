@@ -6,6 +6,7 @@
 #include "CImageObject.h"
 #include "CPlayer.h"
 #include "CAniObject.h"
+#include "CBoss.h"
 
 #include "CCameraController.h"
 
@@ -64,6 +65,10 @@ void CSceneBoss::Enter()
 	pBridge->SetExtension(m_fExtension);
 	pBridge->SetLayer(Layer::BackGround);
 	AddGameObject(pBridge);
+
+	CBoss* pBoss = new CBoss;
+	pBoss->SetExtension(m_fExtension);
+	AddGameObject(pBoss);
 }
 
 void CSceneBoss::Update()
