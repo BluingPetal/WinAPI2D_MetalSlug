@@ -3,6 +3,7 @@
 
 #include "CColliderObject.h"
 #include "CImageObject.h"
+#include "CCollider.h"
 
 CBridge::CBridge()
 {
@@ -64,9 +65,15 @@ void CBridge::InitBridge()
 		pImgObj->SetIndex(i);
 		pImgObj->SetScale(m_vecBridgeImg[i].slice * m_fExtension);
 		pImgObj->SetSourceInfo(m_vecBridgeImg[i].lt.x, m_vecBridgeImg[i].lt.y, m_vecBridgeImg[i].slice.x, m_vecBridgeImg[i].slice.y);
-		ADDOBJECT(pImgObj);
-		m_vecBridgeObj.push_back(pImgObj);
-		m_vecCurRenderObj.push_back(pImgObj);
+		ADDOBJECT(pImgObj); // curimgobj
+		CImageObject* copyObj = new CImageObject(*pImgObj);
+		m_vecBridgeObj.push_back(copyObj);
+		m_deqCurRenderObj.push_back(pImgObj);
+
+		//ADDOBJECT(ColObj);
+		//CColliderObject* copyObj = new CColliderObject(*ColObj);
+		//m_vecColliderObj.push_back(copyObj);
+		//m_deqCurColliderObj.push_back(ColObj);
 	}
 }
 
@@ -152,14 +159,38 @@ void CBridge::InitColliderObj()
 		default:
 			break;
 		}
-		m_vecColliderObj.push_back(ColObj);
-		m_vecCurColliderObj.push_back(ColObj);
+		CColliderObject* copyObj = new CColliderObject(*ColObj); 
+		//CCollider* pColl = new CCollider(*copyObj->GetCollider());
+		//ColObj->GetCollider() = nullptr;
+		//pColl->SetOwner(ColObj);
+		//ColObj->GetCollider() = pColl;
+		m_vecColliderObj.push_back(copyObj);
+		m_deqCurColliderObj.push_back(ColObj);
 		ADDOBJECT(ColObj);
 	}
 }
 
 void CBridge::InitBrokenBridge()
 {
+	vector<ImgFrame> m_vecBrokenBridgeImg;
+	m_vecBrokenBridgeImg = ReadAniFile(L"BrokenBridge");
+	float startPosX = m_vecPos.x;
+	float startPosY = m_vecPos.y;
+	for (int i = 0; i < m_vecBrokenBridgeImg.size(); i++)
+	{
+		if (!(i == 0))
+			startPosX += m_vecBrokenBridgeImg[i - 1].slice.x * m_fExtension;
+		CImageObject* pImgObj = new CImageObject;
+		pImgObj->SetExtension(m_fExtension);
+		pImgObj->SetImage(m_pBridgeImg);
+		pImgObj->SetLayer(m_layer);
+		pImgObj->SetPos(startPosX, startPosY);
+		pImgObj->SetRenderAsFrame(true);
+		pImgObj->SetIndex(i);
+		pImgObj->SetScale(m_vecBrokenBridgeImg[i].slice * m_fExtension);
+		pImgObj->SetSourceInfo(m_vecBrokenBridgeImg[i].lt.x, m_vecBrokenBridgeImg[i].lt.y, m_vecBrokenBridgeImg[i].slice.x, m_vecBrokenBridgeImg[i].slice.y);
+		m_vecBridgeObj.push_back(pImgObj);
+	}
 	m_vecBrokenBridgeImg = ReadAniFile(L"BrokenBridge");
 }
 
@@ -171,12 +202,43 @@ void CBridge::Init()
 	InitBridge();
 	InitColliderObj();
 	InitBrokenBridge();
+	considerIndex = m_deqCurRenderObj.size()-2;
 	//m_vecCurRenderImg = m_vecBridgeImg;
 	//m_vecCurRenderImg[4] = m_vecBrokenBridgeImg[m_vecCurRenderImg.size() + 4];
 }
 
 void CBridge::Update()
 {
+	// 보스와 충돌하면 다리 없어지기 (alpha == 0)
+	if (m_deqCurRenderObj[considerIndex]->GetPos().x < CAMERA->GetLookAt().x + WINSIZEX * 0.5f)
+	{
+		(considerIndex == m_deqCurRenderObj.size() - 1) ? considerIndex = 0 : considerIndex++;
+		for (int i = 0; i < m_deqCurRenderObj.size(); i++)
+		{
+			if (m_deqCurRenderObj[i]->GetAlpha() == 0)
+			{
+				int index = m_deqCurRenderObj[0]->GetIndex();
+				//CImageObject* frontObj = new CImageObject(*m_deqCurRenderObj[0]);
+				DELETEOBJECT(m_deqCurRenderObj[0]);
+				m_deqCurRenderObj.pop_front();
+				CImageObject* frontImgObj = new CImageObject(*m_vecBridgeObj[index]);
+				CImageObject lastImgObj = *m_deqCurRenderObj[m_deqCurRenderObj.size() - 1];
+				frontImgObj->SetPos(Vector(lastImgObj.GetPos().x + lastImgObj.GetScale().x, lastImgObj.GetPos().y));
+				m_deqCurRenderObj.push_back(frontImgObj);
+				ADDOBJECT(frontImgObj);
+
+				m_deqCurColliderObj[0]->SetPos(Vector(lastImgObj.GetPos().x + lastImgObj.GetScale().x, lastImgObj.GetPos().y));
+				m_deqCurColliderObj.pop_front();
+				m_deqCurColliderObj.push_back(m_deqCurColliderObj[0]);
+			}
+			else break;
+		}
+	}
+
+	if (BUTTONDOWN('R'))
+	{
+		m_deqCurRenderObj[0]->SetAlpha(0);
+	}
 }
 
 void CBridge::Render()
@@ -194,6 +256,17 @@ void CBridge::Render()
 
 void CBridge::Release()
 {
+	for (auto obj : m_vecBridgeObj)
+	{
+		delete obj;
+	}
+	m_vecBridgeObj.clear();
+
+	for (auto obj : m_vecColliderObj)
+	{
+		delete obj;
+	}
+	m_vecColliderObj.clear();
 }
 
 void CBridge::OnCollisionEnter(CCollider* pOtherCollider)

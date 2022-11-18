@@ -21,6 +21,8 @@ public:
 	//CCollider* GetCollider();
 
 	void SetOffset(Vector offset) { m_vecOffset = offset; }
+	Vector GetOffset() { return m_vecOffset; }
+	ColliderType GetColliderType() { return m_colliderType; }
 	CGameObject* GetColliderObjOwner();
 	void SetOwner(CGameObject* pOwner) { m_pOwner = pOwner; }
 	void SetType(ColliderType type) { m_colliderType = type; }

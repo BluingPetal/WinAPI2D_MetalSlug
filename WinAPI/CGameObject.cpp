@@ -100,7 +100,7 @@ void CGameObject::ComponentRender()
 	}
 }
 
-CCollider* CGameObject::GetCollider()
+CCollider*& CGameObject::GetCollider()
 {
 	return m_pCollider;
 }
@@ -161,7 +161,8 @@ void CGameObject::GameObjectUpdate()
 	// 게임오브젝트 내에 모든 컴포넌트 로직갱신
 	for (CComponent* pComponent : m_listComponent)
 	{
-		pComponent->Update();
+		//if(!pComponent->GetOwner()->GetReserveDelete())
+			pComponent->Update();
 	}
 }
 

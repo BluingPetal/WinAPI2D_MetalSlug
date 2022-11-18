@@ -36,6 +36,7 @@ void CSceneBoss::Init()
 	pCurBackgroundObj = pBossBackgroundObj1;
 
 	CBridge* pBridge = new CBridge;
+	pBridge->SetExtension(extension);
 	pBridge->SetLayer(Layer::BackGround);
 	AddGameObject(pBridge);
 

@@ -66,10 +66,12 @@ protected:
 private:
 	CCollider* m_pCollider;
 
-protected:
-	CCollider* GetCollider();
-	void AddCollider(ColliderType type, Vector scale, Vector offsetPos);
+public:
+	CCollider*& GetCollider();
 	void RemoveCollider();
+	void AddCollider(ColliderType type, Vector scale, Vector offsetPos);
+
+protected:
 
 	virtual void OnCollisionEnter(CCollider* pOtherCollider) {};	// 충돌체크를 확인하는 오브젝트는 재정의하여 사용
 	virtual void OnCollisionStay(CCollider* pOtherCollider) {};	// 충돌체크를 확인하는 오브젝트는 재정의하여 사용

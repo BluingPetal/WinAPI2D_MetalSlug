@@ -20,13 +20,15 @@ private:
 	CImage* m_pBridgeImg;
 
 	vector<CImageObject*> m_vecBridgeObj;
-	vector<ImgFrame> m_vecBrokenBridgeImg;
+	vector<CImageObject*> m_vecBrokenBridgeImg;
 	vector<CColliderObject*> m_vecColliderObj;
 
-	vector<CColliderObject*> m_vecCurColliderObj;
-	vector<CImageObject*> m_vecCurRenderObj;
+	deque<CColliderObject*> m_deqCurColliderObj;
+	deque<CImageObject*> m_deqCurRenderObj;
 
 	vector<ImgFrame> m_vecNextRenderImg; 
+
+	int considerIndex;
 
 private:
 	vector<ImgFrame> ReadAniFile(const wstring& str);
