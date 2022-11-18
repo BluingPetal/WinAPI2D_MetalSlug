@@ -46,7 +46,7 @@ enum class Layer
 	Default,
 	Tile,
 	BackGround,
-
+	Unit,
 	Monster,
 	Player,// 잠시동안
 

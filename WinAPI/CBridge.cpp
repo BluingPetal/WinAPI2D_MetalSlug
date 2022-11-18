@@ -7,6 +7,8 @@
 
 CBridge::CBridge()
 {
+	m_pBridgeImg = nullptr;
+	considerIndex = 0;
 }
 
 CBridge::~CBridge()

@@ -26,8 +26,6 @@ private:
 	deque<CColliderObject*> m_deqCurColliderObj;
 	deque<CImageObject*> m_deqCurRenderObj;
 
-	vector<ImgFrame> m_vecNextRenderImg; 
-
 	int considerIndex;
 
 private:

@@ -5,11 +5,16 @@
 #include "CImage.h"
 #include "CImageObject.h"
 #include "CPlayer.h"
+#include "CAniObject.h"
 
 #include "CCameraController.h"
 
 CSceneBoss::CSceneBoss()
 {
+	m_fAccTime = 0;
+	m_bStart = false;
+	m_pWarpAni = nullptr;
+	m_fExtension = 0;
 }
 
 CSceneBoss::~CSceneBoss()
@@ -20,6 +25,7 @@ void CSceneBoss::Init()
 {
 	CImage* pBossBackGround = RESOURCE->LoadImg(L"BossBackground", L"Image\\BackGround\\BossMap.png");
 	float extension = WINSIZEY / (float)pBossBackGround->GetHeight();
+	m_fExtension = extension;
 	pBossBackgroundObj1 = new CImageObject;
 	pBossBackgroundObj2 = new CImageObject;
 	pBossBackgroundObj1->SetImage(pBossBackGround);
@@ -35,17 +41,18 @@ void CSceneBoss::Init()
 	m_queueBackGround.push(pBossBackgroundObj2);
 	pCurBackgroundObj = pBossBackgroundObj1;
 
-	CBridge* pBridge = new CBridge;
-	pBridge->SetExtension(extension);
-	pBridge->SetLayer(Layer::BackGround);
-	AddGameObject(pBridge);
-
 	m_pPlayer = new CPlayer;
-	m_pPlayer->SetPos(WINSIZEX * 0.5, WINSIZEY * 0.5f);
 	m_pPlayer->SetExtension(extension);
-	AddGameObject(m_pPlayer);
 	//m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
 
+	m_pWarpAni = new CAniObject;
+	CImage* pWarpImage = RESOURCE->LoadImg(L"Warp", L"Image\\BackGround\\Warp.png");
+	m_pWarpAni->SetImage(pWarpImage);
+	m_pWarpAni->SetExtension(extension);
+	m_pWarpAni->SetPos(280, 470);
+	m_pWarpAni->GetAnimator()->CreateAnimation(L"BackGround\\Warp", pWarpImage, 0.1f, false);
+	m_pWarpAni->SetLayer(Layer::Unit);
+	AddGameObject(m_pWarpAni);
 
 	CCameraController* pCamController = new CCameraController;
 	AddGameObject(pCamController);
@@ -53,10 +60,15 @@ void CSceneBoss::Init()
 
 void CSceneBoss::Enter()
 {
+	CBridge* pBridge = new CBridge;
+	pBridge->SetExtension(m_fExtension);
+	pBridge->SetLayer(Layer::BackGround);
+	AddGameObject(pBridge);
 }
 
 void CSceneBoss::Update()
 {
+
 #pragma region BackGround นÝบน
 	if (pCurBackgroundObj == pBossBackgroundObj1 && (pBossBackgroundObj1->GetPos().x + pBossBackgroundObj1->GetScale().x) < CAMERA->GetLookAt().x - WINSIZEX * 0.5f)
 	{
@@ -69,6 +81,22 @@ void CSceneBoss::Update()
 		pCurBackgroundObj = pBossBackgroundObj1;
 	}
 #pragma endregion
+
+	if (m_pWarpAni != nullptr && !m_bStart)
+	{
+		m_fAccTime += DT;
+
+		if (m_fAccTime < 0.1 * 20)
+			m_pWarpAni->GetAnimator()->Play(L"BackGround\\Warp");
+		else
+		{
+			m_bStart = true;
+			m_pPlayer->SetPos(m_pWarpAni->GetPos() + Vector(0, 20));
+			AddGameObject(m_pPlayer);
+		}
+	}
+
+	
 
 
 

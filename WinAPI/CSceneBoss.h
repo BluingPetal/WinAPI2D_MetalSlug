@@ -3,6 +3,7 @@
 
 class CImageObject;
 class CPlayer;
+class CAniObject;
 
 class CSceneBoss : public CScene
 {
@@ -18,6 +19,12 @@ private:
 	CImageObject* pCurBackgroundObj;
 
 	CPlayer* m_pPlayer;
+	CAniObject* m_pWarpAni;
+
+	float m_fAccTime;
+	float m_fExtension;
+
+	bool m_bStart;
 
 	queue<CImageObject*> m_queueBackGround;
 
