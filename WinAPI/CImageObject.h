@@ -14,6 +14,7 @@ protected:
 	Vector m_vecOffset;
 	float m_fSpeed;
 	bool m_bIsFixed;
+	int m_index;
 
 	bool m_bRenderAsFrame;
 	float m_fRenderSourceInfo[4];
@@ -30,6 +31,8 @@ public:
 	void SetAlpha(float alpha) { m_fAlpha = alpha; }
 	float GetAlpha() { return m_fAlpha; }
 	Vector GetOffset() { return m_vecOffset; }
+	void SetIndex(int index) { m_index = index; }
+	int GetIndex() { return m_index; }
 	void SetSourceInfo(float startX, float startY, float width, float height);
 
 private:

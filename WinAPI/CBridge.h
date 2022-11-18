@@ -2,6 +2,7 @@
 #include "CGameObject.h"
 
 class CColliderObject;
+class CImageObject;
 class CImage;
 struct ImgFrame
 {
@@ -18,12 +19,14 @@ public:
 private:
 	CImage* m_pBridgeImg;
 
-	vector<ImgFrame> m_vecBridgeImg;
+	vector<CImageObject*> m_vecBridgeObj;
 	vector<ImgFrame> m_vecBrokenBridgeImg;
 	vector<CColliderObject*> m_vecColliderObj;
-	vector<ImgFrame> m_vecCurRenderImg;
-	vector<ImgFrame> m_vecNextRenderImg;
 
+	vector<CColliderObject*> m_vecCurColliderObj;
+	vector<CImageObject*> m_vecCurRenderObj;
+
+	vector<ImgFrame> m_vecNextRenderImg; 
 
 private:
 	vector<ImgFrame> ReadAniFile(const wstring& str);

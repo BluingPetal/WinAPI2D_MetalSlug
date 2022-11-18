@@ -1,6 +1,9 @@
 #pragma once
 #include "CScene.h"
 
+class CImageObject;
+class CPlayer;
+
 class CSceneBoss : public CScene
 {
 public:
@@ -9,7 +12,14 @@ public:
 
 
 
+private:
+	CImageObject* pBossBackgroundObj1;
+	CImageObject* pBossBackgroundObj2;
+	CImageObject* pCurBackgroundObj;
 
+	CPlayer* m_pPlayer;
+
+	queue<CImageObject*> m_queueBackGround;
 
 
 private:

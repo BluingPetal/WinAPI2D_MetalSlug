@@ -16,6 +16,7 @@ CImageObject::CImageObject()
 	m_fRenderSourceInfo[0] = { 0 };
 	m_bRenderAsFrame = false;
 	m_fAlpha = 1;
+	m_index = 0;
 }
 
 CImageObject::~CImageObject()

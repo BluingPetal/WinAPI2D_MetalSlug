@@ -115,7 +115,7 @@ void CColliderObject::OnCollisionStay(CCollider* pOtherCollider)
 {
     if (m_strName == L"ground")
     {
-        if (pOtherCollider->GetObjName() == L"Player")
+        if (dynamic_cast<CSceneStage01*>(SCENE->GetCurScene()) && pOtherCollider->GetObjName() == L"Player")
         {
             CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
             if (pOtherCollider->GetPos().x > 1010)
@@ -156,7 +156,7 @@ void CColliderObject::OnCollisionExit(CCollider* pOtherCollider)
     }
     if (m_strName == L"ground")
     {
-        if (pOtherCollider->GetObjName() == L"Player")
+        if (dynamic_cast<CSceneStage01*>(SCENE->GetCurScene()) && pOtherCollider->GetObjName() == L"Player")
         {
             CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
             aniObj->SetAlpha(0);
