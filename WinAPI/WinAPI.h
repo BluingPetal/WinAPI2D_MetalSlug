@@ -32,6 +32,7 @@ enum class GroupScene
 
 	SelectChar,
 	Stage01,
+	Boss,
 
 	Size,
 };

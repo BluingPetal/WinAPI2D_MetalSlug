@@ -21,11 +21,7 @@ CConga::CConga()
 	m_pNearColliderObj = nullptr;
 	m_strName = L"Conga";
 	m_congaState = CongaStatus::Idle;
-	m_vecMoveDir = Vector(0, 0);
-	m_vecLookDir = Vector(-1, 0);
-	m_fSpeed = 200.f;
 	m_fAccTime = 0.f;
-	m_hp = 10;
 	m_isAttack = false;
 }
 

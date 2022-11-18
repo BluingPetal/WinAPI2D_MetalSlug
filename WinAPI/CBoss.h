@@ -1,22 +1,10 @@
 #pragma once
-#include "CGameObject.h"
-
-class CImage;
-class CAnimator;
-
-class CMonster : public CGameObject
+#include "CMonster.h"
+class CBoss : public CMonster
 {
 public:
-	CMonster();
-	virtual ~CMonster();
-
-protected:
-	Vector m_vecMoveDir;
-	Vector m_vecLookDir;
-	float m_fSpeed;
-	int m_hp;
-
-	CGravity* m_pGravity;
+	CBoss();
+	virtual ~CBoss();
 
 private:
 	void Init() override;

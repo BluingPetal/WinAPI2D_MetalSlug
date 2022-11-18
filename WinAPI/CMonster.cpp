@@ -9,6 +9,11 @@ CMonster::CMonster()
 {
 	m_vecScale = Vector(100, 100);
 	m_layer = Layer::Monster;
+	m_vecMoveDir = Vector(0, 0);
+	m_vecLookDir = Vector(-1, 0);
+	m_fSpeed = 200.f;
+	m_hp = 10;
+	m_pGravity = nullptr;
 }
 
 CMonster::~CMonster()

@@ -7,6 +7,7 @@
 #include "CSceneAniTool.h"
 #include "CSceneChooseChar.h"
 #include "CSceneStage01.h"
+#include "CSceneBoss.h"
 
 CSceneManager::CSceneManager()
 {
@@ -31,6 +32,8 @@ void CSceneManager::Init()
 	m_mapScene.insert(make_pair(GroupScene::SelectChar, pSceneStageChooseChar));
 	CScene* pSceneStage01 = new CSceneStage01();
 	m_mapScene.insert(make_pair(GroupScene::Stage01, pSceneStage01));
+	CScene* pSceneBoss = new CSceneBoss;
+	m_mapScene.insert(make_pair(GroupScene::Boss, pSceneBoss));
 
 	// 게임씬 자료구조를 순회하며 씬을 초기화
 	for (pair<GroupScene, CScene*> scene : m_mapScene)
@@ -39,7 +42,7 @@ void CSceneManager::Init()
 	}
 
 	// 가장 처음으로 진행해야할 게임씬 시작
-	m_pCurScene = pSceneStage01;
+	m_pCurScene = pSceneBoss;
 	m_pCurScene->SceneEnter();
 }
 

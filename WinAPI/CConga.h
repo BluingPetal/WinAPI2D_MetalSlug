@@ -21,12 +21,8 @@ private:
 	CColliderObject* m_pNearColliderObj;
 
 	CongaStatus m_congaState;
-	Vector m_vecMoveDir;
-	Vector m_vecLookDir;
-	float m_fSpeed;
 
 	float m_fAccTime;
-	int m_hp;
 	bool m_isAttack;
 
 public:

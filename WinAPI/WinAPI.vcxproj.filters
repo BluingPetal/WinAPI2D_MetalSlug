@@ -216,6 +216,15 @@
     <ClInclude Include="CBomb.h">
       <Filter>GameObject\Stage01</Filter>
     </ClInclude>
+    <ClInclude Include="CSceneBoss.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="CBoss.h">
+      <Filter>GameObject\Stage01</Filter>
+    </ClInclude>
+    <ClInclude Include="CBridge.h">
+      <Filter>GameObject\Stage01</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinAPI.cpp">
@@ -360,6 +369,15 @@
       <Filter>Engine\Asset\UI</Filter>
     </ClCompile>
     <ClCompile Include="CBomb.cpp">
+      <Filter>GameObject\Stage01</Filter>
+    </ClCompile>
+    <ClCompile Include="CSceneBoss.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="CBoss.cpp">
+      <Filter>GameObject\Stage01</Filter>
+    </ClCompile>
+    <ClCompile Include="CBridge.cpp">
       <Filter>GameObject\Stage01</Filter>
     </ClCompile>
   </ItemGroup>
