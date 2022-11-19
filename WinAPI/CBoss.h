@@ -18,7 +18,8 @@ private:
 	Vector m_vecMoveDir;
 	float m_fAccTime;
 	float m_fAttackAccTime;
-	float m_fDisappearAccTime;
+	float m_fFireDisappearAccTime;
+	float m_fMissileDisappearAccTime;
 	bool m_bIsAttack;
 
 	CMissile* pFireMissile;
@@ -26,6 +27,9 @@ private:
 	CAniObject* m_pFireMissileAniObj;
 	CAniObject* m_pMissileAniObj;
 	CImage* m_pEffectImg;
+
+public:
+	BossStatus GetStatus() { return m_bossStatus; }
 
 private:
 	void Init() override;

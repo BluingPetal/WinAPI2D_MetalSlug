@@ -12,6 +12,9 @@
 #include "CAnimator.h"
 #include "CGravity.h"
 #include "CConga.h"
+#include "CScene.h"
+#include "CSceneStage01.h"
+#include "CSceneBoss.h"
 
 #include "CMissile.h"
 
@@ -69,6 +72,7 @@ void CPlayer::Init()
 	m_pAttackRImage = RESOURCE->LoadImg(L"PlayerAttackR", L"Image\\Player\\EriAttackR.png");
 	m_pAttackLImage = RESOURCE->LoadImg(L"PlayerAttackL", L"Image\\Player\\EriAttackL.png");
 	m_pDeathImage = RESOURCE->LoadImg(L"PlayerDeath", L"Image\\Player\\EriDeath.png");
+	CImage* pVictoryImage = RESOURCE->LoadImg(L"PlayerVictory", L"Image\\Player\\EriVictory.png");
 
 #pragma endregion
 
@@ -176,6 +180,9 @@ void CPlayer::Init()
 	m_pAnimator2->CreateAnimation(L"Player\\Jump\\EriJumpMoveR_2", m_pJumpImage, 0.08f, false);
 	m_pAnimator2->CreateAnimation(L"Player\\Jump\\EriJumpMoveL_2", m_pJumpImage, 0.08f, false);
 
+	// Victory Animation
+	m_pAnimator1->CreateAnimation(L"Player\\Victory\\EriVictory", pVictoryImage, 0.2f, true);
+
 #pragma endregion
 
 	AddComponent(m_pAnimator2);
@@ -188,11 +195,14 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
-	if (m_curWeapon == PlayerWeapon::Pistol || m_curWeapon == PlayerWeapon::HeavyMachineGun)
-		m_curGun = m_curWeapon;
-	KeyUpdate();
-	BehaviorUpdate();
-	StatusUpdate();
+	if (m_status != PlayerStatus::Victory)
+	{
+		if (m_curWeapon == PlayerWeapon::Pistol || m_curWeapon == PlayerWeapon::HeavyMachineGun)
+			m_curGun = m_curWeapon;
+		KeyUpdate();
+		BehaviorUpdate();
+		StatusUpdate();
+	}
 	AnimatorUpdate();
 	if (m_curWeapon == PlayerWeapon::Bomb || m_curWeapon == PlayerWeapon::Knife)
 		m_curWeapon = m_curGun;
@@ -295,11 +305,14 @@ void CPlayer::KeyUpdate()
 	if (BUTTONDOWN('Q'))
 	{
 		m_bIsDead = false;
-		m_hp = 3;
+		m_hp = 5;
 		m_bIsJump = true;
 		m_fSpeed = 300;
-		m_vecPos = CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.2, WINSIZEY * 0.5));
 		m_status = PlayerStatus::Idle;
+		if(dynamic_cast<CSceneStage01*>(SCENE->GetCurScene()))
+			m_vecPos = CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.2, WINSIZEY * 0.5));
+		else if (dynamic_cast<CSceneBoss*>(SCENE->GetCurScene()))
+			m_vecPos = CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.8, WINSIZEY * 0.5));
 	}
 }
 
@@ -1526,8 +1539,13 @@ void CPlayer::AnimatorUpdate()
 		}
 	}
 		break;
-	default:
-		break;
+
+	case PlayerStatus::Victory:
+	{
+		m_pAnimator2->Stop();
+		m_pAnimator1->Play(L"Player\\Victory\\EriVictory");
+	}
+		break;	
 	}
 }
 
@@ -1556,6 +1574,8 @@ void CPlayer::BehaviorUpdate()
 			m_gravity->SetVelocity(-300);
 		}
 		m_vecPos.x -= m_vecMoveDir.x * m_fSpeed * DT;
+		break;
+	case PlayerStatus::Victory:
 		break;
 	}
 
@@ -1796,6 +1816,8 @@ void CPlayer::StatusUpdate()
 
 		// 죽었으면 새로 부활
 		break;
+	case PlayerStatus::Victory:
+		break;
 	}
 }
 
@@ -1871,6 +1893,15 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 		if(!m_bIsJump)
 			m_gravity->SetVelocity(0);
 		m_fSpeed = 0;
+	}
+	if (pOtherCollider->GetObjName() == L"deathObstacle")
+	{
+		m_bIsJump = true;
+		//m_bIsAttack = false;
+		//m_vecMoveDir.y = 0;
+		//m_vecLookDir.y = 0;
+		//m_gravity->SetVelocity(0);
+		m_status = PlayerStatus::Dead;
 	}
 }
 

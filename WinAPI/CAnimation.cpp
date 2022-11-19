@@ -143,11 +143,11 @@ void CAnimation::Update()
 			m_fAccTime = 0;	// 현재 플레이중인 프레임의 누적시간 초기화
 
 			// 만약 플레이중인 프레임이 마지막 프레임이었을 경우
-			if (m_iCurFrame == 0)
+			if (m_iCurFrame < 0)
 			{
 				// 반복 애니메이션이라면 처음부터, 아니라면 마지막을 다시 재생
 				if (m_bRepeat)	m_iCurFrame = m_vecFrame.size()-1;
-				else			m_iCurFrame--;
+				else			m_iCurFrame++;
 			}
 		}
 	}

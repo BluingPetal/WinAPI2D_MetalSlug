@@ -85,6 +85,7 @@ enum class PlayerStatus
 	SitAttack,
 
 	Dead,
+	Victory,
 };
 
 //========================================

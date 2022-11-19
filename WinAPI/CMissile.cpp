@@ -11,6 +11,7 @@
 #include "CConga.h"
 #include "CGravity.h"
 #include "CPlayer.h"
+#include "CAnimation.h"
 
 CMissile::CMissile()
 {
@@ -37,7 +38,7 @@ void CMissile::Init()
 	else if (m_strName == L"BossFireMissile")
 		AddCollider(ColliderType::Rect, Vector(40, 40), Vector(0, 0));
 	else if (m_strName == L"BossMissile")
-		AddCollider(ColliderType::Rect, Vector(8, 8), Vector(0, 0));
+		AddCollider(ColliderType::Rect, Vector(40, 40), Vector(0, 0));
 
 	// Animator Á¤ÀÇ
 	m_pAnimator = new CAnimator;
@@ -60,7 +61,11 @@ void CMissile::Init()
 	else if (m_strName == L"BossMissile")
 	{
 		CImage* pBossMissile = RESOURCE->LoadImg(L"BossMissile", L"Image\\Boss\\BossAttack.png");
-		m_pAnimator->CreateAnimation(L"Boss\\BossFireMissile", pBossMissile, 0.1f, false);
+		m_pAnimator->CreateAnimation(L"Boss\\BossMissile", pBossMissile, 0.1f, false);
+		m_pGravity = new CGravity;
+		AddComponent(m_pGravity);
+		m_pGravity->SetVelocity(-10);
+		m_pGravity->SetGravity(1500);
 	}
 	//m_pAnimator->CreateAnimation(L"PlayerMissile", pPlayerMissileImg, 0.1f, false);
 	AddComponent(m_pAnimator);
@@ -79,6 +84,9 @@ void CMissile::Update()
 		m_vecPos.y > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).y)
 		DELETEOBJECT(this);
 
+
+
+
 	if (m_strName == L"BossFireMissile")
 	{
 		m_fAttackAccTime += DT;
@@ -88,6 +96,13 @@ void CMissile::Update()
 			m_pAnimator->Play(L"Boss\\BossFireMissile", true);
 			m_fAttackAccTime = 0;
 		}
+	}
+	if (m_strName == L"BossMissile")
+	{
+		m_fAttackAccTime += DT;
+
+		m_pAnimator->ReversePlay(L"Boss\\BossMissile");
+		m_fAttackAccTime = 0;
 	}
 }
 
@@ -143,7 +158,30 @@ void CMissile::OnCollisionEnter(CCollider* pOtherCollider)
 		{
 			m_pGravity->SetVelocity(0);
 			CPlayer* pOtherObj = dynamic_cast<CPlayer*>(pOtherCollider->GetOwner());
-			pOtherObj->SetHp(pOtherObj->GetHp() - 3);
+			pOtherObj->SetHp(pOtherObj->GetHp() - 5);
+			DELETEOBJECT(this);
+		}
+		else if (pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground")
+		{
+			m_pGravity->SetVelocity(0);
+			DELETEOBJECT(this);
+		}
+		//if (m_fAttackAccTime <= 0.4f)
+		//{
+		//	m_pAnimator->Play(L"Boss\\BossFireMissile", true);
+		//	m_fAttackAccTime = 0;
+		//}
+	}
+	if (m_strName == L"BossMissile")
+	{
+		//m_bIsEntered = true;
+		//m_fDisappearAccTime = 0;
+
+		if (pOtherCollider->GetObjName() == L"Player")
+		{
+			m_pGravity->SetVelocity(0);
+			CPlayer* pOtherObj = dynamic_cast<CPlayer*>(pOtherCollider->GetOwner());
+			pOtherObj->SetHp(pOtherObj->GetHp() - 10);
 			DELETEOBJECT(this);
 		}
 		else if (pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground")

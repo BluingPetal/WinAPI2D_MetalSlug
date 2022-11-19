@@ -8,8 +8,7 @@
 #include "CAniObject.h"
 #include "CBoss.h"
 #include "CColliderObject.h"
-
-#include "CCameraController.h"
+#include "CFontImageObj.h"
 
 CSceneBoss::CSceneBoss()
 {
@@ -19,6 +18,7 @@ CSceneBoss::CSceneBoss()
 	m_pWarpAni = nullptr;
 	m_bStart = false;
 	m_bBossAppear = false;
+	m_bVictory = false;
 }
 
 CSceneBoss::~CSceneBoss()
@@ -68,19 +68,25 @@ void CSceneBoss::Init()
 	m_pObstacle->SetScale(5, WINSIZEY / extension);
 	AddGameObject(m_pObstacle);
 
-	//m_pWater = new CAniObject;
-	//CImage* pBossEffectImage = RESOURCE->LoadImg(L"Warp", L"Image\\BackGround\\Warp.png");
-	//m_pWater->SetImage(pWarpImage);
-	//m_pWater->SetExtension(extension);
-	//m_pWater->SetPos(WINSIZEX * 0.7f, 470);
-	//m_pWater->GetAnimator()->CreateAnimation(L"BackGround\\Warp", pWarpImage, 0.1f, false);
-	//m_pWater->SetLayer(Layer::ForeGround);
+	m_pDeathObj = new CColliderObject;
+	m_pDeathObj->SetName(L"deathObstacle");
+	m_pDeathObj->SetPos(WINSIZEX * 0.5f, WINSIZEY * 0.95f);
+	m_pDeathObj->SetScale(WINSIZEX, WINSIZEY * 0.1f);
+	AddGameObject(m_pDeathObj);
+
+	m_pWater = new CAniObject;
+	CImage* pBossEffectImage = RESOURCE->LoadImg(L"BossWater", L"Image\\Boss\\BossBackground.png");
+	m_pWater->SetImage(pBossEffectImage);
+	m_pWater->SetExtension(extension);
+	m_pWater->SetPos(pBoss->GetPos());//.x, WINSIZEY * 0.8f);
+	m_pWater->GetAnimator()->CreateAnimation(L"Boss\\BossWater", pBossEffectImage, 0.1f);
+	m_pWater->SetLayer(Layer::ForeGround);
 	//AddGameObject(m_pWater);
 
-	//CAMERA->SetTargetPos(Vector(WINSIZEX * 0.5f, WINSIZEY * 0.5f));
-
-	//CCameraController* pCamController = new CCameraController;
-	//AddGameObject(pCamController);
+	m_pMissionComplete1 = new CFontImageObj;
+	m_pMissionComplete2 = new CFontImageObj;
+	m_pMissionComplete1->SetExtension(extension);
+	m_pMissionComplete2->SetExtension(extension);
 }
 
 void CSceneBoss::Enter()
@@ -90,10 +96,38 @@ void CSceneBoss::Enter()
 	pBridge->SetLayer(Layer::BackGround);
 	AddGameObject(pBridge);
 
+	CAMERA->FadeIn(1.0f);
 }
 
 void CSceneBoss::Update()
 {
+	if (pBoss->GetStatus() == BossStatus::Destroyed && !m_bVictory)
+	{
+		m_bVictory = true;
+		m_pPlayer->SetStatus(PlayerStatus::Victory);
+		AddGameObject(m_pMissionComplete1);
+		AddGameObject(m_pMissionComplete2);
+		m_vecMissionCompleteStartPos1 = CAMERA->ScreenToWorldPoint(Vector( - WINSIZEX * 0.4f, WINSIZEY * 0.3f));
+		m_vecMissionCompleteStartPos2 = CAMERA->ScreenToWorldPoint(Vector(-WINSIZEX * 0.5f, WINSIZEY * 0.5f));
+		m_pMissionComplete1->SetInterval(1.1f);
+		m_pMissionComplete2->SetInterval(1.1f);
+		m_pMissionComplete1->CreateImgObj(L"mission", m_vecMissionCompleteStartPos1, 7, FontType::Mission);
+		m_pMissionComplete2->CreateImgObj(L"complete", m_vecMissionCompleteStartPos1, 8, FontType::Mission);
+		m_pMissionComplete1->Show();
+		m_pMissionComplete2->Show();
+	}
+	else if (m_bVictory)
+	{
+		//m_fVictoryAccTime += DT;
+		Vector m_vecTargetPos1, m_vecTargetPos2;
+		m_vecTargetPos1 = CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.28f, WINSIZEY * 0.3f));
+		m_vecTargetPos2 = CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.2f, WINSIZEY * 0.5f));
+		m_vecMissionCompleteStartPos1 += (m_vecTargetPos1 - m_vecMissionCompleteStartPos1) * 1.f * DT; // 소리에 따라서는 3초 조절 필요
+		m_vecMissionCompleteStartPos2 += (m_vecTargetPos2 - m_vecMissionCompleteStartPos2) * 1.f * DT;
+		m_pMissionComplete1->SetPos(m_vecMissionCompleteStartPos1);
+		m_pMissionComplete2->SetPos(m_vecMissionCompleteStartPos2);
+
+	}
 
 #pragma region BackGround 반복
 	if (pCurBackgroundObj == pBossBackgroundObj1 && (pBossBackgroundObj1->GetPos().x + pBossBackgroundObj1->GetScale().x) < CAMERA->GetLookAt().x - WINSIZEX * 0.5f)
@@ -124,29 +158,36 @@ void CSceneBoss::Update()
 
 	//if (!m_bBossAppear)
 	//{
-	m_fBossAppearAccTime += DT;
+	m_pWater->SetPos(pBoss->GetPos().x, WINSIZEY * 0.93f);
+	if (pBoss->GetStatus() != BossStatus::Destroyed)
+	{
+		m_fBossAppearAccTime += DT;
 
-	if (m_fBossAppearAccTime > 5.f && !m_bBossAppear)
-	{
-		m_bBossAppear = true;
+		if (m_fBossAppearAccTime > 5.f && !m_bBossAppear)
+		{
+			m_bBossAppear = true;
 
-		//m_vecScale = Vector(bossImg->GetWidth() * m_fExtension, WINSIZEY - bossImg->GetHeight() * m_fExtension)
-		//pBoss->SetPos(pBoss->GetScale().x, WINSIZEY - pBoss->GetScale().y);
-		AddGameObject(pBoss);
-	}
-	else if (m_fBossAppearAccTime > 5.f && m_fBossAppearAccTime < 12.0f)
-	{
-		Vector bossUpdatePos = Vector(pBoss->GetPos().x, pBoss->GetPos().y + ((WINSIZEY - pBoss->GetScale().y * 0.5f) - pBoss->GetPos().y) * DT);
-		//position 정해주기
-		pBoss->SetPos(bossUpdatePos);
-	}
-	else if(m_fBossAppearAccTime > 12.0f)
-	{
-		Vector targetPos = CAMERA->GetLookAt() + Vector(200 * DT, 0);
-		CAMERA->SetTargetPos(targetPos);
+			//m_vecScale = Vector(bossImg->GetWidth() * m_fExtension, WINSIZEY - bossImg->GetHeight() * m_fExtension)
+			//pBoss->SetPos(pBoss->GetScale().x, WINSIZEY - pBoss->GetScale().y);
+			AddGameObject(pBoss);
+			AddGameObject(m_pWater);
+			m_pWater->GetAnimator()->Play(L"Boss\\BossWater");
+		}
+		else if (m_fBossAppearAccTime > 5.f && m_fBossAppearAccTime < 12.0f)
+		{
+			Vector bossUpdatePos = Vector(pBoss->GetPos().x, pBoss->GetPos().y + ((WINSIZEY - pBoss->GetScale().y * 0.5f) - pBoss->GetPos().y) * DT);
+			//position 정해주기
+			pBoss->SetPos(bossUpdatePos);
+		}
+		else if (m_fBossAppearAccTime > 12.0f)
+		{
+			Vector targetPos = CAMERA->GetLookAt() + Vector(200 * DT, 0);
+			CAMERA->SetTargetPos(targetPos);
+		}
 	}
 
 	m_pObstacle->SetPos(CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY * 0.5f)));
+	m_pDeathObj->SetPos(CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.5f, WINSIZEY * 0.95f)));
 
 	Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
 }

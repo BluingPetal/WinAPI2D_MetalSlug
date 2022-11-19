@@ -24,7 +24,7 @@ private:
 	wstring				m_strName;		// 애니메이션 이름
 	CImage*				m_pImage;		// 애니메이션 이미지
 	vector<AniFrame>	m_vecFrame;		// 애니메이션의 프레임 정보들
-	UINT				m_iCurFrame;	// 현재 플레이중인 프레임의 인덱스
+	int					m_iCurFrame;	// 현재 플레이중인 프레임의 인덱스
 	float				m_fAccTime;		// 현재 플레이중인 프레임의 축적시간
 	bool				m_bRepeat;		// 애니메이션의 반복 여부
 	UINT				m_iCount;

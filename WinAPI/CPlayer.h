@@ -66,6 +66,7 @@ public:
 	bool GetBombDiff() { return m_bBombDiff; }
 	PlayerWeapon GetCurWeapon() { return m_curWeapon; }
 	void SetCurWeapon(PlayerWeapon weapon) { m_curWeapon = weapon; }
+	void SetStatus(PlayerStatus status) { m_status = status; }
 
 private:
 	void Init() override;

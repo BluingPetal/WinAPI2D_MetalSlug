@@ -13,10 +13,11 @@ CBoss::CBoss()
 	m_vecMoveDir = Vector(1, 0);
 	m_fAccTime = 0;
 	m_fAttackAccTime = 0;
-	m_hp = 200;
+	m_hp = 120;
 	m_bossStatus = BossStatus::Idle;
 	m_bIsAttack = false;
-	m_fDisappearAccTime = 0;
+	m_fFireDisappearAccTime = 0;
+	m_fMissileDisappearAccTime = 0;
 }
 
 CBoss::~CBoss()
@@ -69,22 +70,40 @@ void CBoss::Update()
 			m_pFireMissileAniObj->GetAnimator()->Play(L"Effect\\Bomb");
 		}
 	}
-	//else
-	//{
-		if (m_pFireMissileAniObj != nullptr && !m_pFireMissileAniObj->GetReserveDelete())
+	if (m_pFireMissileAniObj != nullptr && !m_pFireMissileAniObj->GetReserveDelete())
+	{
+		m_fFireDisappearAccTime += DT;
+		if (m_fFireDisappearAccTime >= 1.2f)
 		{
-			m_fDisappearAccTime += DT;
-			if (m_fDisappearAccTime >= 1.3f)
-			{
-				DELETEOBJECT(m_pFireMissileAniObj);
-				m_fDisappearAccTime = 0;
-			}
+			DELETEOBJECT(m_pFireMissileAniObj);
+			m_fFireDisappearAccTime = 0;
 		}
-	//}
-	//if (pMissile != nullptr && pMissile->GetReserveDelete())
-	//{
-	//
-	//}
+	}
+
+	if (pMissile != nullptr && !pMissile->GetSafeToDelete())
+	{
+		if (pMissile->GetReserveDelete())
+		{
+			// 폭발 애니메이터 생성뒤 지움
+			m_pMissileAniObj = new CAniObject;
+			m_pMissileAniObj->SetImage(m_pEffectImg);
+			m_pMissileAniObj->SetPos(pMissile->GetPos() + Vector(0, -200));
+			m_pMissileAniObj->SetExtension(m_fExtension + 1.5);
+			m_pMissileAniObj->SetLayer(Layer::Unit);
+			ADDOBJECT(m_pMissileAniObj);
+			m_pMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\Bomb", m_pEffectImg, 0.05f, false);
+			m_pMissileAniObj->GetAnimator()->Play(L"Effect\\Bomb");
+		}
+	}
+	if (m_pMissileAniObj != nullptr && !m_pMissileAniObj->GetReserveDelete())
+	{
+		m_fMissileDisappearAccTime += DT;
+		if (m_fMissileDisappearAccTime >= 1.2f)
+		{
+			DELETEOBJECT(m_pMissileAniObj);
+			m_fMissileDisappearAccTime = 0;
+		}
+	}
 
 }
 
@@ -125,8 +144,11 @@ void CBoss::BehaviorUpdate()
 		break;
 	case BossStatus::CannonFire:
 		m_vecPos += m_vecMoveDir * m_fSpeed * DT;
+		if(m_fAccTime > 0.4f)
+			CreateMissile();
 		break;
 	case BossStatus::Destroyed:
+		m_vecPos.y += (m_fSpeed - 100) * DT;
 		break;
 	}
 }
@@ -145,7 +167,7 @@ void CBoss::StateUpdate()
 		}
 		break;
 	case BossStatus::Walk:
-		if (m_hp < 100)
+		if (m_hp < 50)
 		{
 			m_bossStatus = BossStatus::DeployCannon;
 			m_fAccTime = 0;
@@ -154,7 +176,7 @@ void CBoss::StateUpdate()
 		if (m_fAccTime > 1.2f)
 		{
 			srand((unsigned)time(NULL));
-			int ratio = rand() % 5;
+			int ratio = rand() % 10;
 			if (ratio == 0)
 			{
 				m_bossStatus = BossStatus::FastWalk;
@@ -175,7 +197,7 @@ void CBoss::StateUpdate()
 		}
 		break;
 	case BossStatus::Fire:
-		if (m_hp < 100)
+		if (m_hp < 50)
 		{
 			m_bossStatus = BossStatus::DeployCannon;
 			m_fAccTime = 0;
@@ -206,7 +228,7 @@ void CBoss::StateUpdate()
 		if (m_fAccTime > 1.2f)
 		{
 			srand((unsigned)time(NULL));
-			int ratio = rand() % 5;
+			int ratio = rand() % 10;
 			if (ratio == 0)
 			{
 				m_bossStatus = BossStatus::CannonFastWalk;
@@ -242,8 +264,6 @@ void CBoss::StateUpdate()
 		}
 		break;
 	case BossStatus::Destroyed:
-		break;
-	default:
 		break;
 	}
 }
@@ -292,7 +312,7 @@ void CBoss::CreateFireMissile()
 		pFireMissile->SetName(L"BossFireMissile");
 		pFireMissile->SetDir(Vector(1, 0));
 		pFireMissile->SetVelocity(800);
-		pFireMissile->SetPos(m_vecPos + Vector(0, -300));
+		pFireMissile->SetPos(m_vecPos + Vector(100, -300));
 		pFireMissile->SetExtension(m_fExtension);
 		pFireMissile->SetOwner(this);
 		ADDOBJECT(pFireMissile);
@@ -305,9 +325,31 @@ void CBoss::CreateFireMissile()
 }
 
 void CBoss::CreateMissile()
-{
-	CMissile* pMissile = new CMissile;
-	pMissile->SetName(L"BossMissile");
+{	//m_fAttackAccTime += DT;
+	if (!m_bIsAttack)
+	{
+		m_bIsAttack = true;
+
+		pFireMissile = new CMissile;
+		pFireMissile->SetName(L"BossFireMissile");
+		pFireMissile->SetDir(Vector(1, 0));
+		pFireMissile->SetVelocity(800);
+		pFireMissile->SetPos(m_vecPos + Vector(100, -300));
+		pFireMissile->SetExtension(m_fExtension);
+		pFireMissile->SetOwner(this);
+		ADDOBJECT(pFireMissile);
+
+		pMissile = new CMissile;
+		pMissile->SetName(L"BossMissile");
+		pMissile->SetDir(Vector(1, 0));
+		pMissile->SetVelocity(700);
+		pMissile->SetPos(m_vecPos + Vector(130, -170));
+		pMissile->SetExtension(m_fExtension);
+		pMissile->SetOwner(this);
+		ADDOBJECT(pMissile);
+	}
+	//CMissile* pMissile = new CMissile;
+	//pMissile->SetName(L"BossMissile");
 }
 
 void CBoss::OnCollisionEnter(CCollider* pOtherCollider)
