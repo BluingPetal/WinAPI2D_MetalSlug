@@ -10,7 +10,7 @@ public:
 	CMissile();
 	virtual ~CMissile();
 
-private:
+protected:
 	Vector m_vecDir;
 	float m_fVelocity;
 	CGameObject* m_pOwner;

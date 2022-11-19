@@ -3,7 +3,9 @@
 
 class CImage;
 class CAnimator;
+class CAniObject;
 class CGravity;
+class CPlayerMissile;
 
 class CPlayer : public CGameObject
 {
@@ -18,9 +20,14 @@ private:
 	CImage* m_pAttackRImage;
 	CImage* m_pAttackLImage;
 	CImage* m_pDeathImage;
+	CImage* m_pEffectImage;
 
 	CAnimator* m_pAnimator1;
 	CAnimator* m_pAnimator2;
+	CAniObject* m_pMissileAniObj;
+	CPlayerMissile* m_pMissile;
+
+	float m_fMissileDisappearAccTime;
 
 	CGravity* m_gravity;
 

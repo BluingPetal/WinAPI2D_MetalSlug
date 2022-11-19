@@ -225,6 +225,12 @@
     <ClInclude Include="CBridge.h">
       <Filter>GameObject\Stage01</Filter>
     </ClInclude>
+    <ClInclude Include="CPlayerMissile.h">
+      <Filter>GameObject\Stage01</Filter>
+    </ClInclude>
+    <ClInclude Include="CBossMissile.h">
+      <Filter>GameObject\Stage01</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WinAPI.cpp">
@@ -378,6 +384,12 @@
       <Filter>GameObject\Stage01</Filter>
     </ClCompile>
     <ClCompile Include="CBridge.cpp">
+      <Filter>GameObject\Stage01</Filter>
+    </ClCompile>
+    <ClCompile Include="CPlayerMissile.cpp">
+      <Filter>GameObject\Stage01</Filter>
+    </ClCompile>
+    <ClCompile Include="CBossMissile.cpp">
       <Filter>GameObject\Stage01</Filter>
     </ClCompile>
   </ItemGroup>

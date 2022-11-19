@@ -15,8 +15,9 @@
 #include "CScene.h"
 #include "CSceneStage01.h"
 #include "CSceneBoss.h"
+#include "CAniObject.h"
 
-#include "CMissile.h"
+#include "CPlayerMissile.h"
 
 #define PI 3.141592
 
@@ -73,6 +74,7 @@ void CPlayer::Init()
 	m_pAttackLImage = RESOURCE->LoadImg(L"PlayerAttackL", L"Image\\Player\\EriAttackL.png");
 	m_pDeathImage = RESOURCE->LoadImg(L"PlayerDeath", L"Image\\Player\\EriDeath.png");
 	CImage* pVictoryImage = RESOURCE->LoadImg(L"PlayerVictory", L"Image\\Player\\EriVictory.png");
+	m_pEffectImage = RESOURCE->LoadImg(L"MissileEffectImg", L"Image\\Effect\\MissileEffect.png");
 
 #pragma endregion
 
@@ -195,6 +197,31 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
+	//if (m_pMissile != nullptr && !m_pMissile->GetSafeToDelete())
+	//{
+	//	if (m_pMissile->GetReserveDelete())
+	//	{
+	//		// 폭발 애니메이터 생성뒤 지움
+	//		m_pMissileAniObj = new CAniObject;
+	//		m_pMissileAniObj->SetImage(m_pEffectImage);
+	//		m_pMissileAniObj->SetPos(m_pMissile->GetPos());
+	//		m_pMissileAniObj->SetExtension(m_fExtension);
+	//		m_pMissileAniObj->SetLayer(Layer::Unit);
+	//		ADDOBJECT(m_pMissileAniObj);
+	//		m_pMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\PlayerMissileEffect", m_pEffectImage, 0.1f, false);
+	//		m_pMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
+	//	}
+	//}
+	//if (m_pMissileAniObj != nullptr && !m_pMissileAniObj->GetReserveDelete())
+	//{
+	//	m_fMissileDisappearAccTime += DT;
+	//	if (m_fMissileDisappearAccTime >= 0.8f)
+	//	{
+	//		DELETEOBJECT(m_pMissileAniObj);
+	//		m_fMissileDisappearAccTime = 0;
+	//	}
+	//}
+
 	if (m_status != PlayerStatus::Victory)
 	{
 		if (m_curWeapon == PlayerWeapon::Pistol || m_curWeapon == PlayerWeapon::HeavyMachineGun)
@@ -280,7 +307,7 @@ void CPlayer::KeyUpdate()
 
 			CreateMissile();
 			// TODO : 총알에 따른 무기 정해주기
-			m_curWeapon = PlayerWeapon::HeavyMachineGun;
+			m_curWeapon = PlayerWeapon::Pistol;
 			m_fAcctime = 0;
 			m_bIsAttack = true;
 			m_bIsShoot = true;
@@ -1825,41 +1852,59 @@ void CPlayer::CreateMissile()
 {
 	Logger::Debug(L"미사일 생성");
 
-	CMissile* pMissile = new CMissile();
-	pMissile->SetName(L"PlayerMissile");
-	pMissile->SetPos(m_vecPos);
+	m_pMissile = new CPlayerMissile();
+	m_pMissile->SetName(L"PlayerMissile");
+	m_pMissile->SetVelocity(1000);
 
 	if (m_vecLookDir.y < 0)
 	{
 		if (m_bIsSit)
-			pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+		{
+			m_pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+			m_pMissile->SetPos(m_vecPos + Vector(m_vecLookDir.x * 100, 0));
+		}
 		else
-			pMissile->SetDir(Vector(0, m_vecLookDir.y));
+		{
+			m_pMissile->SetDir(Vector(0, m_vecLookDir.y));
+			m_pMissile->SetPos(m_vecPos + Vector(0, m_vecLookDir.y * 100));
+		}
 	}
 	else if (m_vecLookDir.y > 0)
 	{
-		if(m_bIsJump)
-			pMissile->SetDir(Vector(0, m_vecLookDir.y));
+		if (m_bIsJump)
+		{
+			m_pMissile->SetDir(Vector(0, m_vecLookDir.y));
+			m_pMissile->SetPos(m_vecPos + Vector(0, m_vecLookDir.y * 100));
+		}
 		else
-			pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+		{
+			m_pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+			m_pMissile->SetPos(m_vecPos + Vector(m_vecLookDir.x * 100, 0));
+		}
 	}
 	else
 	{
-		pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+		m_pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+		m_pMissile->SetPos(m_vecPos + Vector(m_vecLookDir.x * 100, 0));
 	}
 	/*
 	if (m_vecLookDir.y < 0)
-		pMissile->SetDir(Vector(0, m_vecLookDir.y));
+		m_pMissile->SetDir(Vector(0, m_vecLookDir.y));
 	else if (m_bIsJump && m_vecLookDir.y > 0)
-		pMissile->SetDir(Vector(0, m_vecLookDir.y));
+		m_pMissile->SetDir(Vector(0, m_vecLookDir.y));
 	else if(m_vecLookDir.x > 0)
-		pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+		m_pMissile->SetDir(Vector(m_vecLookDir.x, 0));
 	else if (m_vecLookDir.x < 0)
-		pMissile->SetDir(Vector(m_vecLookDir.x, 0));
+		m_pMissile->SetDir(Vector(m_vecLookDir.x, 0));
 		*/
-	pMissile->SetOwner(this);
-	pMissile->SetExtension(m_fExtension);
-	ADDOBJECT(pMissile);
+	if (m_curWeapon == PlayerWeapon::Pistol)
+	{
+		m_pMissile->SetPos(m_pMissile->GetPos() + Vector(0, -20));
+	}
+
+	m_pMissile->SetOwner(this);
+	m_pMissile->SetExtension(m_fExtension);
+	ADDOBJECT(m_pMissile);
 }
 
 void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)

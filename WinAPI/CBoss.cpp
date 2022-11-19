@@ -2,7 +2,7 @@
 #include "CBoss.h"
 
 #include "CImage.h"
-#include "CMissile.h"
+#include "CBossMissile.h"
 #include "CAniObject.h"
 
 CBoss::CBoss()
@@ -308,7 +308,7 @@ void CBoss::CreateFireMissile()
 	if (!m_bIsAttack)
 	{
 		m_bIsAttack = true;
-		pFireMissile = new CMissile;
+		pFireMissile = new CBossMissile;
 		pFireMissile->SetName(L"BossFireMissile");
 		pFireMissile->SetDir(Vector(1, 0));
 		pFireMissile->SetVelocity(800);
@@ -330,7 +330,7 @@ void CBoss::CreateMissile()
 	{
 		m_bIsAttack = true;
 
-		pFireMissile = new CMissile;
+		pFireMissile = new CBossMissile;
 		pFireMissile->SetName(L"BossFireMissile");
 		pFireMissile->SetDir(Vector(1, 0));
 		pFireMissile->SetVelocity(800);
@@ -339,7 +339,7 @@ void CBoss::CreateMissile()
 		pFireMissile->SetOwner(this);
 		ADDOBJECT(pFireMissile);
 
-		pMissile = new CMissile;
+		pMissile = new CBossMissile;
 		pMissile->SetName(L"BossMissile");
 		pMissile->SetDir(Vector(1, 0));
 		pMissile->SetVelocity(700);

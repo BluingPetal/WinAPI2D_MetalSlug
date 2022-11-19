@@ -1,7 +1,7 @@
 #pragma once
 #include "CMonster.h"
 
-class CMissile;
+class CBossMissile;
 class CAniObject;
 enum class BossStatus { Idle, Walk, FastWalk, Fire, DeployCannon, CannonWalk, CannonFastWalk, CannonFire, Destroyed };
 
@@ -22,8 +22,8 @@ private:
 	float m_fMissileDisappearAccTime;
 	bool m_bIsAttack;
 
-	CMissile* pFireMissile;
-	CMissile* pMissile;
+	CBossMissile* pFireMissile;
+	CBossMissile* pMissile;
 	CAniObject* m_pFireMissileAniObj;
 	CAniObject* m_pMissileAniObj;
 	CImage* m_pEffectImg;
