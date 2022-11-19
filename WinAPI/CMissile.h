@@ -2,6 +2,7 @@
 #include "CGameObject.h"
 
 class CAnimator;
+class CGravity;
 
 class CMissile : public CGameObject
 {
@@ -15,8 +16,10 @@ private:
 	CGameObject* m_pOwner;
 
 	CAnimator* m_pAnimator;
-	float m_fAccTime;
+	float m_fDisappearAccTime;
+	float m_fAttackAccTime;
 	bool m_bIsEntered;
+	CGravity* m_pGravity;
 
 private:
 	void Init() override;
@@ -33,4 +36,5 @@ public:
 	void SetVelocity(float velocity);
 	void SetOwner(CGameObject* owner) { m_pOwner = owner; }
 	CGameObject* GetOwner() { return m_pOwner; }
+	CAnimator* GetAnimator();
 };

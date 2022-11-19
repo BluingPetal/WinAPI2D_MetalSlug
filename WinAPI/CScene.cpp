@@ -51,6 +51,7 @@ void CScene::SceneUpdate()
 				{
 					target->GameObjectRelease();
 					delete target;
+					target = nullptr;
 					return true;
 				}
 				else

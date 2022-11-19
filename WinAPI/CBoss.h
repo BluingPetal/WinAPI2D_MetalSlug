@@ -1,6 +1,8 @@
 #pragma once
 #include "CMonster.h"
 
+class CMissile;
+class CAniObject;
 enum class BossStatus { Idle, Walk, FastWalk, Fire, DeployCannon, CannonWalk, CannonFastWalk, CannonFire, Destroyed };
 
 class CBoss : public CMonster
@@ -15,6 +17,15 @@ private:
 	float m_fSpeed;
 	Vector m_vecMoveDir;
 	float m_fAccTime;
+	float m_fAttackAccTime;
+	float m_fDisappearAccTime;
+	bool m_bIsAttack;
+
+	CMissile* pFireMissile;
+	CMissile* pMissile;
+	CAniObject* m_pFireMissileAniObj;
+	CAniObject* m_pMissileAniObj;
+	CImage* m_pEffectImg;
 
 private:
 	void Init() override;
@@ -25,6 +36,9 @@ private:
 	void BehaviorUpdate();
 	void StateUpdate();
 	void AniUpdate();
+
+	void CreateFireMissile();
+	void CreateMissile();
 
 	void OnCollisionEnter(CCollider* pOtherCollider) override;
 	void OnCollisionStay(CCollider* pOtherCollider) override;

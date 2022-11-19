@@ -68,6 +68,15 @@ void CSceneBoss::Init()
 	m_pObstacle->SetScale(5, WINSIZEY / extension);
 	AddGameObject(m_pObstacle);
 
+	//m_pWater = new CAniObject;
+	//CImage* pBossEffectImage = RESOURCE->LoadImg(L"Warp", L"Image\\BackGround\\Warp.png");
+	//m_pWater->SetImage(pWarpImage);
+	//m_pWater->SetExtension(extension);
+	//m_pWater->SetPos(WINSIZEX * 0.7f, 470);
+	//m_pWater->GetAnimator()->CreateAnimation(L"BackGround\\Warp", pWarpImage, 0.1f, false);
+	//m_pWater->SetLayer(Layer::ForeGround);
+	//AddGameObject(m_pWater);
+
 	//CAMERA->SetTargetPos(Vector(WINSIZEX * 0.5f, WINSIZEY * 0.5f));
 
 	//CCameraController* pCamController = new CCameraController;

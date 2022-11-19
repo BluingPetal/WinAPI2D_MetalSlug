@@ -46,7 +46,7 @@ CPlayer::CPlayer()
 	m_bBombDiff = false;
 	m_bBulletDiff = false;
 
-	m_hp = 3;
+	m_hp = 5;
 	m_fSpeed = 300.0f;
 	m_fAcctime = 0;
 
@@ -1668,7 +1668,7 @@ void CPlayer::StatusUpdate()
 	switch (m_status)
 	{
 	case PlayerStatus::Idle:
-		if (m_hp == 0)
+		if (m_hp <=0)
 		{
 			m_status = PlayerStatus::Dead;
 			m_fAcctime = 0;
@@ -1695,7 +1695,7 @@ void CPlayer::StatusUpdate()
 		}
 		break;
 	case PlayerStatus::Move:
-		if(m_hp == 0)
+		if(m_hp <= 0)
 		{
 			m_status = PlayerStatus::Dead;
 			m_fAcctime = 0;
@@ -1722,7 +1722,7 @@ void CPlayer::StatusUpdate()
 		}
 		break;
 	case PlayerStatus::Jump:
-		if (m_hp == 0)
+		if (m_hp <= 0)
 		{
 			m_status = PlayerStatus::Dead;
 			m_fAcctime = 0;
@@ -1739,7 +1739,7 @@ void CPlayer::StatusUpdate()
 		}
 		break;
 	case PlayerStatus::Attack:
-		if (m_hp == 0)
+		if (m_hp <= 0)
 		{
 			m_status = PlayerStatus::Dead;
 			m_fAcctime = 0;

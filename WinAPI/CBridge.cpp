@@ -193,7 +193,7 @@ void CBridge::InitBrokenBridge()
 		pImgObj->SetIndex(i);
 		pImgObj->SetScale(m_vecBrokenBridgeImg[i].slice * m_fExtension);
 		pImgObj->SetSourceInfo(m_vecBrokenBridgeImg[i].lt.x, m_vecBrokenBridgeImg[i].lt.y, m_vecBrokenBridgeImg[i].slice.x, m_vecBrokenBridgeImg[i].slice.y);
-		m_vecBridgeObj.push_back(pImgObj);
+		m_vecBrokenBridgeObj.push_back(pImgObj);
 	}
 	m_vecBrokenBridgeImg = ReadAniFile(L"BrokenBridge");
 }
@@ -222,17 +222,22 @@ void CBridge::Update()
 			if (m_deqCurRenderObj[0]->GetAlpha() == 0)
 			{
 				int index = m_deqCurRenderObj[0]->GetIndex();
-				//int brokeIndex = m_deqCurRenderObj[2]->GetIndex();
 				DELETEOBJECT(m_deqCurRenderObj[0]);
-				//DELETEOBJECT(m_deqCurRenderObj[2]);
 				m_deqCurRenderObj.pop_front();
 				CImageObject* frontImgObj = new CImageObject(*m_vecBridgeObj[index]);
-				//CImageObject* brokenImgObj = new CImageObject(*m_vecBrokenBridgeObj[m_deqCurRenderObj.size() + brokeIndex]);
 				CImageObject lastImgObj = *m_deqCurRenderObj[m_deqCurRenderObj.size() - 1];
 				frontImgObj->SetPos(Vector(lastImgObj.GetPos().x + lastImgObj.GetScale().x, lastImgObj.GetPos().y));
 				m_deqCurRenderObj.push_back(frontImgObj);
 				ADDOBJECT(frontImgObj);
-				//ADDOBJECT(brokenImgObj);
+
+				int brokeIndex = m_deqCurRenderObj[0]->GetIndex();
+				Vector nextPos = m_deqCurRenderObj[0]->GetPos();
+				DELETEOBJECT(m_deqCurRenderObj[0]);
+				m_deqCurRenderObj.pop_front();
+				CImageObject* brokenImgObj = new CImageObject(*m_vecBrokenBridgeObj[brokeIndex]);//[m_deqCurRenderObj.size() + brokeIndex]);
+				brokenImgObj->SetPos(nextPos);
+				m_deqCurRenderObj.push_front(brokenImgObj);
+				ADDOBJECT(brokenImgObj);
 
 				m_deqCurColliderObj[index]->SetPos(Vector(lastImgObj.GetPos().x + lastImgObj.GetScale().x, lastImgObj.GetPos().y));
 				//m_deqCurColliderObj.pop_front();

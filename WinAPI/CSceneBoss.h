@@ -24,6 +24,7 @@ private:
 	CBoss* pBoss;
 	CAniObject* m_pWarpAni;
 	CAniObject* m_pGoAni;
+	CAniObject* m_pWater;
 
 	CColliderObject* m_pObstacle;
 
