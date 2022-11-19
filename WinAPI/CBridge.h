@@ -20,7 +20,7 @@ private:
 	CImage* m_pBridgeImg;
 
 	vector<CImageObject*> m_vecBridgeObj;
-	vector<CImageObject*> m_vecBrokenBridgeImg;
+	vector<CImageObject*> m_vecBrokenBridgeObj;
 	vector<CColliderObject*> m_vecColliderObj;
 
 	deque<CColliderObject*> m_deqCurColliderObj;
@@ -34,7 +34,8 @@ private:
 	void InitColliderObj();
 	void InitBrokenBridge();
 
-
+public:
+	deque<CImageObject*>& GetCurRenderObj() { return m_deqCurRenderObj; }
 
 
 private:

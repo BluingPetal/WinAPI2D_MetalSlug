@@ -7,15 +7,18 @@
 #include "CPlayer.h"
 #include "CAniObject.h"
 #include "CBoss.h"
+#include "CColliderObject.h"
 
 #include "CCameraController.h"
 
 CSceneBoss::CSceneBoss()
 {
-	m_fAccTime = 0;
-	m_bStart = false;
-	m_pWarpAni = nullptr;
+	m_fStartAccTime = 0;
+	m_fBossAppearAccTime = 0;
 	m_fExtension = 0;
+	m_pWarpAni = nullptr;
+	m_bStart = false;
+	m_bBossAppear = false;
 }
 
 CSceneBoss::~CSceneBoss()
@@ -46,17 +49,29 @@ void CSceneBoss::Init()
 	m_pPlayer->SetExtension(extension);
 	//m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
 
+	pBoss = new CBoss;
+	pBoss->SetExtension(extension);
+
 	m_pWarpAni = new CAniObject;
 	CImage* pWarpImage = RESOURCE->LoadImg(L"Warp", L"Image\\BackGround\\Warp.png");
 	m_pWarpAni->SetImage(pWarpImage);
 	m_pWarpAni->SetExtension(extension);
-	m_pWarpAni->SetPos(280, 470);
+	m_pWarpAni->SetPos(WINSIZEX * 0.7f, 470);
 	m_pWarpAni->GetAnimator()->CreateAnimation(L"BackGround\\Warp", pWarpImage, 0.1f, false);
 	m_pWarpAni->SetLayer(Layer::Unit);
 	AddGameObject(m_pWarpAni);
+	
+	m_pObstacle = new CColliderObject;
+	m_pObstacle->SetName(L"obstacle");
+	m_pObstacle->SetExtension(extension);
+	m_pObstacle->SetPos(WINSIZEX, WINSIZEY * 0.5f);
+	m_pObstacle->SetScale(5, WINSIZEY / extension);
+	AddGameObject(m_pObstacle);
 
-	CCameraController* pCamController = new CCameraController;
-	AddGameObject(pCamController);
+	//CAMERA->SetTargetPos(Vector(WINSIZEX * 0.5f, WINSIZEY * 0.5f));
+
+	//CCameraController* pCamController = new CCameraController;
+	//AddGameObject(pCamController);
 }
 
 void CSceneBoss::Enter()
@@ -66,9 +81,6 @@ void CSceneBoss::Enter()
 	pBridge->SetLayer(Layer::BackGround);
 	AddGameObject(pBridge);
 
-	CBoss* pBoss = new CBoss;
-	pBoss->SetExtension(m_fExtension);
-	AddGameObject(pBoss);
 }
 
 void CSceneBoss::Update()
@@ -89,9 +101,9 @@ void CSceneBoss::Update()
 
 	if (m_pWarpAni != nullptr && !m_bStart)
 	{
-		m_fAccTime += DT;
+		m_fStartAccTime += DT;
 
-		if (m_fAccTime < 0.1 * 20)
+		if (m_fStartAccTime < 0.1 * 20)
 			m_pWarpAni->GetAnimator()->Play(L"BackGround\\Warp");
 		else
 		{
@@ -101,9 +113,31 @@ void CSceneBoss::Update()
 		}
 	}
 
-	
+	//if (!m_bBossAppear)
+	//{
+	m_fBossAppearAccTime += DT;
 
+	if (m_fBossAppearAccTime > 5.f && !m_bBossAppear)
+	{
+		m_bBossAppear = true;
 
+		//m_vecScale = Vector(bossImg->GetWidth() * m_fExtension, WINSIZEY - bossImg->GetHeight() * m_fExtension)
+		//pBoss->SetPos(pBoss->GetScale().x, WINSIZEY - pBoss->GetScale().y);
+		AddGameObject(pBoss);
+	}
+	else if (m_fBossAppearAccTime > 5.f && m_fBossAppearAccTime < 12.0f)
+	{
+		Vector bossUpdatePos = Vector(pBoss->GetPos().x, pBoss->GetPos().y + ((WINSIZEY - pBoss->GetScale().y * 0.5f) - pBoss->GetPos().y) * DT);
+		//position 정해주기
+		pBoss->SetPos(bossUpdatePos);
+	}
+	else if(m_fBossAppearAccTime > 12.0f)
+	{
+		Vector targetPos = CAMERA->GetLookAt() + Vector(200 * DT, 0);
+		CAMERA->SetTargetPos(targetPos);
+	}
+
+	m_pObstacle->SetPos(CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY * 0.5f)));
 
 	Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
 }

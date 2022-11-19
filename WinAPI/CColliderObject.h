@@ -16,6 +16,7 @@ private:
 	CGameObject* m_pOwner;
 	ColliderType m_colliderType;
 	float m_fRot;
+	int m_index;
 
 public:
 	//CCollider* GetCollider();
@@ -27,6 +28,8 @@ public:
 	void SetOwner(CGameObject* pOwner) { m_pOwner = pOwner; }
 	void SetType(ColliderType type) { m_colliderType = type; }
 	void SetRot(float rotation) { m_fRot = rotation; }
+	void SetIndex(int index) { m_index = index; }
+	int GetIndex() { return m_index; }
 
 private:
 	void Init() override;

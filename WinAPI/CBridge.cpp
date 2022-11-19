@@ -86,6 +86,8 @@ void CBridge::InitColliderObj()
 		CColliderObject* ColObj = new CColliderObject;
 		ColObj->SetExtension(m_fExtension);
 		ColObj->SetPos(m_vecBridgeObj[i]->GetPos());
+		ColObj->SetOwner(this);
+		ColObj->SetIndex(i);
 		switch (i)
 		{
 		case 0:
@@ -200,11 +202,11 @@ void CBridge::Init()
 {
 	m_fExtension = 4.f;
 	m_pBridgeImg = RESOURCE->LoadImg(L"Bridge", L"Image\\BackGround\\BossBridge.png");
-	m_vecPos = Vector(WINSIZEX * 0.1f, WINSIZEY - 79 * m_fExtension);
+	m_vecPos = Vector(WINSIZEX * 0.6f, WINSIZEY - 79 * m_fExtension);
 	InitBridge();
 	InitColliderObj();
 	InitBrokenBridge();
-	considerIndex = m_deqCurRenderObj.size()-2;
+	considerIndex = 7;
 	//m_vecCurRenderImg = m_vecBridgeImg;
 	//m_vecCurRenderImg[4] = m_vecBrokenBridgeImg[m_vecCurRenderImg.size() + 4];
 }
@@ -212,35 +214,38 @@ void CBridge::Init()
 void CBridge::Update()
 {
 	// 보스와 충돌하면 다리 없어지기 (alpha == 0)
-	if (m_deqCurRenderObj[considerIndex]->GetPos().x < CAMERA->GetLookAt().x + WINSIZEX * 0.5f)
-	{
-		(considerIndex == m_deqCurRenderObj.size() - 1) ? considerIndex = 0 : considerIndex++;
+	//if (m_deqCurRenderObj[considerIndex]->GetPos().x < CAMERA->GetLookAt().x + WINSIZEX * 0.5f)
+	//{
+	//	(considerIndex == m_deqCurRenderObj.size() - 1) ? considerIndex = 0 : considerIndex++;
 		for (int i = 0; i < m_deqCurRenderObj.size(); i++)
 		{
-			if (m_deqCurRenderObj[i]->GetAlpha() == 0)
+			if (m_deqCurRenderObj[0]->GetAlpha() == 0)
 			{
 				int index = m_deqCurRenderObj[0]->GetIndex();
-				//CImageObject* frontObj = new CImageObject(*m_deqCurRenderObj[0]);
+				//int brokeIndex = m_deqCurRenderObj[2]->GetIndex();
 				DELETEOBJECT(m_deqCurRenderObj[0]);
+				//DELETEOBJECT(m_deqCurRenderObj[2]);
 				m_deqCurRenderObj.pop_front();
 				CImageObject* frontImgObj = new CImageObject(*m_vecBridgeObj[index]);
+				//CImageObject* brokenImgObj = new CImageObject(*m_vecBrokenBridgeObj[m_deqCurRenderObj.size() + brokeIndex]);
 				CImageObject lastImgObj = *m_deqCurRenderObj[m_deqCurRenderObj.size() - 1];
 				frontImgObj->SetPos(Vector(lastImgObj.GetPos().x + lastImgObj.GetScale().x, lastImgObj.GetPos().y));
 				m_deqCurRenderObj.push_back(frontImgObj);
 				ADDOBJECT(frontImgObj);
+				//ADDOBJECT(brokenImgObj);
 
-				m_deqCurColliderObj[0]->SetPos(Vector(lastImgObj.GetPos().x + lastImgObj.GetScale().x, lastImgObj.GetPos().y));
-				m_deqCurColliderObj.pop_front();
-				m_deqCurColliderObj.push_back(m_deqCurColliderObj[0]);
+				m_deqCurColliderObj[index]->SetPos(Vector(lastImgObj.GetPos().x + lastImgObj.GetScale().x, lastImgObj.GetPos().y));
+				//m_deqCurColliderObj.pop_front();
+				//m_deqCurColliderObj.push_back(m_deqCurColliderObj[0]);
 			}
 			else break;
 		}
-	}
+	//}
 
-	if (BUTTONDOWN('R'))
-	{
-		m_deqCurRenderObj[0]->SetAlpha(0);
-	}
+	//if (BUTTONDOWN('R'))
+	//{
+	//	m_deqCurRenderObj[0]->SetAlpha(0);
+	//}
 }
 
 void CBridge::Render()

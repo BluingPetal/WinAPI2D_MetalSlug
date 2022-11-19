@@ -5,7 +5,9 @@
 #include "CConga.h"
 #include "CPlayer.h"
 #include "CAniObject.h"
+#include "CImageObject.h"
 #include "CSceneStage01.h"
+#include "CBridge.h"
 
 CColliderObject::CColliderObject()
 {
@@ -15,6 +17,7 @@ CColliderObject::CColliderObject()
     m_vecOffset = Vector(0, 0);
     m_pOwner = nullptr;
     m_fRot = 0;
+    m_index = 0;
     m_colliderType = ColliderType::Rect;
     AddCollider(m_colliderType, m_vecScale * m_fExtension, m_vecOffset * m_fExtension);
 }
@@ -81,6 +84,16 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
                // pOwner->SetAccTime(0);
                 pOwner->SetCongaState(CongaStatus::NearAttack);
             }
+        }
+    }
+    if (m_strName == L"ground" || m_strName == L"slopeGround")
+    {
+        if (pOtherCollider->GetObjName() == L"Boss")
+        {
+            CBridge* pBridge = dynamic_cast<CBridge*>(m_pOwner);
+            pBridge->GetCurRenderObj()[0]->SetAlpha(0);
+            //pBridge->GetCurRenderObj()[m_index]->SetAlpha(0);
+            //pBridge->GetCurRenderObj()[m_index+1]->SetAlpha(0);
         }
     }
     //if (m_strName == L"frontOcean")

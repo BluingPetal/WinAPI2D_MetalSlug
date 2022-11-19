@@ -7,7 +7,7 @@
 
 CCameraManager::CCameraManager()
 {
-	m_vecLookAt		= Vector(0, 0);
+	m_vecLookAt		= Vector(WINSIZEX * 0.5f, WINSIZEY * 0.5f);
 	m_vecTargetPos	= Vector(0, 0);
 	m_pTargetObj	= nullptr;
 	m_fTimeToTarget = 0;
