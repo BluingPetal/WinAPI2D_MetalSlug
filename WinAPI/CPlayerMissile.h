@@ -2,6 +2,7 @@
 #include "CMissile.h"
 
 class CImage;
+class CAniObject;
 
 class CPlayerMissile : public CMissile
 {
@@ -20,6 +21,13 @@ private:
 	//bool m_bIsEntered;
 	//CGravity* m_pGravity;
 	CImage* m_pEffectImage;
+	CAniObject* m_pMissileAniObj;
+	float m_fDisappearAccTime;
+	bool m_reserveDelete;
+	bool m_bCreatedAni;
+
+public:
+	bool GetMissileDelete() { return m_reserveDelete; }
 
 private:
 	void Init() override;

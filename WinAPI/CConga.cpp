@@ -114,19 +114,6 @@ void CConga::Release()
 
 void CConga::OnCollisionEnter(CCollider* pOtherCollider)
 {
-	if (pOtherCollider->GetObjName() == L"PlayerMissile")
-	{
-		CPlayerMissile* pMissile = dynamic_cast<CPlayerMissile*>(pOtherCollider->GetOwner());
-		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
-		SetTarget(pPlayer);
-	}
-	if (pOtherCollider->GetObjName() == L"Bomb")
-	{
-		CBomb* pMissile = dynamic_cast<CBomb*>(pOtherCollider->GetOwner());
-		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
-		SetTarget(pPlayer);
-		m_hp -= 5;
-	}
 	if (pOtherCollider->GetObjName() == L"obstacle")
 	{
 		if(m_congaState != CongaStatus::Death)
@@ -142,9 +129,20 @@ void CConga::OnCollisionEnter(CCollider* pOtherCollider)
 	}
 	if (pOtherCollider->GetObjName() == L"PlayerMissile")
 	{
-		CMissile* pMissile = dynamic_cast<CMissile*>(pOtherCollider->GetOwner());
+		CPlayerMissile* pMissile = dynamic_cast<CPlayerMissile*>(pOtherCollider->GetOwner());
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
 		SetTarget(pPlayer);
+		if (pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
+			m_hp--;
+		else if (pPlayer->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+			m_hp -= 2;
+	}
+	if (pOtherCollider->GetObjName() == L"Bomb")
+	{
+		CBomb* pMissile = dynamic_cast<CBomb*>(pOtherCollider->GetOwner());
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
+		SetTarget(pPlayer);
+		m_hp -= 5;
 	}
 }
 

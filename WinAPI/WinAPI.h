@@ -54,6 +54,7 @@ enum class Layer
 
 	PlayerMissile,
 	BossMissile,
+	Effect,
 	ForeGround,
 
 	Collider,

@@ -4,6 +4,7 @@
 #include "CImage.h"
 #include "CBossMissile.h"
 #include "CAniObject.h"
+#include "CPlayer.h"
 
 CBoss::CBoss()
 {
@@ -357,6 +358,18 @@ void CBoss::OnCollisionEnter(CCollider* pOtherCollider)
 	if (pOtherCollider->GetObjName() == L"PlayerMissile")
 	{
 		m_hp--;
+	}
+	if (pOtherCollider->GetObjName() == L"PlayerMissile")
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
+		if (pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
+			m_hp--;
+		else if (pPlayer->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+			m_hp -= 2;
+	}
+	if (pOtherCollider->GetObjName() == L"Bomb")
+	{
+		m_hp -= 5;
 	}
 }
 

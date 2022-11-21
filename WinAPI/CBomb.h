@@ -3,6 +3,8 @@
 class CGravity;
 class CAnimator;
 class CCollider;
+class CAniObject;
+class CImage;
 
 class CBomb : public CGameObject
 {
@@ -17,6 +19,12 @@ private:
 	CAnimator* m_pAnimator;
 	CGameObject* m_pOwner;
 	CGravity* m_pGravity;
+
+	CImage* m_pEffectImage;
+	CAniObject* m_pBombAniObj;
+	float m_fDisappearAccTime;
+	bool m_reserveDelete;
+	bool m_bCreatedAni;
 
 	int count;
 

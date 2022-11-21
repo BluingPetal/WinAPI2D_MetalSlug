@@ -9,6 +9,9 @@
 CPlayerMissile::CPlayerMissile()
 {
 	m_layer = Layer::PlayerMissile;
+	m_fDisappearAccTime = 0;
+	m_reserveDelete = false;
+	m_bCreatedAni = false;
 }
 
 CPlayerMissile::~CPlayerMissile()
@@ -45,20 +48,32 @@ void CPlayerMissile::Update()
 {
 	//if (!m_bIsEntered)
 	//	m_vecPos += m_vecDir * m_fVelocity * DT;
-	if (!m_bIsEntered)
+	//if (!m_bIsEntered)
 		m_vecPos += m_vecDir * m_fVelocity * DT;
 
 	// 효과 애니메이터 생성
-	if (this->GetReserveDelete() && !(this->GetSafeToDelete()))
+	if (m_reserveDelete && !m_bCreatedAni)
 	{
-		CAniObject* m_pMissileAniObj = new CAniObject;
+		CPlayer* owner = dynamic_cast<CPlayer*>(m_pOwner);
+		m_pAnimator->GetCurAni()->SetAlpha(0);
+		m_pAnimator->Stop();
+		m_bCreatedAni = true;
+		m_pMissileAniObj = new CAniObject;
 		m_pMissileAniObj->SetImage(m_pEffectImage);
-		m_pMissileAniObj->SetPos(m_vecPos);
-		m_pMissileAniObj->SetExtension(m_fExtension);
-		m_pMissileAniObj->SetLayer(Layer::Unit);
-		ADDOBJECT(m_pMissileAniObj);
 		m_pMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\PlayerMissileEffect", m_pEffectImage, 0.05f, false);
 		m_pMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
+		if(owner->GetCurWeapon() == PlayerWeapon::Pistol)
+			m_pMissileAniObj->SetPos(m_vecPos);
+		else if (owner->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+		{
+			if(m_vecDir.x > 0)
+				m_pMissileAniObj->SetPos(m_vecPos + Vector(55, 0));
+			else
+				m_pMissileAniObj->SetPos(m_vecPos + Vector(-55, 0));
+		}
+		m_pMissileAniObj->SetExtension(m_fExtension);
+		m_pMissileAniObj->SetLayer(Layer::Effect);
+		ADDOBJECT(m_pMissileAniObj);
 		float m_duration = 0;
 	}
 
@@ -68,7 +83,8 @@ void CPlayerMissile::Update()
 		m_vecPos.x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).x + 100 ||
 		m_vecPos.y < CAMERA->ScreenToWorldPoint(Vector(0, 0)).y - 100 ||
 		m_vecPos.y > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).y + 100)
-		DELETEOBJECT(this);
+		m_reserveDelete = true;
+		//DELETEOBJECT(this);
 
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pOwner);
 	if (pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
@@ -84,6 +100,16 @@ void CPlayerMissile::Update()
 		else if (m_vecDir.x > 0)
 			m_pAnimator->Play(L"Missile\\HeavyGunRight");
 	}
+
+	if (m_reserveDelete && !this->GetReserveDelete())
+	{
+		m_fDisappearAccTime += DT;
+		if (m_fDisappearAccTime > 0.4f)
+		{
+			DELETEOBJECT(this);
+			DELETEOBJECT(m_pMissileAniObj);
+		}
+	}
 }
 
 void CPlayerMissile::Render()
@@ -96,47 +122,63 @@ void CPlayerMissile::Release()
 
 void CPlayerMissile::OnCollisionEnter(CCollider* pOtherCollider)
 {
+	//if (pOtherCollider->GetObjName() == L"Conga")
+	//{
+	//	m_bIsEntered = true;
+	//	m_fDisappearAccTime = 0;
+	//	CConga* pOtherObj = dynamic_cast<CConga*>(pOtherCollider->GetOwner());
+	//
+	//	if (pOtherObj->GetCongaState() != CongaStatus::Death && !pOtherObj->GetReserveDelete())
+	//	{
+	//		pOtherObj->SetHp(pOtherObj->GetHp() - 1);
+	//		m_fVelocity = 0;
+	//		if (m_vecDir.x > 0)
+	//			m_pAnimator->Play(L"Missile\\CongaHurtL");
+	//		else
+	//			m_pAnimator->Play(L"Missile\\CongaHurtR");
+	//	}
+	//	else if (pOtherObj->GetCongaState() == CongaStatus::Death)
+	//		m_bIsEntered = false;
+	//}
+	//m_bIsEntered = true;
 	if (pOtherCollider->GetObjName() == L"Conga")
 	{
-		m_bIsEntered = true;
-		m_fDisappearAccTime = 0;
 		CConga* pOtherObj = dynamic_cast<CConga*>(pOtherCollider->GetOwner());
-
-		if (pOtherObj->GetCongaState() != CongaStatus::Death && !pOtherObj->GetReserveDelete())
+		if (pOtherObj->GetCongaState() != CongaStatus::Death)
 		{
-			pOtherObj->SetHp(pOtherObj->GetHp() - 1);
 			m_fVelocity = 0;
-			if (m_vecDir.x > 0)
-				m_pAnimator->Play(L"Missile\\CongaHurtL");
-			else
-				m_pAnimator->Play(L"Missile\\CongaHurtR");
+			m_reserveDelete = true;
 		}
-		else if (pOtherObj->GetCongaState() == CongaStatus::Death)
-			m_bIsEntered = false;
+			//DELETEOBJECT(this);
 	}
-	else if (pOtherCollider->GetObjName() == L"Boss" || pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground" || pOtherCollider->GetObjName() == L"obstacleCastle")
+	if (pOtherCollider->GetObjName() == L"Boss" || pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground" || pOtherCollider->GetObjName() == L"obstacleCastle")
 	{
-		DELETEOBJECT(this);
+		m_fVelocity = 0;
+		m_reserveDelete = true;
+		//DELETEOBJECT(this);
 	}
 	if (pOtherCollider->GetObjName() == L"BombNPC" || pOtherCollider->GetObjName() == L"HeavyGunNPC")
 	{
 		CNPC* pOtherObj = dynamic_cast<CNPC*>(pOtherCollider->GetOwner());
-		if(pOtherObj->GetStatus() == NPCStatus::Trapped)
-			DELETEOBJECT(this);
+		if (pOtherObj->GetStatus() == NPCStatus::Trapped)
+		{
+			m_fVelocity = 0;
+			m_reserveDelete = true;
+		}
 	}
 }
 
 void CPlayerMissile::OnCollisionStay(CCollider* pOtherCollider)
 {
-	if (pOtherCollider->GetObjName() == L"Conga")
-	{
-		m_fDisappearAccTime += DT;
-		if (m_fDisappearAccTime >= 0.05f * 8)
-		{
-			DELETEOBJECT(this);
-			//m_fAccTime = 0;
-		}
-	}
+	//if (pOtherCollider->GetObjName() == L"Conga")
+	//{
+	//	m_fDisappearAccTime += DT;
+	//	if (m_fDisappearAccTime >= 0.05f * 8)
+	//	{
+	//		DELETEOBJECT(this);
+	//		//m_fAccTime = 0;
+	//	}
+	//}
 }
 
 void CPlayerMissile::OnCollisionExit(CCollider* pOtherCollider)

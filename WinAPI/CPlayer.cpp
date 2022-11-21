@@ -199,44 +199,44 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
-	list<CPlayerMissile*>::iterator listIter = m_listMissile.begin();
-	for (; listIter != m_listMissile.end(); listIter++)
-	{ 
-		auto pMissile = *listIter;
-		if (pMissile->GetReserveDelete() && !pMissile->GetSafeToDelete())
-		{
-			// 폭발 애니메이터 생성뒤 지움
-			CAniObject* m_pMissileAniObj = new CAniObject;
-			m_pMissileAniObj->SetImage(m_pEffectImage);
-			m_pMissileAniObj->SetPos(pMissile->GetPos());
-			m_pMissileAniObj->SetExtension(m_fExtension);
-			m_pMissileAniObj->SetLayer(Layer::Unit);
-			ADDOBJECT(m_pMissileAniObj);
-			m_pMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\PlayerMissileEffect", m_pEffectImage, 0.05f, false);
-			m_pMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
-			float m_duration = 0;
-			m_listMissileAniObj.push_back(make_pair(&m_duration, m_pMissileAniObj));
-			m_listMissile.erase(listIter);
-			break;
-		}
-	}
-
-	for (auto pMissileAni : m_listMissileAniObj)
-	{
-		*(pMissileAni.first) += DT;
-	}
-
-	list<pair<float*, CAniObject*>>::iterator listEraseAniIter = m_listMissileAniObj.begin();
-	for (; listEraseAniIter != m_listMissileAniObj.end(); listEraseAniIter++)//auto pMissileAni : m_listMissileAniObj)
-	{
-		auto pMissileAni = *listEraseAniIter;
-		if (*(pMissileAni.first) > 0.4f)
-		{
-			DELETEOBJECT(pMissileAni.second);
-			m_listMissileAniObj.erase(listEraseAniIter); // 자료구조 크기가 줄어들면서 오류 일어날 수 있음
-			break;
-		}
-	}
+	//list<CPlayerMissile*>::iterator listIter = m_listMissile.begin();
+	//for (; listIter != m_listMissile.end(); listIter++)
+	//{ 
+	//	auto pMissile = *listIter;
+	//	if (pMissile->GetReserveDelete() && !pMissile->GetSafeToDelete())
+	//	{
+	//		// 폭발 애니메이터 생성뒤 지움
+	//		CAniObject* m_pMissileAniObj = new CAniObject;
+	//		m_pMissileAniObj->SetImage(m_pEffectImage);
+	//		m_pMissileAniObj->SetPos(pMissile->GetPos());
+	//		m_pMissileAniObj->SetExtension(m_fExtension);
+	//		m_pMissileAniObj->SetLayer(Layer::Unit);
+	//		ADDOBJECT(m_pMissileAniObj);
+	//		m_pMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\PlayerMissileEffect", m_pEffectImage, 0.05f, false);
+	//		m_pMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
+	//		float m_duration = 0;
+	//		m_listMissileAniObj.push_back(make_pair(&m_duration, m_pMissileAniObj));
+	//		m_listMissile.erase(listIter);
+	//		break;
+	//	}
+	//}
+	//
+	//for (auto pMissileAni : m_listMissileAniObj)
+	//{
+	//	*(pMissileAni.first) += DT;
+	//}
+	//
+	//list<pair<float*, CAniObject*>>::iterator listEraseAniIter = m_listMissileAniObj.begin();
+	//for (; listEraseAniIter != m_listMissileAniObj.end(); listEraseAniIter++)//auto pMissileAni : m_listMissileAniObj)
+	//{
+	//	auto pMissileAni = *listEraseAniIter;
+	//	if (*(pMissileAni.first) > 0.4f)
+	//	{
+	//		DELETEOBJECT(pMissileAni.second);
+	//		m_listMissileAniObj.erase(listEraseAniIter); // 자료구조 크기가 줄어들면서 오류 일어날 수 있음
+	//		break;
+	//	}
+	//}
 
 
 	//if (m_pMissile != nullptr && !m_pMissile->GetSafeToDelete())

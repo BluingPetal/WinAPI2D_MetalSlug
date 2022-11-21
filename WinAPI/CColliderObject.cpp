@@ -8,6 +8,8 @@
 #include "CImageObject.h"
 #include "CSceneStage01.h"
 #include "CBridge.h"
+#include "CPlayerMissile.h"
+#include "CBomb.h"
 
 CColliderObject::CColliderObject()
 {
@@ -103,13 +105,23 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
     {
         if (pOtherCollider->GetObjName() == L"PlayerMissile")
         {
-            m_count--;
-            if(m_count <= 0)
-                 DELETEOBJECT(this);
-            //pBridge->GetCurRenderObj()[m_index]->SetAlpha(0);
-            //pBridge->GetCurRenderObj()[m_index+1]->SetAlpha(0);
+            CPlayerMissile* pMissile = dynamic_cast<CPlayerMissile*>(pOtherCollider->GetOwner());
+            CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
+            if (pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
+                m_count--;
+            else if (pPlayer->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+                m_count -= 2;
         }
+        if (pOtherCollider->GetObjName() == L"Bomb")
+        {
+            CBomb* pMissile = dynamic_cast<CBomb*>(pOtherCollider->GetOwner());
+            CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
+            m_count -= 5;
+        }
+        if (m_count <= 0)
+            DELETEOBJECT(this);
     }
+    
     //if (m_strName == L"frontOcean")
     //{
     //    if (pOtherCollider->GetObjName() == L"Player")
@@ -189,9 +201,5 @@ void CColliderObject::OnCollisionExit(CCollider* pOtherCollider)
             CAniObject* aniObj = dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->GetWaterAni();
             aniObj->SetAlpha(0);
         }
-    }
-    else if (m_strName == L"OBB")
-    {
-        Logger::Debug(pOtherCollider->GetObjName() + L"OUT");
     }
 }
