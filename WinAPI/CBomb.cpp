@@ -85,6 +85,7 @@ void CBomb::Update()
 		m_fDisappearAccTime += DT;
 		if (m_fDisappearAccTime > 1.3f)
 		{
+			RemoveCollider();
 			DELETEOBJECT(this);
 			DELETEOBJECT(m_pBombAniObj);
 		}

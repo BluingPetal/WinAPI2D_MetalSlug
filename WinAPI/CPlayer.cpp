@@ -1762,6 +1762,12 @@ void CPlayer::StatusUpdate()
 {
 	switch (m_status)
 	{
+	case PlayerStatus::Prepare:
+		if (m_fAcctime > 3.0f)
+		{
+			m_status = PlayerStatus::Idle;
+			m_fAcctime = 0;
+		}
 	case PlayerStatus::Idle:
 		if (m_hp <=0)
 		{
@@ -1896,6 +1902,8 @@ void CPlayer::StatusUpdate()
 		m_bIsDead = false;
 		m_bIsMove = false;
 		break;
+	default:
+		break;
 	}
 }
 
@@ -1989,9 +1997,9 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 	{
 		//m_gravity->SetVelocity(0); // 벽에 붙음
 		if(m_vecPos.x > pOtherCollider->GetPos().x)
-			m_vecPos.x += m_fSpeed * DT + 1;
+			m_vecPos.x += m_fSpeed * DT + 3;
 		else
-			m_vecPos.x -= m_fSpeed * DT + 1;
+			m_vecPos.x -= m_fSpeed * DT + 3;
 		if(!m_bIsJump)
 			m_gravity->SetVelocity(0);
 		m_fSpeed = 0;

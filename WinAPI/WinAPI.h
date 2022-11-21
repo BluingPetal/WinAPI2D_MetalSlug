@@ -82,6 +82,7 @@ enum class TypeTile
 
 enum class PlayerStatus
 {
+	Prepare,
 	Idle,
 	Move,
 	Jump,

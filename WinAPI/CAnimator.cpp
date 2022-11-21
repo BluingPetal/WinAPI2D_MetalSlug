@@ -88,12 +88,12 @@ wstring CAnimator::GetCurAniName()
 	return m_pCurAni->m_strName;
 }
 
-void CAnimator::Play(const wstring& aniName, bool trigger)
+void CAnimator::Play(const wstring& aniName, bool trigger, bool play)
 {
 	// 현재 애니메이션이 플레이하고자 하는 애니메이션이며
 	// Trigger가 아닐 경우 현재 애니메이션을 변경하지 않음
 	// Trigger : 같은 애니메이션을 처음부터 재생 (ex. 공격 모션처럼 누를때마다 처음부터 재생해야하는 애니메이션)
-	if (nullptr != m_pCurAni && aniName == m_pCurAni->GetName() && !trigger)
+	if (nullptr != m_pCurAni && aniName == m_pCurAni->GetName() && !trigger && play)
 		return;
 
 	// 애니메이션 자료구조에서 애니메이션을 탐색
@@ -106,12 +106,12 @@ void CAnimator::Play(const wstring& aniName, bool trigger)
 	m_pCurAni = pAnimation;
 }
 
-void CAnimator::ReversePlay(const wstring& aniName, bool trigger)
+void CAnimator::ReversePlay(const wstring& aniName, bool trigger, bool reversePlay) // 다시 재생하고 싶을 경우 false입력
 {
 	// 현재 애니메이션이 플레이하고자 하는 애니메이션이며
 	// Trigger가 아닐 경우 현재 애니메이션을 변경하지 않음
 	// Trigger : 같은 애니메이션을 처음부터 재생 (ex. 공격 모션처럼 누를때마다 처음부터 재생해야하는 애니메이션)
-	if (nullptr != m_pCurAni && aniName == m_pCurAni->GetName() && !trigger)
+	if (nullptr != m_pCurAni && aniName == m_pCurAni->GetName() && !trigger && reversePlay)
 		return;
 
 	// 애니메이션 자료구조에서 애니메이션을 탐색

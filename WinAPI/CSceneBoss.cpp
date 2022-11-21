@@ -35,12 +35,10 @@ void CSceneBoss::Init()
 	pBossBackgroundObj1->SetImage(pBossBackGround);
 	pBossBackgroundObj1->SetExtension(extension);
 	pBossBackgroundObj1->SetScale(Vector(pBossBackGround->GetWidth(), pBossBackGround->GetHeight()) * extension);
-	AddGameObject(pBossBackgroundObj1);
 	pBossBackgroundObj2->SetImage(pBossBackGround);
 	pBossBackgroundObj2->SetExtension(extension);
 	pBossBackgroundObj2->SetPos(pBossBackGround->GetWidth() * extension, 0);
 	pBossBackgroundObj2->SetScale(Vector(pBossBackGround->GetWidth(), pBossBackGround->GetHeight()) * extension);
-	AddGameObject(pBossBackgroundObj2);
 	m_queueBackGround.push(pBossBackgroundObj1);
 	m_queueBackGround.push(pBossBackgroundObj2);
 	pCurBackgroundObj = pBossBackgroundObj1;
@@ -95,6 +93,8 @@ void CSceneBoss::Enter()
 	pBridge->SetExtension(m_fExtension);
 	pBridge->SetLayer(Layer::BackGround);
 	AddGameObject(pBridge);
+	AddGameObject(pBossBackgroundObj1);
+	AddGameObject(pBossBackgroundObj2);
 
 	CAMERA->FadeIn(1.0f);
 }

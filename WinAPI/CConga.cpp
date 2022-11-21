@@ -12,6 +12,8 @@
 #include "CMissile.h"
 #include "CPlayerMissile.h"
 #include "CBomb.h"
+#include "CScene.h"
+#include "CSceneStage01.h"
 
 #define PI 3.141592
 
@@ -110,6 +112,7 @@ void CConga::Render()
 
 void CConga::Release()
 {
+	dynamic_cast<CSceneStage01*>(SCENE->GetCurScene())->CongaDecrease();
 }
 
 void CConga::OnCollisionEnter(CCollider* pOtherCollider)
@@ -162,12 +165,12 @@ void CConga::OnCollisionStay(CCollider* pOtherCollider)
 		if (pOtherCollider->GetRotation() < 0)
 		{
 			if (m_vecMoveDir.x > 0)
-				m_vecPos.y += m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+				m_vecPos.y += m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 		}
 		else
 		{
 			if (m_vecMoveDir.x < 0)
-				m_vecPos.y -= m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 		}
 	}
 }

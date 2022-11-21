@@ -20,16 +20,30 @@ CSceneStage01::CSceneStage01()
 	m_pObstacle = nullptr;
 	m_pInsertCoinImgObj = nullptr;
 	m_pMissionImgObj1 = nullptr;
+	m_pMissionImgObj2 = nullptr;
+	m_pTimeImgObj = nullptr;
+	m_pBarFontObj = nullptr;
+	m_pBulletObj = nullptr;
+	m_pBombObj = nullptr;
+	pBoat = nullptr;
+	pBoatCastle = nullptr;
+	pWaterAniObj = nullptr;
+	m_pBoatCastleCollider = nullptr;
+	m_pWarp = nullptr;
+	m_pConga = nullptr;
 
 	m_bIsStarted = true;
 	m_bCallObj = false;
 	m_bBoatDisappear = false;
+	m_bIsOpen = false;
+	m_bFontDisappear = false;
 	
 	m_fAccTime = 0;
 	m_fMissionAccTime = 0;
 	m_fPlayerMaxPosX = 0;
 	m_iTimeCount = 1;
 	countBullet = 0;
+	congaCount = 0;
 
 	m_fTime = 60;
 }
@@ -147,6 +161,7 @@ void CSceneStage01::Init()
 	m_pPlayer = new CPlayer;
 	m_pPlayer->SetPos(200, WINSIZEY * 0.5f);
 	m_pPlayer->SetExtension(extension);
+	m_pPlayer->SetStatus(PlayerStatus::Prepare);
 	m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
 	
 
@@ -191,15 +206,15 @@ void CSceneStage01::Init()
 	m_pBombObj->SetFixed(true);
 	m_pBombObj->SetExtension(extension);
 
-	//m_pWarp = new CAniObject;
-	//CImage* warpImg = RESOURCE->LoadImg(L"InWarpImg", L"Image\\BackGround\\Warp.png");
-	//Vector warpPos = Vector(0, 226 + backGroundOffset.y);
-	//m_pWarp->SetImage(warpImg);
-	////m_pWarp->SetPos(waterAniPos + Vector(0, 30));
-	//m_pWarp->SetExtension(extension);
-	//m_pWarp->GetAnimator()->CreateAnimation(L"BackGround\\WaterAni", pWaterAniImg, 0.1f);
-	//m_pWarp->GetAnimator()->Play(L"BackGround\\WaterAni");
-	//m_pWarp->SetLayer(Layer::Unit);
+	m_pWarp = new CAniObject;
+	CImage* warpImg = RESOURCE->LoadImg(L"InWarpImg", L"Image\\BackGround\\Warp.png");
+	Vector warpPos = Vector(3350, 400);
+	m_pWarp->SetImage(warpImg);
+	m_pWarp->SetPos(warpPos);
+	m_pWarp->SetExtension(extension);
+	m_pWarp->GetAnimator()->CreateAnimation(L"BackGround\\InWarp", warpImg, 0.1f, false);
+	//m_pWarp->GetAnimator()->Play(L"BackGround\\InWarp");
+	m_pWarp->SetLayer(Layer::Unit);
 
 #pragma endregion
 
@@ -311,6 +326,7 @@ void CSceneStage01::Init()
 	AddGameObject(pFishFront);
 	AddGameObject(pBoat);
 	AddGameObject(pBoatCastle);
+	AddGameObject(m_pWarp);
 
 	AddGameObject(m_pPlayer);
 	//AddGameObject(m_pConga);
@@ -438,6 +454,7 @@ void CSceneStage01::Update()
 		pConga3->SetPos(2500, WINSIZEY * 0.5f);
 		AddGameObject(pConga3);
 		pConga3->CongaAddObject();
+		congaCount += 3;
 	}
 	if (m_fPlayerMaxPosX > 1900 && m_fPlayerMaxPosX < 2000 && m_bCallObj)
 	{
@@ -471,7 +488,8 @@ void CSceneStage01::Update()
 		}
 	}
 
-	if (!m_pMissionImgObj1->GetReserveDelete() && !m_pMissionImgObj2->GetReserveDelete())
+	// mission start
+	if (!m_pMissionImgObj1->GetReserveDelete() && !m_pMissionImgObj2->GetReserveDelete() && !m_bFontDisappear)
 	{
 		Vector m_vecTargetPos1, m_vecTargetPos2;
 		if (m_bIsStarted)
@@ -511,6 +529,7 @@ void CSceneStage01::Update()
 				DELETEOBJECT(m_pMissionImgObj1);
 			//if (m_pMissionImgObj2->GetPos().x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, 0)).x + 100)
 				DELETEOBJECT(m_pMissionImgObj2);
+				m_bFontDisappear = true;
 				//m_pMissionImgObj1 = nullptr;
 				//m_pMissionImgObj2 = nullptr;
 			//}
@@ -537,6 +556,7 @@ void CSceneStage01::Update()
 
 	if (m_fPlayerMaxPosX >= WINSIZEX * 0.4f && m_fPlayerMaxPosX < 3700)// * m_pPlayer->GetExtension())
 	{
+		//m_fPlayerMaxPosX = 3700;
 		// 카메라 이동
 		Vector targetPos = Vector(m_fPlayerMaxPosX + WINSIZEX * 0.1f, CAMERA->GetLookAt().y);
 		CAMERA->SetTargetPos(targetPos);
@@ -549,6 +569,8 @@ void CSceneStage01::Update()
 			m_pBackGround->SetPos(m_pBackGround->GetPos().x + posDiffX * 0.5f, m_pBackGround->GetPos().y);
 		}
 	}
+	else if (m_fPlayerMaxPosX >= 3700)
+		m_fPlayerMaxPosX = 3700;
 
 	// Player MaxPosition 정의
 	if (m_pPlayer->GetPos().x > m_fPlayerMaxPosX)
@@ -605,13 +627,35 @@ void CSceneStage01::Update()
 	{
 		DELETEOBJECT(pBoatCastle);
 		pBoat->SetAlpha(1);
-		m_bBoatDisappear = true;
 	}
-	if (m_bBoatDisappear)
+	if (m_fPlayerMaxPosX > 3200 && m_fPlayerMaxPosX < 3300 && !m_bCallObj)
 	{
-		m_fWarpDisappearTime += DT;
-		// warp
+		m_bCallObj = true;
+		for (int i = 0; i < 5; i++)
+		{
+			float posX = 4200 - i * 100;
+			CConga* pConga = new CConga;
+			pConga->SetExtension(m_pPlayer->GetExtension());
+			pConga->SetAccTime(0.23f);
+			pConga->SetPos(posX, WINSIZEY * 0.5f);
+			AddGameObject(pConga);
+			pConga->CongaAddObject();
+			congaCount++;
+		}
 	}
+	if (m_fPlayerMaxPosX > 3200 && m_bCallObj && congaCount == 0)
+	{
+		m_pWarp->GetAnimator()->Play(L"BackGround\\InWarp");
+		if (m_pPlayer->GetPos().x > 3300 && m_pPlayer->GetPos().x < 3400)
+		{
+			CAMERA->FadeOut(1.f);
+			DELAYCHANGESCENE(GroupScene::Boss, 2.f);
+		}
+	}
+	//if (m_pPlayer->GetPos().x > 3300 && m_pPlayer->GetPos().x < 3400 && m_bCallObj && congaCount == 0)
+	//{
+	//	CAMERA->FadeOut(2.0f);
+	//}
 }
 
 void CSceneStage01::Render()

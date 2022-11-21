@@ -68,8 +68,14 @@ void CPlayerMissile::Update()
 		{
 			if(m_vecDir.x > 0)
 				m_pMissileAniObj->SetPos(m_vecPos + Vector(55, 0));
-			else
+			else if(m_vecDir.x < 0)
 				m_pMissileAniObj->SetPos(m_vecPos + Vector(-55, 0));
+
+			if (m_vecDir.y > 0 || m_vecDir.y < 0)
+			{
+				GetCollider()->SetScale(Vector(30, 110));
+				m_pMissileAniObj->SetPos(m_vecPos);
+			}
 		}
 		m_pMissileAniObj->SetExtension(m_fExtension);
 		m_pMissileAniObj->SetLayer(Layer::Effect);
@@ -104,10 +110,13 @@ void CPlayerMissile::Update()
 	if (m_reserveDelete && !this->GetReserveDelete())
 	{
 		m_fDisappearAccTime += DT;
-		if (m_fDisappearAccTime > 0.4f)
+		if (m_fDisappearAccTime > 0.38f)
 		{
-			DELETEOBJECT(this);
-			DELETEOBJECT(m_pMissileAniObj);
+			if (!this->GetReserveDelete())
+			{
+				DELETEOBJECT(this);
+				DELETEOBJECT(m_pMissileAniObj);
+			}
 		}
 	}
 }

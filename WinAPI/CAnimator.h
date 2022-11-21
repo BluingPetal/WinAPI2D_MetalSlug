@@ -32,8 +32,8 @@ public:
 	AniFrame GetFirstAniFrame();
 	wstring GetCurAniName();
 
-	void Play(const wstring& aniName, bool trigger = false);	// 애니메이션 재생
-	void ReversePlay(const wstring& aniName, bool trigger = false);
+	void Play(const wstring& aniName, bool trigger = false, bool play = true);	// 애니메이션 재생
+	void ReversePlay(const wstring& aniName, bool trigger = false, bool reversePlay = true);
 	void Stop();												// 애니메이션 종료
 };
 

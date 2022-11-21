@@ -42,7 +42,7 @@ void CSceneManager::Init()
 	}
 
 	// 가장 처음으로 진행해야할 게임씬 시작
-	m_pCurScene = pSceneAniTool;
+	m_pCurScene = pSceneStage01;
 	m_pCurScene->SceneEnter();
 }
 

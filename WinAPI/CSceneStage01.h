@@ -24,9 +24,12 @@ private:
 	bool m_bIsStarted;
 	bool m_bCallObj;
 	bool m_bBoatDisappear;
+	bool m_bIsOpen;
+	bool m_bFontDisappear;
 
 	int prevBomb;
 	int prevBullet;
+	int congaCount;
 
 	int countBullet;
 
@@ -52,6 +55,7 @@ private:
 
 public:
 	CAniObject* GetWaterAni();
+	void CongaDecrease() { congaCount--; }
 
 private:
 	void Init()		override;
