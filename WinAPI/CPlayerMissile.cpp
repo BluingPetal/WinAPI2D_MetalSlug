@@ -3,9 +3,11 @@
 
 #include "CPlayer.h"
 #include "CConga.h"
+#include "CNPC.h"
 
 CPlayerMissile::CPlayerMissile()
 {
+	m_layer = Layer::PlayerMissile;
 }
 
 CPlayerMissile::~CPlayerMissile()
@@ -44,10 +46,10 @@ void CPlayerMissile::Update()
 
 	// 화면밖으로 나갈경우 삭제
 	Vector cameraLookAt = CAMERA->GetLookAt();
-	if (m_vecPos.x < CAMERA->ScreenToWorldPoint(Vector(0, 0)).x ||
-		m_vecPos.x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).x ||
-		m_vecPos.y < CAMERA->ScreenToWorldPoint(Vector(0, 0)).y ||
-		m_vecPos.y > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).y)
+	if (m_vecPos.x < CAMERA->ScreenToWorldPoint(Vector(0, 0)).x - 100 ||
+		m_vecPos.x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).x + 100 ||
+		m_vecPos.y < CAMERA->ScreenToWorldPoint(Vector(0, 0)).y - 100 ||
+		m_vecPos.y > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).y + 100)
 		DELETEOBJECT(this);
 
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pOwner);
@@ -94,9 +96,15 @@ void CPlayerMissile::OnCollisionEnter(CCollider* pOtherCollider)
 		else if (pOtherObj->GetCongaState() == CongaStatus::Death)
 			m_bIsEntered = false;
 	}
-	else if (pOtherCollider->GetObjName() == L"Boss" || pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground")
+	else if (pOtherCollider->GetObjName() == L"Boss" || pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground" || pOtherCollider->GetObjName() == L"obstacleCastle")
 	{
-		//6DELETEOBJECT(this);
+		DELETEOBJECT(this);
+	}
+	if (pOtherCollider->GetObjName() == L"BombNPC" || pOtherCollider->GetObjName() == L"HeavyGunNPC")
+	{
+		CNPC* pOtherObj = dynamic_cast<CNPC*>(pOtherCollider->GetOwner());
+		if(pOtherObj->GetStatus() == NPCStatus::Trapped)
+			DELETEOBJECT(this);
 	}
 }
 

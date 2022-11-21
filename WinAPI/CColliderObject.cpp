@@ -20,6 +20,9 @@ CColliderObject::CColliderObject()
     m_index = 0;
     m_colliderType = ColliderType::Rect;
     AddCollider(m_colliderType, m_vecScale * m_fExtension, m_vecOffset * m_fExtension);
+    //m_isDelete = false;
+
+    m_count = 50; 
 }
 
 CColliderObject::~CColliderObject()
@@ -96,6 +99,17 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
             //pBridge->GetCurRenderObj()[m_index+1]->SetAlpha(0);
         }
     }
+    if (m_strName == L"obstacleCastle")
+    {
+        if (pOtherCollider->GetObjName() == L"PlayerMissile")
+        {
+            m_count--;
+            if(m_count <= 0)
+                 DELETEOBJECT(this);
+            //pBridge->GetCurRenderObj()[m_index]->SetAlpha(0);
+            //pBridge->GetCurRenderObj()[m_index+1]->SetAlpha(0);
+        }
+    }
     //if (m_strName == L"frontOcean")
     //{
     //    if (pOtherCollider->GetObjName() == L"Player")
@@ -111,7 +125,8 @@ void CColliderObject::OnCollisionEnter(CCollider* pOtherCollider)
     //        pWaterAniObj->SetLayer(Layer::ForeGround);
     //        ADDOBJECT(pWaterAniObj);
     //    }
-    //}
+    //
+    // 
     //if (m_strName == L"ground")
     //{
     //    if (pOtherCollider->GetObjName() == L"Player" && pOtherCollider->GetPos().x <= 1010)

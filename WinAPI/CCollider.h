@@ -24,6 +24,7 @@ private:
 	Vector m_vecOffsetPos;	// 충돌체의 변위차(수정값)
 	Vector m_vecScale;		// 충돌체의 크기
 	float m_fRot;
+	//int count;
 
 public:
 	void SetPos(Vector pos);
@@ -40,6 +41,7 @@ public:
 	Vector GetOffsetPos();
 	Vector GetScale();
 	float GetRotation() { return m_fRot; }
+	//bool GetIsDelete() { return true; }
 
 private:
 	void Init() override;

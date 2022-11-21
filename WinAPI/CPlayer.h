@@ -24,8 +24,12 @@ private:
 
 	CAnimator* m_pAnimator1;
 	CAnimator* m_pAnimator2;
-	CAniObject* m_pMissileAniObj;
-	CPlayerMissile* m_pMissile;
+	CAnimator* m_explosionAni;
+	//CAniObject* m_pMissileAniObj;
+	//CPlayerMissile* m_pMissile;
+
+	list<CPlayerMissile*> m_listMissile;
+	list<pair<float*, CAniObject*>> m_listMissileAniObj;
 
 	float m_fMissileDisappearAccTime;
 

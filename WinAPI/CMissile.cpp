@@ -18,7 +18,6 @@ CMissile::CMissile()
 	m_vecScale = Vector(10, 10);
 	m_vecDir = Vector(0, 0);
 	m_fVelocity = 500;
-	m_layer = Layer::Missile;
 	m_strName = L"Missile";
 	m_pOwner = nullptr;
 	m_pAnimator = nullptr;

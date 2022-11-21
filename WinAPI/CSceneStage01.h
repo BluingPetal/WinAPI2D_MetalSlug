@@ -21,6 +21,7 @@ private:
 	int m_fTime;
 	int m_iTimeCount;
 	bool m_bIsStarted;
+	bool m_bCallObj;
 
 	int prevBomb;
 	int prevBullet;
@@ -40,8 +41,10 @@ private:
 
 	CImageObject* m_pBackGround;
 	CImageObject* pBoat;
+	CImageObject* pBoatCastle;
 	CAniObject* pWaterAniObj;
 	CColliderObject* m_pObstacle;
+	CColliderObject* m_pBoatCastleCollider;
 	CConga* m_pConga;
 
 public:

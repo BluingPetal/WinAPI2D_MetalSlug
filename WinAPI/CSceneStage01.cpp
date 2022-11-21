@@ -10,6 +10,8 @@
 #include "CColliderObject.h"
 #include "CConga.h"
 #include "CFontImageObj.h"
+#include "CItem.h"
+#include "CNPC.h"
 
 CSceneStage01::CSceneStage01()
 {
@@ -20,6 +22,7 @@ CSceneStage01::CSceneStage01()
 	m_pMissionImgObj1 = nullptr;
 
 	m_bIsStarted = true;
+	m_bCallObj = false;
 	
 	m_fAccTime = 0;
 	m_fMissionAccTime = 0;
@@ -117,12 +120,21 @@ void CSceneStage01::Init()
 	pFishFront->SetRenderAsFrame(true);
 	pFishFront->SetSourceInfo(sourceFishFrontInfo[0], sourceFishFrontInfo[1], sourceFishFrontInfo[2], sourceFishFrontInfo[3]);
 
+	pBoatCastle = new CImageObject;
+	CImage* pBoatImg = RESOURCE->LoadImg(L"castle", L"Image\\BackGround\\Boat.png");
+	pBoatCastle->SetImage(pBoatImg);
+	pBoatCastle->SetExtension(extension);
+	pBoatCastle->SetPos(2600, 40);
+	float sourceCastleInfo[4] = { 0, 0, 120, 139 };
+	pBoatCastle->SetRenderAsFrame(true);
+	pBoatCastle->SetSourceInfo(sourceCastleInfo[0], sourceCastleInfo[1], sourceCastleInfo[2], sourceCastleInfo[3]);
+
 	pBoat = new CImageObject;
-	CImage* pBoatImg = RESOURCE->LoadImg(L"boat", L"Image\\BackGround\\Boat.png");
 	pBoat->SetImage(pBoatImg);
 	pBoat->SetExtension(extension);
-	pBoat->SetPos(2240,175);
-	float sourceBoatInfo[4] = { 10, 144, 181, 142 };
+	pBoat->SetPos(2500,450);
+	pBoat->SetLayer(Layer::ForeGround);
+	float sourceBoatInfo[4] = { 74, 150, 89, 85};
 	pBoat->SetRenderAsFrame(true);
 	pBoat->SetSourceInfo(sourceBoatInfo[0], sourceBoatInfo[1], sourceBoatInfo[2], sourceBoatInfo[3]);
 	pBoat->SetAlpha(0);
@@ -136,9 +148,9 @@ void CSceneStage01::Init()
 	m_pPlayer->SetExtension(extension);
 	m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
 
-	m_pConga = new CConga;
-	m_pConga->SetPos(WINSIZEX * 0.8f, WINSIZEY * 0.5f);
-	m_pConga->SetExtension(extension);
+	//m_pConga = new CConga;
+	//m_pConga->SetPos(WINSIZEX * 0.8f, WINSIZEY * 0.5f);
+	//m_pConga->SetExtension(extension);
 
 	pWaterAniObj = new CAniObject;
 	CImage* pWaterAniImg = RESOURCE->LoadImg(L"WaterAni", L"Image\\BackGround\\WaterAni.png");
@@ -195,6 +207,12 @@ void CSceneStage01::Init()
 	m_pObstacle->SetPos(0, WINSIZEY * 0.5f);
 	m_pObstacle->SetScale(5, WINSIZEY / extension);
 
+	CColliderObject* pLastObstacle = new CColliderObject;
+	pLastObstacle->SetName(L"obstacle");
+	pLastObstacle->SetExtension(extension);
+	pLastObstacle->SetPos(3700 + WINSIZEX * 0.5f + m_pPlayer->GetScale().x * 0.5f, WINSIZEY);
+	pLastObstacle->SetScale(5, WINSIZEY);
+
 	CColliderObject* pGround1 = new CColliderObject;
 	pGround1->SetName(L"slopeGround");
 	pGround1->SetExtension(extension);
@@ -239,6 +257,29 @@ void CSceneStage01::Init()
 	pGround5->SetType(ColliderType::Obb);
 	pGround5->SetRot(10);
 
+	m_pBoatCastleCollider = new CColliderObject;
+	m_pBoatCastleCollider->SetName(L"obstacleCastle");
+	m_pBoatCastleCollider->SetExtension(extension);
+	m_pBoatCastleCollider->SetPos(pBoatCastle->GetPos() + Vector(sourceCastleInfo[2] * 0.5f, 0) * extension);
+	m_pBoatCastleCollider->SetScale(Vector(sourceCastleInfo[2], sourceCastleInfo[3]) * 0.8f + Vector(0, 200));
+
+	//CItem* pItemBomb = new CItem;
+	//pItemBomb->SetName(L"ItemBomb");
+	//pItemBomb->SetPos(WINSIZEX * 0.5f, WINSIZEY * 0.5f);
+	//pItemBomb->SetExtension(extension);
+	//CItem* pItemHeavyGun = new CItem;
+	//pItemHeavyGun->SetName(L"ItemHeavyGun");
+	//pItemHeavyGun->SetPos(WINSIZEX * 0.6f, WINSIZEY * 0.5f);
+	//pItemHeavyGun->SetExtension(extension);
+	//AddGameObject(pItemBomb);
+	//AddGameObject(pItemHeavyGun);
+
+
+	CNPC* npc = new CNPC;
+	npc->SetExtension(extension);
+	npc->SetPos(WINSIZEX * 1.3f, WINSIZEY * 0.5f);
+	npc->SetName(L"HeavyGunNPC");
+	AddGameObject(npc);
 
 
 	//Logger::Debug(to_wstring(pFrontOceanCollider->GetPos().x) + L", !" + to_wstring(pGround1->GetPos().x));
@@ -259,12 +300,15 @@ void CSceneStage01::Init()
 	AddGameObject(pFishBack);
 	AddGameObject(pFishFront);
 	AddGameObject(pBoat);
+	AddGameObject(pBoatCastle);
 
 	AddGameObject(m_pPlayer);
-	AddGameObject(m_pConga);
+	//AddGameObject(m_pConga);
 	AddGameObject(pFrontOceanCollider);
+	AddGameObject(m_pBoatCastleCollider);
 	AddGameObject(pWaterAniObj);
 	AddGameObject(m_pObstacle);
+	AddGameObject(pLastObstacle);
 	AddGameObject(pBrokenBoat);
 
 	AddGameObject(m_pInsertCoinImgObj);
@@ -338,7 +382,9 @@ void CSceneStage01::Enter()
 	m_pBulletObj->Show();
 	m_pBombObj->Show();
 
-	m_pConga->CongaAddObject();
+
+
+	//m_pConga->CongaAddObject();
 
 	//CColliderObject* temp = new CColliderObject;
 	//temp->SetPos(300, 300);
@@ -356,8 +402,33 @@ void CSceneStage01::Update()
 	
 	Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
 
-	prevBomb = m_pPlayer->GetBomb();
+	//prevBomb = m_pPlayer->GetBomb();
 	prevBullet = m_pPlayer->GetBullet();
+	
+	if (m_fPlayerMaxPosX > 900 && m_fPlayerMaxPosX < 1000 && !m_bCallObj)
+	{
+		m_bCallObj = true;
+		CConga* pConga1 = new CConga;
+		pConga1->SetExtension(m_pPlayer->GetExtension());
+		pConga1->SetPos(2300, WINSIZEY * 0.5f);
+		pConga1->SetLookDir(Vector(1, 0));
+		AddGameObject(pConga1);
+		pConga1->CongaAddObject();
+
+		CConga* pConga2 = new CConga;
+		pConga2->SetAccTime(0.15f);
+		pConga2->SetExtension(m_pPlayer->GetExtension());
+		pConga2->SetPos(2400, WINSIZEY * 0.5f);
+		AddGameObject(pConga2);
+		pConga2->CongaAddObject();
+
+		CConga* pConga3 = new CConga;
+		pConga3->SetExtension(m_pPlayer->GetExtension());
+		pConga3->SetAccTime(0.23f);
+		pConga3->SetPos(2500, WINSIZEY * 0.5f);
+		AddGameObject(pConga3);
+		pConga3->CongaAddObject();
+	}
 
 	// insert coin 깜박거리는 효과
 	if (m_fAccTime >= 1.f)
@@ -419,7 +490,7 @@ void CSceneStage01::Update()
 			//{
 				DELETEOBJECT(m_pMissionImgObj1);
 				//m_pMissionImgObj1 = nullptr;
-				DELETEOBJECT(m_pMissionImgObj1);
+				DELETEOBJECT(m_pMissionImgObj2);
 				//m_pMissionImgObj2 = nullptr;
 			//}
 			//while (!m_pMissionImgObj1->GetImageObj(L"insert coin").empty())
@@ -443,7 +514,7 @@ void CSceneStage01::Update()
 		DELAYCHANGESCENE(GroupScene::Title, 0.25f);
 	}
 
-	if (m_fPlayerMaxPosX >= WINSIZEX * 0.4f)
+	if (m_fPlayerMaxPosX >= WINSIZEX * 0.4f && m_fPlayerMaxPosX < 3700)// * m_pPlayer->GetExtension())
 	{
 		// 카메라 이동
 		Vector targetPos = Vector(m_fPlayerMaxPosX + WINSIZEX * 0.1f, CAMERA->GetLookAt().y);
@@ -464,14 +535,14 @@ void CSceneStage01::Update()
 		m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
 	}
 
-	if (m_pPlayer->GetBombDiff())
-	{
+	//if (m_pPlayer->GetBombDiff())
+	//{
 		Vector startBombObjPos = Vector(WINSIZEX * 0.37, 60);
 		wstring bomb = to_wstring(m_pPlayer->GetBomb());
 		m_pBombObj->DeleteObj();
 		m_pBombObj->CreateImgObj(bomb, startBombObjPos, bomb.size(), FontType::Score);
 		m_pBombObj->Show();
-	}
+	//}
 	if (m_pPlayer->GetBulletDiff())
 	{
 		Vector startBulletObjPos = Vector(WINSIZEX * 0.3, 60);
@@ -509,6 +580,11 @@ void CSceneStage01::Update()
 		CAMERA->SetZoom(setZoom);
 	}
 	*/
+	if (m_pBoatCastleCollider->GetReserveDelete())
+	{
+		DELETEOBJECT(pBoatCastle);
+		pBoat->SetAlpha(1);
+	}
 }
 
 void CSceneStage01::Render()

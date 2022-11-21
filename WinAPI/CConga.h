@@ -33,6 +33,7 @@ public:
 	void SetAccTime(float time) { m_fAccTime = time;}
 	void SetHp(int hp) { m_hp = hp; }
 	int GetHp() { return m_hp; }
+	void SetLookDir(Vector lookDir) { m_vecLookDir = lookDir; }
 
 	void CongaAddObject();
 

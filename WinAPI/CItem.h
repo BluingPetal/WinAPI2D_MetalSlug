@@ -1,29 +1,17 @@
 #pragma once
 #include "CGameObject.h"
-class CGravity;
-class CAnimator;
-class CCollider;
 
-class CBomb : public CGameObject
+class CAnimator;
+
+class CItem : public CGameObject
 {
 public:
-	CBomb();
-	virtual ~CBomb();
+	CItem();
+	virtual ~CItem();
 
 private:
-	Vector m_vecDir;
-	float m_fVelocity;
-
-	CAnimator* m_pAnimator;
-	CGameObject* m_pOwner;
+	CAnimator* m_pItemAni;
 	CGravity* m_pGravity;
-
-	int count;
-
-public:
-	void SetDir(Vector dir) { m_vecDir = dir; }
-	void SetOwner(CGameObject* owner) { m_pOwner = owner; }
-	CGameObject* GetOwner();
 
 private:
 	void Init() override;

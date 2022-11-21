@@ -17,6 +17,7 @@ private:
 	ColliderType m_colliderType;
 	float m_fRot;
 	int m_index;
+	int m_count;
 
 public:
 	//CCollider* GetCollider();

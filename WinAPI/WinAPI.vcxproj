@@ -165,8 +165,10 @@
     <ClInclude Include="CImagePanel.h" />
     <ClInclude Include="CImageUI.h" />
     <ClInclude Include="CInputManager.h" />
+    <ClInclude Include="CItem.h" />
     <ClInclude Include="CMissile.h" />
     <ClInclude Include="CMonster.h" />
+    <ClInclude Include="CNPC.h" />
     <ClInclude Include="CPanel.h" />
     <ClInclude Include="CPathManager.h" />
     <ClInclude Include="CPlayer.h" />
@@ -225,8 +227,10 @@
     <ClCompile Include="CImagePanel.cpp" />
     <ClCompile Include="CImageUI.cpp" />
     <ClCompile Include="CInputManager.cpp" />
+    <ClCompile Include="CItem.cpp" />
     <ClCompile Include="CMissile.cpp" />
     <ClCompile Include="CMonster.cpp" />
+    <ClCompile Include="CNPC.cpp" />
     <ClCompile Include="CPanel.cpp" />
     <ClCompile Include="CPathManager.cpp" />
     <ClCompile Include="CPlayer.cpp" />

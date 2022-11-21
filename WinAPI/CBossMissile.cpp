@@ -6,6 +6,7 @@
 
 CBossMissile::CBossMissile()
 {
+	m_layer = Layer::BossMissile;
 }
 
 CBossMissile::~CBossMissile()

@@ -16,6 +16,7 @@
 #include "CSceneStage01.h"
 #include "CSceneBoss.h"
 #include "CAniObject.h"
+#include "CBomb.h"
 
 #include "CPlayerMissile.h"
 
@@ -54,7 +55,7 @@ CPlayer::CPlayer()
 	m_fSpeed = 300.0f;
 	m_fAcctime = 0;
 
-	m_curWeapon = PlayerWeapon::HeavyMachineGun;
+	m_curWeapon = PlayerWeapon::Pistol;
 	m_status = PlayerStatus::Idle;
 	m_prevStatus = PlayerStatus::Idle;
 }
@@ -75,6 +76,7 @@ void CPlayer::Init()
 	m_pDeathImage = RESOURCE->LoadImg(L"PlayerDeath", L"Image\\Player\\EriDeath.png");
 	CImage* pVictoryImage = RESOURCE->LoadImg(L"PlayerVictory", L"Image\\Player\\EriVictory.png");
 	m_pEffectImage = RESOURCE->LoadImg(L"MissileEffectImg", L"Image\\Effect\\MissileEffect.png");
+	CImage* m_pEffectImg = RESOURCE->LoadImg(L"Effect", L"Image\\Effect\\Explosion.png");
 
 #pragma endregion
 
@@ -197,6 +199,46 @@ void CPlayer::Init()
 
 void CPlayer::Update()
 {
+	list<CPlayerMissile*>::iterator listIter = m_listMissile.begin();
+	for (; listIter != m_listMissile.end(); listIter++)
+	{ 
+		auto pMissile = *listIter;
+		if (pMissile->GetReserveDelete() && !pMissile->GetSafeToDelete())
+		{
+			// 폭발 애니메이터 생성뒤 지움
+			CAniObject* m_pMissileAniObj = new CAniObject;
+			m_pMissileAniObj->SetImage(m_pEffectImage);
+			m_pMissileAniObj->SetPos(pMissile->GetPos());
+			m_pMissileAniObj->SetExtension(m_fExtension);
+			m_pMissileAniObj->SetLayer(Layer::Unit);
+			ADDOBJECT(m_pMissileAniObj);
+			m_pMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\PlayerMissileEffect", m_pEffectImage, 0.05f, false);
+			m_pMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
+			float m_duration = 0;
+			m_listMissileAniObj.push_back(make_pair(&m_duration, m_pMissileAniObj));
+			m_listMissile.erase(listIter);
+			break;
+		}
+	}
+
+	for (auto pMissileAni : m_listMissileAniObj)
+	{
+		*(pMissileAni.first) += DT;
+	}
+
+	list<pair<float*, CAniObject*>>::iterator listEraseAniIter = m_listMissileAniObj.begin();
+	for (; listEraseAniIter != m_listMissileAniObj.end(); listEraseAniIter++)//auto pMissileAni : m_listMissileAniObj)
+	{
+		auto pMissileAni = *listEraseAniIter;
+		if (*(pMissileAni.first) > 0.4f)
+		{
+			DELETEOBJECT(pMissileAni.second);
+			m_listMissileAniObj.erase(listEraseAniIter); // 자료구조 크기가 줄어들면서 오류 일어날 수 있음
+			break;
+		}
+	}
+
+
 	//if (m_pMissile != nullptr && !m_pMissile->GetSafeToDelete())
 	//{
 	//	if (m_pMissile->GetReserveDelete())
@@ -212,7 +254,7 @@ void CPlayer::Update()
 	//		m_pMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
 	//	}
 	//}
-	//if (m_pMissileAniObj != nullptr && !m_pMissileAniObj->GetReserveDelete())
+	//if (m_pMissileAniObj != nullptr && !m_pMissileAniObj->GetReserv eDelete())
 	//{
 	//	m_fMissileDisappearAccTime += DT;
 	//	if (m_fMissileDisappearAccTime >= 0.8f)
@@ -307,7 +349,7 @@ void CPlayer::KeyUpdate()
 
 			CreateMissile();
 			// TODO : 총알에 따른 무기 정해주기
-			m_curWeapon = PlayerWeapon::Pistol;
+			//m_curWeapon = PlayerWeapon::HeavyMachineGun;
 			m_fAcctime = 0;
 			m_bIsAttack = true;
 			m_bIsShoot = true;
@@ -319,6 +361,12 @@ void CPlayer::KeyUpdate()
 				m_iBomb--;
 			else m_iBomb == 0;
 			m_curWeapon = PlayerWeapon::Bomb;
+			CBomb* pBomb = new CBomb;
+			ADDOBJECT(pBomb);
+			pBomb->SetPos(m_vecPos);
+			pBomb->SetExtension(m_fExtension);
+			pBomb->SetDir(Vector(m_vecLookDir.x, 0));
+			pBomb->SetOwner(this);
 			m_fAcctime = 0;
 			m_bIsAttack = true;
 			m_bIsShoot = true;
@@ -1840,10 +1888,13 @@ void CPlayer::StatusUpdate()
 			//	m_status = PlayerStatus::Idle;
 		}
 	case PlayerStatus::Dead:
-
 		// 죽었으면 새로 부활
 		break;
 	case PlayerStatus::Victory:
+		m_bIsJump = true;
+		m_gravity->SetVelocity(-10);
+		m_bIsDead = false;
+		m_bIsMove = false;
 		break;
 	}
 }
@@ -1852,7 +1903,7 @@ void CPlayer::CreateMissile()
 {
 	Logger::Debug(L"미사일 생성");
 
-	m_pMissile = new CPlayerMissile();
+	CPlayerMissile* m_pMissile = new CPlayerMissile;
 	m_pMissile->SetName(L"PlayerMissile");
 	m_pMissile->SetVelocity(1000);
 
@@ -1904,6 +1955,7 @@ void CPlayer::CreateMissile()
 
 	m_pMissile->SetOwner(this);
 	m_pMissile->SetExtension(m_fExtension);
+	m_listMissile.push_back(m_pMissile);
 	ADDOBJECT(m_pMissile);
 }
 
@@ -1917,7 +1969,7 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 		m_vecLookDir.y = 0;
 		m_gravity->SetVelocity(0);
 	}
-	if (pOtherCollider->GetObjName() == L"slopeGround")
+	else if (pOtherCollider->GetObjName() == L"slopeGround")
 	{
 		if (m_bIsJump)
 		{
@@ -1928,7 +1980,7 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 		m_vecLookDir.y = 0;
 		m_gravity->SetVelocity(0);
 	}
-	if (pOtherCollider->GetObjName() == L"obstacle")
+	if (pOtherCollider->GetObjName() == L"obstacle" || pOtherCollider->GetObjName() == L"obstacleCastle")
 	{
 		//m_gravity->SetVelocity(0); // 벽에 붙음
 		if(m_vecPos.x > pOtherCollider->GetPos().x)
@@ -1948,6 +2000,14 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 		//m_gravity->SetVelocity(0);
 		m_status = PlayerStatus::Dead;
 	}
+	if (pOtherCollider->GetObjName() == L"ItemBomb")
+	{
+		m_iBomb += 10;
+	}
+	if (pOtherCollider->GetObjName() == L"ItemHeavyGun")
+	{
+		m_curWeapon = PlayerWeapon::HeavyMachineGun;
+	}
 }
 
 void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
@@ -1959,7 +2019,7 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 			m_fSpeed = 0;
 			m_gravity->SetVelocity(0);
 		}
-		if(!m_bIsJump)
+		if (!m_bIsJump)
 			m_gravity->SetVelocity(0);
 	}
 	if (pOtherCollider->GetObjName() == L"slopeGround")
@@ -1975,12 +2035,19 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 			{
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
-				m_vecPos.y += m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+				m_vecPos.y += m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 			}
 			else if (m_vecMoveDir.x == 0)
 			{
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
+			}
+			else if (m_vecMoveDir.x < 0)
+			{
+				if (!m_bIsJump)
+					m_gravity->SetVelocity(0);
+				if(!m_bIsSit)
+					m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 			}
 
 			if (m_bIsSit)
@@ -1992,12 +2059,19 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 			{
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
-				m_vecPos.y -= m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 			}
 			else if (m_vecMoveDir.x == 0)
 			{
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
+			}
+			else if (m_vecMoveDir.x > 0)
+			{
+				if (!m_bIsJump)
+					m_gravity->SetVelocity(0);
+				if (!m_bIsSit)
+					m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 			}
 
 			if (m_bIsSit)
@@ -2008,8 +2082,50 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 
 void CPlayer::OnCollisionExit(CCollider* pOtherCollider)
 {
-	if (pOtherCollider->GetObjName() == L"obstacle")
+	if (pOtherCollider->GetObjName() == L"obstacle" || pOtherCollider->GetObjName() == L"obstacleCastle")
 	{
 		m_fSpeed = 300;
 	}
+	//if (pOtherCollider->GetObjName() == L"slopeGround")
+	//{
+	//	if (m_status == PlayerStatus::Dead)
+	//	{
+	//		m_fSpeed = 0;
+	//		m_gravity->SetVelocity(0);
+	//	}
+	//	if (pOtherCollider->GetRotation() < 0)
+	//	{
+	//		if (m_vecMoveDir.x > 0)
+	//		{
+	//			if (!m_bIsJump)
+	//				m_gravity->SetVelocity(0);
+	//			m_vecPos.y += m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+	//		}
+	//		else if (m_vecMoveDir.x == 0)
+	//		{
+	//			if (!m_bIsJump)
+	//				m_gravity->SetVelocity(0);
+	//		}
+	//
+	//		if (m_bIsSit)
+	//			m_gravity->SetVelocity(0);
+	//	}
+	//	else
+	//	{
+	//		if (m_vecMoveDir.x < 0)
+	//		{
+	//			if (!m_bIsJump)
+	//				m_gravity->SetVelocity(0);
+	//			m_vecPos.y -= m_fSpeed * sinf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+	//		}
+	//		else if (m_vecMoveDir.x == 0)
+	//		{
+	//			if (!m_bIsJump)
+	//				m_gravity->SetVelocity(0);
+	//		}
+	//
+	//		if (m_bIsSit)
+	//			m_gravity->SetVelocity(0);
+	//	}
+	//}
 }

@@ -19,14 +19,20 @@ CCollisionManager::~CCollisionManager()
 
 void CCollisionManager::Init()
 {
-	CheckLayer(Layer::Monster, Layer::Missile);
+	CheckLayer(Layer::Monster, Layer::PlayerMissile);
 	CheckLayer(Layer::Monster, Layer::Player);
 	//CheckLayer(Layer::ForeGround, Layer::Player);
 	//CheckLayer(Layer::ForeGround, Layer::Monster);
 	CheckLayer(Layer::Player, Layer::Collider);
 	CheckLayer(Layer::Monster, Layer::Collider);
-	CheckLayer(Layer::Missile, Layer::Collider);
-	CheckLayer(Layer::Missile, Layer::Player);
+	CheckLayer(Layer::BossMissile, Layer::Collider);
+	CheckLayer(Layer::PlayerMissile, Layer::Collider);
+	CheckLayer(Layer::BossMissile, Layer::Player);
+	CheckLayer(Layer::Item, Layer::Player);
+	CheckLayer(Layer::Item, Layer::Collider);
+	CheckLayer(Layer::NPC, Layer::Collider);
+	CheckLayer(Layer::NPC, Layer::PlayerMissile);
+	CheckLayer(Layer::NPC, Layer::Player);
 }
 
 void CCollisionManager::Update()

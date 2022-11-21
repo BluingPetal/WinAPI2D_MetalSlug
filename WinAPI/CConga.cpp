@@ -10,6 +10,8 @@
 #include "CColliderObject.h"
 #include "CPlayer.h"
 #include "CMissile.h"
+#include "CPlayerMissile.h"
+#include "CBomb.h"
 
 #define PI 3.141592
 
@@ -114,21 +116,35 @@ void CConga::OnCollisionEnter(CCollider* pOtherCollider)
 {
 	if (pOtherCollider->GetObjName() == L"PlayerMissile")
 	{
-		CMissile* pMissile = dynamic_cast<CMissile*>(pOtherCollider->GetOwner());
+		CPlayerMissile* pMissile = dynamic_cast<CPlayerMissile*>(pOtherCollider->GetOwner());
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
 		SetTarget(pPlayer);
 	}
-	else if (pOtherCollider->GetObjName() == L"obstacle")
+	if (pOtherCollider->GetObjName() == L"Bomb")
 	{
-		m_vecLookDir.x *= -1;
+		CBomb* pMissile = dynamic_cast<CBomb*>(pOtherCollider->GetOwner());
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
+		SetTarget(pPlayer);
+		m_hp -= 5;
 	}
-	else if(pOtherCollider->GetObjName() == L"ground")
+	if (pOtherCollider->GetObjName() == L"obstacle")
+	{
+		if(m_congaState != CongaStatus::Death)
+			m_vecLookDir.x *= -1;
+	}
+	if(pOtherCollider->GetObjName() == L"ground")
 	{
 		m_pGravity->SetVelocity(0);
 	}
 	if (pOtherCollider->GetObjName() == L"slopeGround")
 	{
 		m_pGravity->SetVelocity(0);
+	}
+	if (pOtherCollider->GetObjName() == L"PlayerMissile")
+	{
+		CMissile* pMissile = dynamic_cast<CMissile*>(pOtherCollider->GetOwner());
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
+		SetTarget(pPlayer);
 	}
 }
 
@@ -167,7 +183,7 @@ void CConga::StateUpdate()
 	switch (m_congaState)
 	{
 	case CongaStatus::Idle:
-		if (m_hp < 0)
+		if (m_hp <= 0)
 		{
 			m_fAccTime = 0;
 			m_congaState = CongaStatus::Death;
@@ -180,7 +196,7 @@ void CConga::StateUpdate()
 		}
 		break;
 	case CongaStatus::Walk:
-		if (m_hp < 0)
+		if (m_hp <= 0)
 		{
 			m_fAccTime = 0;
 			m_congaState = CongaStatus::Death;
@@ -202,7 +218,7 @@ void CConga::StateUpdate()
 		}
 		break;
 	case CongaStatus::NearAttack:
-		if (m_hp < 0)
+		if (m_hp <= 0)
 		{
 			m_fAccTime = 0;
 			m_congaState = CongaStatus::Death;

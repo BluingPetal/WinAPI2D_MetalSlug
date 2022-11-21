@@ -47,10 +47,13 @@ enum class Layer
 	Tile,
 	BackGround,
 	Unit,
+	NPC,
+	Item,
 	Monster,
 	Player,// 잠시동안
 
-	Missile,
+	PlayerMissile,
+	BossMissile,
 	ForeGround,
 
 	Collider,
