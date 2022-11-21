@@ -18,10 +18,12 @@ private:
 	float m_fPlayerMaxPosX;
 	float m_fAccTime;
 	float m_fMissionAccTime;
+	float m_fWarpDisappearTime;
 	int m_fTime;
 	int m_iTimeCount;
 	bool m_bIsStarted;
 	bool m_bCallObj;
+	bool m_bBoatDisappear;
 
 	int prevBomb;
 	int prevBullet;
@@ -45,6 +47,7 @@ private:
 	CAniObject* pWaterAniObj;
 	CColliderObject* m_pObstacle;
 	CColliderObject* m_pBoatCastleCollider;
+	CAniObject* m_pWarp;
 	CConga* m_pConga;
 
 public:

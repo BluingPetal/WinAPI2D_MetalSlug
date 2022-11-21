@@ -5,6 +5,7 @@
 #include "CBossMissile.h"
 #include "CAniObject.h"
 #include "CPlayer.h"
+#include "CPlayerMissile.h"
 
 CBoss::CBoss()
 {
@@ -14,7 +15,7 @@ CBoss::CBoss()
 	m_vecMoveDir = Vector(1, 0);
 	m_fAccTime = 0;
 	m_fAttackAccTime = 0;
-	m_hp = 120;
+	m_hp = 200;
 	m_bossStatus = BossStatus::Idle;
 	m_bIsAttack = false;
 	m_fFireDisappearAccTime = 0;
@@ -168,7 +169,7 @@ void CBoss::StateUpdate()
 		}
 		break;
 	case BossStatus::Walk:
-		if (m_hp < 50)
+		if (m_hp < 100)
 		{
 			m_bossStatus = BossStatus::DeployCannon;
 			m_fAccTime = 0;
@@ -198,7 +199,7 @@ void CBoss::StateUpdate()
 		}
 		break;
 	case BossStatus::Fire:
-		if (m_hp < 50)
+		if (m_hp < 100)
 		{
 			m_bossStatus = BossStatus::DeployCannon;
 			m_fAccTime = 0;
@@ -357,10 +358,7 @@ void CBoss::OnCollisionEnter(CCollider* pOtherCollider)
 {
 	if (pOtherCollider->GetObjName() == L"PlayerMissile")
 	{
-		m_hp--;
-	}
-	if (pOtherCollider->GetObjName() == L"PlayerMissile")
-	{
+		CPlayerMissile* pMissile = dynamic_cast<CPlayerMissile*>(pOtherCollider->GetOwner());
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(pMissile->GetOwner());
 		if (pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
 			m_hp--;

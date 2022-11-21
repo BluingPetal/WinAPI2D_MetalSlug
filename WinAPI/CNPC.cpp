@@ -184,7 +184,7 @@ void CNPC::GiveItem()
 
 void CNPC::OnCollisionEnter(CCollider* pOtherCollider)
 {
-	if (pOtherCollider->GetObjName() == L"PlayerMissile")
+	if (pOtherCollider->GetObjName() == L"PlayerMissile" || pOtherCollider->GetObjName() == L"Bomb")
 	{
 		m_isFree = true;
 	}

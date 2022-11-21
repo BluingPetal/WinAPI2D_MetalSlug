@@ -1955,8 +1955,13 @@ void CPlayer::CreateMissile()
 
 	m_pMissile->SetOwner(this);
 	m_pMissile->SetExtension(m_fExtension);
-	m_listMissile.push_back(m_pMissile);
+	//m_listMissile.push_back(m_pMissile);
 	ADDOBJECT(m_pMissile);
+}
+
+CGravity* CPlayer::GetGravity()
+{
+	return m_gravity;
 }
 
 void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)

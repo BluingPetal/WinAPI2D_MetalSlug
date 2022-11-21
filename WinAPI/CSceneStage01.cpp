@@ -23,6 +23,7 @@ CSceneStage01::CSceneStage01()
 
 	m_bIsStarted = true;
 	m_bCallObj = false;
+	m_bBoatDisappear = false;
 	
 	m_fAccTime = 0;
 	m_fMissionAccTime = 0;
@@ -147,6 +148,7 @@ void CSceneStage01::Init()
 	m_pPlayer->SetPos(200, WINSIZEY * 0.5f);
 	m_pPlayer->SetExtension(extension);
 	m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
+	
 
 	//m_pConga = new CConga;
 	//m_pConga->SetPos(WINSIZEX * 0.8f, WINSIZEY * 0.5f);
@@ -188,6 +190,16 @@ void CSceneStage01::Init()
 	m_pBombObj = new CFontImageObj;
 	m_pBombObj->SetFixed(true);
 	m_pBombObj->SetExtension(extension);
+
+	//m_pWarp = new CAniObject;
+	//CImage* warpImg = RESOURCE->LoadImg(L"InWarpImg", L"Image\\BackGround\\Warp.png");
+	//Vector warpPos = Vector(0, 226 + backGroundOffset.y);
+	//m_pWarp->SetImage(warpImg);
+	////m_pWarp->SetPos(waterAniPos + Vector(0, 30));
+	//m_pWarp->SetExtension(extension);
+	//m_pWarp->GetAnimator()->CreateAnimation(L"BackGround\\WaterAni", pWaterAniImg, 0.1f);
+	//m_pWarp->GetAnimator()->Play(L"BackGround\\WaterAni");
+	//m_pWarp->SetLayer(Layer::Unit);
 
 #pragma endregion
 
@@ -263,23 +275,21 @@ void CSceneStage01::Init()
 	m_pBoatCastleCollider->SetPos(pBoatCastle->GetPos() + Vector(sourceCastleInfo[2] * 0.5f, 0) * extension);
 	m_pBoatCastleCollider->SetScale(Vector(sourceCastleInfo[2], sourceCastleInfo[3]) * 0.8f + Vector(0, 200));
 
-	//CItem* pItemBomb = new CItem;
-	//pItemBomb->SetName(L"ItemBomb");
-	//pItemBomb->SetPos(WINSIZEX * 0.5f, WINSIZEY * 0.5f);
-	//pItemBomb->SetExtension(extension);
-	//CItem* pItemHeavyGun = new CItem;
-	//pItemHeavyGun->SetName(L"ItemHeavyGun");
-	//pItemHeavyGun->SetPos(WINSIZEX * 0.6f, WINSIZEY * 0.5f);
-	//pItemHeavyGun->SetExtension(extension);
-	//AddGameObject(pItemBomb);
-	//AddGameObject(pItemHeavyGun);
+	CNPC* pHeavyGunNPC = new CNPC;
+	pHeavyGunNPC->SetExtension(extension);
+	pHeavyGunNPC->SetPos(WINSIZEX * 1.3f, WINSIZEY * 0.5f);
+	pHeavyGunNPC->SetName(L"HeavyGunNPC");
+	AddGameObject(pHeavyGunNPC);
 
-
-	CNPC* npc = new CNPC;
-	npc->SetExtension(extension);
-	npc->SetPos(WINSIZEX * 1.3f, WINSIZEY * 0.5f);
-	npc->SetName(L"HeavyGunNPC");
-	AddGameObject(npc);
+	//
+	//CImageObject* pWarpImg = new CImageObject;
+	//CImage* pBoatImg = RESOURCE->LoadImg(L"castle", L"Image\\BackGround\\Boat.png");
+	//pBoatCastle->SetImage(pBoatImg);
+	//pBoatCastle->SetExtension(extension);
+	//pBoatCastle->SetPos(2600, 40);
+	//float sourceCastleInfo[4] = { 0, 0, 120, 139 };
+	//pBoatCastle->SetRenderAsFrame(true);
+	//pBoatCastle->SetSourceInfo(sourceCastleInfo[0], sourceCastleInfo[1], sourceCastleInfo[2], sourceCastleInfo[3]);
 
 
 	//Logger::Debug(to_wstring(pFrontOceanCollider->GetPos().x) + L", !" + to_wstring(pGround1->GetPos().x));
@@ -429,6 +439,15 @@ void CSceneStage01::Update()
 		AddGameObject(pConga3);
 		pConga3->CongaAddObject();
 	}
+	if (m_fPlayerMaxPosX > 1900 && m_fPlayerMaxPosX < 2000 && m_bCallObj)
+	{
+		m_bCallObj = false;
+		CNPC* pBombNPC = new CNPC;
+		pBombNPC->SetExtension(m_pPlayer->GetExtension());
+		pBombNPC->SetPos(3000, WINSIZEY * 0.5f);
+		pBombNPC->SetName(L"BombNPC");
+		AddGameObject(pBombNPC);
+	}
 
 	// insert coin 깜박거리는 효과
 	if (m_fAccTime >= 1.f)
@@ -488,9 +507,11 @@ void CSceneStage01::Update()
 
 			//if (!m_pMissionImgObj1->GetReserveDelete() && !m_pMissionImgObj2->GetReserveDelete())
 			//{
+			//if(m_pMissionImgObj1 ->GetPos().x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX,0)).x + 100)
 				DELETEOBJECT(m_pMissionImgObj1);
-				//m_pMissionImgObj1 = nullptr;
+			//if (m_pMissionImgObj2->GetPos().x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, 0)).x + 100)
 				DELETEOBJECT(m_pMissionImgObj2);
+				//m_pMissionImgObj1 = nullptr;
 				//m_pMissionImgObj2 = nullptr;
 			//}
 			//while (!m_pMissionImgObj1->GetImageObj(L"insert coin").empty())
@@ -584,6 +605,12 @@ void CSceneStage01::Update()
 	{
 		DELETEOBJECT(pBoatCastle);
 		pBoat->SetAlpha(1);
+		m_bBoatDisappear = true;
+	}
+	if (m_bBoatDisappear)
+	{
+		m_fWarpDisappearTime += DT;
+		// warp
 	}
 }
 

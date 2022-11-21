@@ -78,6 +78,7 @@ public:
 	PlayerWeapon GetCurWeapon() { return m_curWeapon; }
 	void SetCurWeapon(PlayerWeapon weapon) { m_curWeapon = weapon; }
 	void SetStatus(PlayerStatus status) { m_status = status; }
+	CGravity* GetGravity();
 
 private:
 	void Init() override;
