@@ -1,5 +1,8 @@
 #pragma once
 #include "CMissile.h"
+
+class CImage;
+
 class CPlayerMissile : public CMissile
 {
 public:
@@ -16,6 +19,7 @@ private:
 	//float m_fAttackAccTime;
 	//bool m_bIsEntered;
 	//CGravity* m_pGravity;
+	CImage* m_pEffectImage;
 
 private:
 	void Init() override;

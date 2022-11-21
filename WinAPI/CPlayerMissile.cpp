@@ -4,6 +4,7 @@
 #include "CPlayer.h"
 #include "CConga.h"
 #include "CNPC.h"
+#include "CAniObject.h"
 
 CPlayerMissile::CPlayerMissile()
 {
@@ -22,6 +23,9 @@ void CPlayerMissile::Init()
 		AddCollider(ColliderType::Rect, Vector(20, 20), Vector(0, 0));
 	else if (pPlayer->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
 		AddCollider(ColliderType::Rect, Vector(110, 30), Vector(0, 0));
+
+	m_pEffectImage = new CImage;
+	m_pEffectImage = RESOURCE->LoadImg(L"MissileEffectImg", L"Image\\Effect\\MissileEffect.png");
 
 	m_pAnimator = new CAnimator;
 	CImage* pPlayerMissileImg = RESOURCE->LoadImg(L"PlayerMissile", L"Image\\Player\\Weapon.png"); // 미사일 이미지 넣기
@@ -43,6 +47,20 @@ void CPlayerMissile::Update()
 	//	m_vecPos += m_vecDir * m_fVelocity * DT;
 	if (!m_bIsEntered)
 		m_vecPos += m_vecDir * m_fVelocity * DT;
+
+	// 효과 애니메이터 생성
+	if (this->GetReserveDelete() && !(this->GetSafeToDelete()))
+	{
+		CAniObject* m_pMissileAniObj = new CAniObject;
+		m_pMissileAniObj->SetImage(m_pEffectImage);
+		m_pMissileAniObj->SetPos(m_vecPos);
+		m_pMissileAniObj->SetExtension(m_fExtension);
+		m_pMissileAniObj->SetLayer(Layer::Unit);
+		ADDOBJECT(m_pMissileAniObj);
+		m_pMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\PlayerMissileEffect", m_pEffectImage, 0.05f, false);
+		m_pMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
+		float m_duration = 0;
+	}
 
 	// 화면밖으로 나갈경우 삭제
 	Vector cameraLookAt = CAMERA->GetLookAt();
