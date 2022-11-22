@@ -160,7 +160,7 @@ void CPlayerMissile::OnCollisionEnter(CCollider* pOtherCollider)
 		}
 			//DELETEOBJECT(this);
 	}
-	if (pOtherCollider->GetObjName() == L"Boss" || pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground" || pOtherCollider->GetObjName() == L"obstacleCastle")
+	if (pOtherCollider->GetObjName() == L"Boss" || pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground" || pOtherCollider->GetObjName() == L"obstacleCastle" || pOtherCollider->GetObjName() == L"obstacle")
 	{
 		m_fVelocity = 0;
 		m_reserveDelete = true;

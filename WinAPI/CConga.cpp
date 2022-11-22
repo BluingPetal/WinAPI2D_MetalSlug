@@ -168,10 +168,14 @@ void CConga::OnCollisionStay(CCollider* pOtherCollider)
 		{
 			if (m_vecMoveDir.x > 0)
 				m_vecPos.y += m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+			else if (m_vecMoveDir.x < 0)
+				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 		}
 		else
 		{
-			if (m_vecMoveDir.x < 0)
+			if (m_vecMoveDir.x > 0)
+				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+			else if (m_vecMoveDir.x < 0)
 				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
 		}
 	}
