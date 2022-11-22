@@ -64,10 +64,14 @@ void CSceneTitle::Init()
 	wstring timeStr = to_wstring(m_time);
 	fontImgTime->SetInterval(1.f);
 	fontImgTime->CreateImgObj( timeStr, Vector(WINSIZEX * 0.45, WINSIZEY * 0.8), 2, FontType::Default);
+
+	pBackGroundSound = RESOURCE->LoadSound(L"titleSound", L"Sound\\metalSlug3.mp3");
+	pCoinSound = RESOURCE->LoadSound(L"CoinSound", L"Sound\\score.mp3");
 }
 
 void CSceneTitle::Enter()
 {
+	SOUND->Play(pBackGroundSound);
 	fontImgStartObj->Show();
 	fontImgCredit->Show();
 	fontImgCreditObj->Show();
@@ -115,6 +119,7 @@ void CSceneTitle::Update()
 		}
 		if (BUTTONDOWN(VK_F3))
 		{
+			SOUND->Play(pCoinSound);
 			m_credit++;
 
 			wstring creditStr = to_wstring(m_credit);
@@ -140,6 +145,8 @@ void CSceneTitle::Update()
 			{
 				CAMERA->FadeOut(0.25f);
 				DELAYCHANGESCENE(GroupScene::SelectChar, 0.25f);
+				SOUND->Stop(pBackGroundSound);
+				SOUND->Stop(pCoinSound);
 			}
 		}
 	}

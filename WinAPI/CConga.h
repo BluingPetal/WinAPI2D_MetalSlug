@@ -22,6 +22,8 @@ private:
 
 	CongaStatus m_congaState;
 
+	CSound* m_congaDeathSound;
+
 	float m_fAccTime;
 	bool m_isAttack;
 

@@ -51,7 +51,7 @@ void CSoundManager::Stop(CSound* pSound)
 		return;
 
 	FMOD_RESULT result = pSound->m_pChannel->stop();
-	assert(FMOD_OK == result && L"Stop sound failed");
+	//assert(FMOD_OK == result && L"Stop sound failed");
 }
 
 void CSoundManager::Pause(CSound* pSound)
@@ -79,7 +79,7 @@ void CSoundManager::Init()
 	result = System_Create(&m_pSystem);
 	assert(FMOD_OK == result && L"Create sound system falied");
 
-	result = m_pSystem->init(32, FMOD_INIT_NORMAL, nullptr);
+	result = m_pSystem->init(35, FMOD_INIT_NORMAL, nullptr);
 	assert(FMOD_OK == result && L"Init sound system falied");
 }
 

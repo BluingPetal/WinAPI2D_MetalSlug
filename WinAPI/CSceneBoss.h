@@ -14,8 +14,6 @@ public:
 	CSceneBoss();
 	virtual ~CSceneBoss();
 
-
-
 private:
 	CImageObject* pBossBackgroundObj1;
 	CImageObject* pBossBackgroundObj2;
@@ -42,6 +40,12 @@ private:
 	bool m_bStart;
 	bool m_bBossAppear;
 	bool m_bVictory;
+	bool m_bVictorySoundPlay;
+
+	CSound* pBackGroundSound;
+	CSound* pMissionCompleteSound;
+	CSound* pMissionClearSound;
+	CSound* pBossAppearSound;
 
 	queue<CImageObject*> m_queueBackGround;
 

@@ -41,6 +41,8 @@ void CNPC::Init()
 	AddCollider(ColliderType::Rect, Vector(50, 80), Vector(0, 0));
 	m_pNPCAni->SetOwner(this);
 	AddComponent(m_pNPCAni);
+
+	m_thankYouSound = RESOURCE->LoadSound(L"thankyou", L"Sound\\thankYou.mp3");
 }
 
 void CNPC::Update()
@@ -89,6 +91,7 @@ void CNPC::BehaviorUpdate()
 			{
 				GiveItem();
 				m_isGave = true;
+				SOUND->Play(m_thankYouSound);
 			}
 		}
 		break;

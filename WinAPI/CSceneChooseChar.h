@@ -20,6 +20,9 @@ private:
 	CAniObject* m_pEri1;
 	CAniObject* m_pEri2;
 
+	CSound* m_pBackGround;
+	CSound* m_pSelectEri;
+
 	float m_fAccTime;
 	float m_fExtension;
 

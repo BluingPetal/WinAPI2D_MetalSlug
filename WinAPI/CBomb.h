@@ -26,6 +26,8 @@ private:
 	bool m_reserveDelete;
 	bool m_bCreatedAni;
 
+	CSound* m_pExplode;
+
 	int count;
 
 public:

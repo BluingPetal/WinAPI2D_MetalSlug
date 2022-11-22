@@ -6,6 +6,7 @@ class CImageObject;
 class CColliderObject;
 class CFontImageObj;
 class CConga;
+class CSound;
 
 class CSceneStage01 : public CScene
 {
@@ -52,6 +53,9 @@ private:
 	CColliderObject* m_pBoatCastleCollider;
 	CAniObject* m_pWarp;
 	CConga* m_pConga;
+
+	CSound* pBackGroundSound;
+	CSound* pMissionStartSound;
 
 public:
 	CAniObject* GetWaterAni();

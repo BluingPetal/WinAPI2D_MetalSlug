@@ -25,6 +25,12 @@ private:
 	CAnimator* m_pAnimator1;
 	CAnimator* m_pAnimator2;
 	CAnimator* m_explosionAni;
+
+	CSound* m_gunSound;
+	//CSound* m_scoreSound;
+	CSound* m_okaySound;
+	CSound* m_getHeavyGunSound;
+	CSound* m_deathSound;
 	//CAniObject* m_pMissileAniObj;
 	//CPlayerMissile* m_pMissile;
 

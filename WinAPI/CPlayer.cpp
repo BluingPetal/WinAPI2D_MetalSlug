@@ -195,6 +195,11 @@ void CPlayer::Init()
 	m_gravity = new CGravity;
 	AddComponent(m_gravity);
 	AddCollider(ColliderType::Rect, Vector(50, 80), Vector(0, 0));
+
+	m_gunSound = RESOURCE->LoadSound(L"pistol", L"Sound\\gun.mp3");
+	m_okaySound = RESOURCE->LoadSound(L"okay", L"Sound\\getBomb.mp3");
+	m_getHeavyGunSound = RESOURCE->LoadSound(L"getHeavyGun", L"Sound\\getHeavyGun.mp3");
+	m_deathSound = RESOURCE->LoadSound(L"playerDeathSound", L"Sound\\eriDeath.mp3");
 }
 
 void CPlayer::Update()
@@ -268,7 +273,8 @@ void CPlayer::Update()
 	{
 		if (m_curWeapon == PlayerWeapon::Pistol || m_curWeapon == PlayerWeapon::HeavyMachineGun)
 			m_curGun = m_curWeapon;
-		KeyUpdate();
+		if(m_status!= PlayerStatus::Prepare)
+			KeyUpdate();
 		BehaviorUpdate();
 		StatusUpdate();
 	}
@@ -336,6 +342,7 @@ void CPlayer::KeyUpdate()
 		if (BUTTONDOWN('A'))
 		{
 			m_bBulletDiff = true;
+			SOUND->Play(m_gunSound);
 			if (m_bIsPrevCurLookSame)
 			{
 				if (tempLookDir.y != m_vecPrevLookDir.y)
@@ -398,8 +405,8 @@ void CPlayer::AnimatorUpdate()
 	switch (m_status)
 	{
 	case PlayerStatus::Prepare:
-		m_pAnimator1->Play(L"Player\\Idle\\EriIdleR_1");
-		m_pAnimator2->Play(L"Player\\Idle\\EriIdleR_2");
+		m_pAnimator1->Play(L"Player\\Jump\\EriJumpR_1");
+		m_pAnimator2->Play(L"Player\\Jump\\EriJumpR_2");
 		break;
 	case PlayerStatus::Idle:
 	{
@@ -1633,6 +1640,12 @@ void CPlayer::BehaviorUpdate()
 	switch (m_status)
 	{
 	case PlayerStatus::Prepare:
+		m_bIsAttack = false;
+		m_bIsJump = false;	
+		m_bIsMove = false;
+		m_bIsSit = false;
+		m_bIsShoot = false;
+		m_gravity->SetGravity(45);
 		break;
 	case PlayerStatus::Idle:
 		break;
@@ -1653,6 +1666,7 @@ void CPlayer::BehaviorUpdate()
 		{
 			m_bIsDead = true;
 			m_gravity->SetVelocity(-300);
+			SOUND->Play(m_deathSound);
 		}
 		m_vecPos.x -= m_vecMoveDir.x * m_fSpeed * DT;
 		break;
@@ -1771,6 +1785,7 @@ void CPlayer::StatusUpdate()
 	case PlayerStatus::Prepare:
 		if (m_fAcctime > 5.0f)
 		{
+			m_gravity->SetGravity(600);
 			m_status = PlayerStatus::Idle;
 			m_fAcctime = 0;
 		}
@@ -2022,10 +2037,12 @@ void CPlayer::OnCollisionEnter(CCollider* pOtherCollider)
 	}
 	if (pOtherCollider->GetObjName() == L"ItemBomb")
 	{
+		SOUND->Play(m_okaySound);
 		m_iBomb += 10;
 	}
 	if (pOtherCollider->GetObjName() == L"ItemHeavyGun")
 	{
+		SOUND->Play(m_getHeavyGunSound);
 		m_curWeapon = PlayerWeapon::HeavyMachineGun;
 	}
 }

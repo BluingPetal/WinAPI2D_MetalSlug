@@ -20,6 +20,7 @@ CBoss::CBoss()
 	m_bIsAttack = false;
 	m_fFireDisappearAccTime = 0;
 	m_fMissileDisappearAccTime = 0;
+	m_bDestroySound = false;
 }
 
 CBoss::~CBoss()
@@ -40,6 +41,7 @@ void CBoss::Init()
 	AddComponent(m_pAnimator);
 
 	m_pEffectImg = RESOURCE->LoadImg(L"Effect", L"Image\\Effect\\Explosion.png");
+	pBossDeathSound = RESOURCE->LoadSound(L"bossDeath", L"Sound\\BossDeath.mp3");
 	
 	//m_pFireMissileAni = new CAnimator;
 	//m_pMissileAni = new CAnimator;
@@ -151,6 +153,11 @@ void CBoss::BehaviorUpdate()
 		break;
 	case BossStatus::Destroyed:
 		m_vecPos.y += (m_fSpeed - 100) * DT;
+		if (!m_bDestroySound)
+		{
+			m_bDestroySound = true;
+			SOUND->Play(pBossDeathSound);
+		}
 		break;
 	}
 }

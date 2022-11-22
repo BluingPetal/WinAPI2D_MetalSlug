@@ -21,12 +21,15 @@ private:
 	float m_fFireDisappearAccTime;
 	float m_fMissileDisappearAccTime;
 	bool m_bIsAttack;
+	bool m_bDestroySound;
 
 	CBossMissile* pFireMissile;
 	CBossMissile* pMissile;
 	CAniObject* m_pFireMissileAniObj;
 	CAniObject* m_pMissileAniObj;
 	CImage* m_pEffectImg;
+
+	CSound* pBossDeathSound;
 
 public:
 	BossStatus GetStatus() { return m_bossStatus; }

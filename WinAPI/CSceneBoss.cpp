@@ -19,6 +19,7 @@ CSceneBoss::CSceneBoss()
 	m_bStart = false;
 	m_bBossAppear = false;
 	m_bVictory = false;
+	m_bVictorySoundPlay = false;
 }
 
 CSceneBoss::~CSceneBoss()
@@ -88,11 +89,17 @@ void CSceneBoss::Init()
 	m_pMissionComplete2 = new CFontImageObj;
 	m_pMissionComplete1->SetExtension(extension);
 	m_pMissionComplete2->SetExtension(extension);
+
+	pBackGroundSound = RESOURCE->LoadSound(L"bossBackGroundSound", L"Sound\\Boss.mp3");
+	pMissionCompleteSound = RESOURCE->LoadSound(L"missionCompleteSound", L"Sound\\missionComplete.mp3");
+	pMissionClearSound = RESOURCE->LoadSound(L"missionClearSound", L"Sound\\missionClear.mp3");
+	pBossAppearSound = RESOURCE->LoadSound(L"bossAppear", L"Sound\\BossAppear.mp3");
 }
 
 void CSceneBoss::Enter()
 {
 	CAMERA->FadeIn(1.0f);
+	SOUND->Play(pBackGroundSound, true);
 
 	CAMERA->SetTargetPos(Vector(WINSIZEX * 0.5f, WINSIZEY * 0.5f));
 	CBridge* pBridge = new CBridge;
@@ -120,7 +127,7 @@ void CSceneBoss::Update()
 	}
 	else if (m_bVictory)
 	{
-		//m_fVictoryAccTime += DT;
+		m_fVictoryAccTime += DT;
 		Vector m_vecTargetPos1, m_vecTargetPos2;
 		m_vecTargetPos1 = CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.28f, WINSIZEY * 0.3f));
 		m_vecTargetPos2 = CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.2f, WINSIZEY * 0.5f));
@@ -128,7 +135,13 @@ void CSceneBoss::Update()
 		m_vecMissionCompleteStartPos2 += (m_vecTargetPos2 - m_vecMissionCompleteStartPos2) * 1.f * DT;
 		m_pMissionComplete1->SetPos(m_vecMissionCompleteStartPos1);
 		m_pMissionComplete2->SetPos(m_vecMissionCompleteStartPos2);
-
+		if (!m_bVictorySoundPlay)
+		{
+			m_bVictorySoundPlay = true;
+			SOUND->Play(pMissionCompleteSound);
+			SOUND->Play(pMissionClearSound);
+			SOUND->Stop(pBackGroundSound);
+		}
 	}
 
 #pragma region BackGround นÝบน
@@ -168,7 +181,7 @@ void CSceneBoss::Update()
 		if (m_fBossAppearAccTime > 5.f && !m_bBossAppear)
 		{
 			m_bBossAppear = true;
-
+			SOUND->Play(pBossAppearSound);
 			//m_vecScale = Vector(bossImg->GetWidth() * m_fExtension, WINSIZEY - bossImg->GetHeight() * m_fExtension)
 			//pBoss->SetPos(pBoss->GetScale().x, WINSIZEY - pBoss->GetScale().y);
 			AddGameObject(pBoss);

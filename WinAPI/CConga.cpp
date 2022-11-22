@@ -63,6 +63,8 @@ void CConga::Init()
 
 	AddCollider(ColliderType::Rect, Vector(90, 90), Vector(0, 0));
 
+	m_congaDeathSound = RESOURCE->LoadSound(L"congaDeath", L"Sound\\congaDeath.mp3");
+
 	m_pGravity = new CGravity;
 	AddComponent(m_pGravity);
 }
@@ -262,7 +264,10 @@ void CConga::StateUpdate()
 		DELETEOBJECT(m_pFarColliderObj);
 		DELETEOBJECT(m_pNearColliderObj);
 		if (m_fAccTime >= 2.8f)
+		{
 			DELETEOBJECT(this);
+			SOUND->Play(m_congaDeathSound, 0.5f);
+		}
 		break;
 	}
 }

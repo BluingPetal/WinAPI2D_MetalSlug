@@ -21,6 +21,9 @@ private:
 	int m_credit;
 	int m_time;
 
+	CSound* pBackGroundSound;
+	CSound* pCoinSound;
+
 private:
 	void Init()		override;
 	void Enter()	override;

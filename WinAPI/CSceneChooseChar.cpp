@@ -140,6 +140,9 @@ void CSceneChooseChar::Init()
 	m_pEri1->GetAnimator()->CreateAnimation(L"Player\\Idle\\EriIdleR_1", m_pEriIdle, 0.15f);
 	m_pEri2->GetAnimator()->CreateAnimation(L"Player\\Idle\\EriIdleR_2", m_pEriIdle, 0.15f);
 
+	m_pBackGround = RESOURCE->LoadSound(L"selectCharSound", L"Sound\\SelectChar.mp3");
+	m_pSelectEri = RESOURCE->LoadSound(L"selectEriSound", L"Sound\\selectEri.mp3");
+
 	m_fExtension = extension;
 
 	// AddObject
@@ -164,6 +167,7 @@ void CSceneChooseChar::Init()
 void CSceneChooseChar::Enter()
 {
 	CAMERA->FadeIn(0.25f);
+	SOUND->Play(m_pBackGround, true);
 }
 
 void CSceneChooseChar::Update()
@@ -189,6 +193,7 @@ void CSceneChooseChar::Update()
 			{
 				m_bSelectedChar = true;
 				m_fAccTime = 0;
+				SOUND->Play(m_pSelectEri);
 			}
 		}
 	}
@@ -253,6 +258,8 @@ void CSceneChooseChar::Render()
 
 void CSceneChooseChar::Exit()
 {
+	SOUND->Stop(m_pBackGround);
+	SOUND->Stop(m_pSelectEri);
 }
 
 void CSceneChooseChar::Release()

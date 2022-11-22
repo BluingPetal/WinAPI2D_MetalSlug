@@ -45,6 +45,8 @@ void CBomb::Init()
 	m_pGravity->SetGravity(800);
 	AddComponent(m_pGravity);
 
+	m_pExplode = RESOURCE->LoadSound(L"bombExplode", L"Sound\\explode.mp3");
+
 	m_pEffectImage = new CImage;
 	m_pEffectImage = RESOURCE->LoadImg(L"BombEffectImg", L"Image\\Effect\\Explosion.png");
 
@@ -82,6 +84,7 @@ void CBomb::Update()
 
 	if (m_reserveDelete && !this->GetReserveDelete())
 	{
+		SOUND->Play(m_pExplode, 0.3f);
 		m_fDisappearAccTime += DT;
 		if (m_fDisappearAccTime > 1.3f)
 		{

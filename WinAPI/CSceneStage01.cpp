@@ -12,6 +12,7 @@
 #include "CFontImageObj.h"
 #include "CItem.h"
 #include "CNPC.h"
+#include "CSound.h"
 
 CSceneStage01::CSceneStage01()
 {
@@ -110,7 +111,7 @@ void CSceneStage01::Init()
 	pPlayerBarObj->SetImage(pStatusImg);
 	pPlayerBarObj->SetExtension(extension + 1);
 	pPlayerBarObj->SetFixed(true);
-	pPlayerBarObj->SetLayer(Layer::BackGround);
+	pPlayerBarObj->SetLayer(Layer::ForeGround);
 	pPlayerBarObj->SetPos(20, 20);
 	float sourcePlayerBarInfo[4] = { 0, 19, 63, 10 };
 	pPlayerBarObj->SetRenderAsFrame(true);
@@ -159,7 +160,7 @@ void CSceneStage01::Init()
 #pragma region OBJECT
 
 	m_pPlayer = new CPlayer;
-	m_pPlayer->SetPos(200, WINSIZEY * 0.5f);
+	m_pPlayer->SetPos(200, 0);//WINSIZEY * 0.3f);
 	m_pPlayer->SetExtension(extension);
 	m_pPlayer->SetStatus(PlayerStatus::Prepare);
 	m_fPlayerMaxPosX = m_pPlayer->GetPos().x;
@@ -279,10 +280,10 @@ void CSceneStage01::Init()
 	CColliderObject* pGround5 = new CColliderObject;
 	pGround5->SetName(L"slopeGround");
 	pGround5->SetExtension(extension);
-	pGround5->SetPos(pGround4->GetPos().x + 630, pGround4->GetPos().y + 90);
+	pGround5->SetPos(pGround4->GetPos().x + 630, pGround4->GetPos().y + 120);
 	pGround5->SetScale(300, 10);
 	pGround5->SetType(ColliderType::Obb);
-	pGround5->SetRot(10);
+	pGround5->SetRot(15);
 
 	m_pBoatCastleCollider = new CColliderObject;
 	m_pBoatCastleCollider->SetName(L"obstacleCastle");
@@ -310,6 +311,10 @@ void CSceneStage01::Init()
 	//Logger::Debug(to_wstring(pFrontOceanCollider->GetPos().x) + L", !" + to_wstring(pGround1->GetPos().x));
 
 #pragma endregion
+
+	pBackGroundSound = RESOURCE->LoadSound(L"BackGroundSound", L"Sound\\Mission1.mp3");
+	pMissionStartSound = RESOURCE->LoadSound(L"MissionStartSound", L"Sound\\mission1start.mp3");
+
 
 #pragma region ADDOBJECT
 
@@ -408,7 +413,8 @@ void CSceneStage01::Enter()
 	m_pBulletObj->Show();
 	m_pBombObj->Show();
 
-
+	SOUND->Play(pBackGroundSound, true);
+	SOUND->Play(pMissionStartSound);
 
 	//m_pConga->CongaAddObject();
 
@@ -665,6 +671,8 @@ void CSceneStage01::Render()
 
 void CSceneStage01::Exit()
 {
+	SOUND->Stop(pBackGroundSound);
+	SOUND->Stop(pMissionStartSound);
 }
 
 void CSceneStage01::Release()

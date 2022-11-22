@@ -16,6 +16,7 @@ private:
 	//float m_fAttackAccTime;
 	//bool m_bIsEntered;
 	//CGravity* m_pGravity;
+	CSound* m_pExplode;
 
 private:
 	void Init() override;

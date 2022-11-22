@@ -21,6 +21,8 @@ private:
 	bool m_isMeet;
 	bool m_isGave;
 
+	CSound* m_thankYouSound;
+
 public:
 	void SetMeet(bool meet) { m_isMeet = meet; }
 	NPCStatus GetStatus() { return m_status; }

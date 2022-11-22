@@ -38,6 +38,8 @@ void CBossMissile::Init()
 		m_pGravity->SetGravity(1500);
 		AddComponent(m_pAnimator);
 	}
+	
+	m_pExplode = RESOURCE->LoadSound(L"BossMissileExplode", L"Sound\\bossExplode.mp3");
 }
 
 void CBossMissile::Update()
@@ -103,6 +105,7 @@ void CBossMissile::OnCollisionEnter(CCollider* pOtherCollider)
 		//	m_pAnimator->Play(L"Boss\\BossFireMissile", true);
 		//	m_fAttackAccTime = 0;
 		//}
+		SOUND->Play(m_pExplode);
 	}
 	else if (m_strName == L"BossMissile" && m_pOwner->GetName() == L"Boss")
 	{
