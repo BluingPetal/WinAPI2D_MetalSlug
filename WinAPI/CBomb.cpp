@@ -12,7 +12,7 @@
 CBomb::CBomb()
 {
 	m_vecDir = Vector(0, 0);
-	m_fVelocity = 100;
+	m_fVelocity = 300;
 	count = 0;
 	m_pGravity = nullptr;
 	m_strName = L"Bomb";
@@ -54,7 +54,7 @@ void CBomb::Init()
 void CBomb::Update()
 {
 	m_pAnimator->Play(L"Item\\Bomb");
-	m_vecPos.x +=  m_vecDir.x *300.f * DT;
+	m_vecPos.x +=  m_vecDir.x * m_fVelocity * DT;
 
 	if (m_reserveDelete && !m_bCreatedAni)
 	{
@@ -102,7 +102,30 @@ void CBomb::Release()
 
 void CBomb::OnCollisionEnter(CCollider* pOtherCollider)
 {
-	if (pOtherCollider->GetObjName() == L"ground" || pOtherCollider->GetObjName() == L"slopeGround")
+	if (pOtherCollider->GetObjName() == L"Conga")
+	{
+		CConga* pOtherObj = dynamic_cast<CConga*>(pOtherCollider->GetOwner());
+		if (pOtherObj->GetCongaState() != CongaStatus::Death)
+		{
+			m_fVelocity = 0;
+			m_reserveDelete = true;
+		}
+	}
+	else if (pOtherCollider->GetObjName() == L"Boss" || pOtherCollider->GetObjName() == L"obstacleCastle")
+	{
+		m_fVelocity = 0;
+		m_reserveDelete = true;
+	}
+	else if (pOtherCollider->GetObjName() == L"BombNPC" || pOtherCollider->GetObjName() == L"HeavyGunNPC")
+	{
+		CNPC* pOtherObj = dynamic_cast<CNPC*>(pOtherCollider->GetOwner());
+		if (pOtherObj->GetStatus() == NPCStatus::Trapped)
+		{
+			m_fVelocity = 0;
+			m_reserveDelete = true;
+		}
+	}
+	else if (pOtherCollider->GetObjName() == L"ground" || pOtherCollider->GetObjName() == L"slopeGround")
 	{
 		count++;
 		if (count <= 1)
@@ -113,29 +136,6 @@ void CBomb::OnCollisionEnter(CCollider* pOtherCollider)
 		{
 			m_fVelocity = 0;
 			m_pGravity->SetVelocity(0);
-			m_reserveDelete = true;
-		}
-	}
-	if (pOtherCollider->GetObjName() == L"Conga")
-	{
-		CConga* pOtherObj = dynamic_cast<CConga*>(pOtherCollider->GetOwner());
-		if (pOtherObj->GetCongaState() != CongaStatus::Death)
-		{
-			m_fVelocity = 0;
-			m_reserveDelete = true;
-		}
-	}
-	if (pOtherCollider->GetObjName() == L"Boss" || pOtherCollider->GetObjName() == L"obstacleCastle")
-	{
-		m_fVelocity = 0;
-		m_reserveDelete = true;
-	}
-	if (pOtherCollider->GetObjName() == L"BombNPC" || pOtherCollider->GetObjName() == L"HeavyGunNPC")
-	{
-		CNPC* pOtherObj = dynamic_cast<CNPC*>(pOtherCollider->GetOwner());
-		if (pOtherObj->GetStatus() == NPCStatus::Trapped)
-		{
-			m_fVelocity = 0;
 			m_reserveDelete = true;
 		}
 	}

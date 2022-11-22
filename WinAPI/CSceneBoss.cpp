@@ -35,12 +35,15 @@ void CSceneBoss::Init()
 	pBossBackgroundObj1->SetImage(pBossBackGround);
 	pBossBackgroundObj1->SetExtension(extension);
 	pBossBackgroundObj1->SetScale(Vector(pBossBackGround->GetWidth(), pBossBackGround->GetHeight()) * extension);
+	pBossBackgroundObj1->SetPos(Vector(CAMERA->GetLookAt().x, 0) - Vector(pBossBackgroundObj1->GetScale().x * 0.5f, 0));
 	pBossBackgroundObj2->SetImage(pBossBackGround);
 	pBossBackgroundObj2->SetExtension(extension);
-	pBossBackgroundObj2->SetPos(pBossBackGround->GetWidth() * extension, 0);
+	pBossBackgroundObj2->SetPos(pBossBackgroundObj1->GetPos() + Vector(pBossBackgroundObj1->GetPos().x, 0));
 	pBossBackgroundObj2->SetScale(Vector(pBossBackGround->GetWidth(), pBossBackGround->GetHeight()) * extension);
 	m_queueBackGround.push(pBossBackgroundObj1);
 	m_queueBackGround.push(pBossBackgroundObj2);
+	AddGameObject(pBossBackgroundObj1);
+	AddGameObject(pBossBackgroundObj2);
 	pCurBackgroundObj = pBossBackgroundObj1;
 
 	m_pPlayer = new CPlayer;
@@ -89,14 +92,13 @@ void CSceneBoss::Init()
 
 void CSceneBoss::Enter()
 {
+	CAMERA->FadeIn(1.0f);
+
+	CAMERA->SetTargetPos(Vector(WINSIZEX * 0.5f, WINSIZEY * 0.5f));
 	CBridge* pBridge = new CBridge;
 	pBridge->SetExtension(m_fExtension);
 	pBridge->SetLayer(Layer::BackGround);
 	AddGameObject(pBridge);
-	AddGameObject(pBossBackgroundObj1);
-	AddGameObject(pBossBackgroundObj2);
-
-	CAMERA->FadeIn(1.0f);
 }
 
 void CSceneBoss::Update()
@@ -130,12 +132,12 @@ void CSceneBoss::Update()
 	}
 
 #pragma region BackGround นÝบน
-	if (pCurBackgroundObj == pBossBackgroundObj1 && (pBossBackgroundObj1->GetPos().x + pBossBackgroundObj1->GetScale().x) < CAMERA->GetLookAt().x - WINSIZEX * 0.5f)
+	if (pCurBackgroundObj == pBossBackgroundObj1 && ((pBossBackgroundObj1->GetPos().x + pBossBackgroundObj1->GetScale().x) < CAMERA->GetLookAt().x - WINSIZEX * 0.5f))
 	{
 		pBossBackgroundObj1->SetPos(pBossBackgroundObj2->GetPos().x + pBossBackgroundObj2->GetScale().x, 0);
 		pCurBackgroundObj = pBossBackgroundObj2;
 	}
-	else if(pCurBackgroundObj == pBossBackgroundObj2 && (pBossBackgroundObj2->GetPos().x + pBossBackgroundObj2->GetScale().x) < CAMERA->GetLookAt().x - WINSIZEX * 0.5f)
+	else if(pCurBackgroundObj == pBossBackgroundObj2 && ((pBossBackgroundObj2->GetPos().x + pBossBackgroundObj2->GetScale().x) < CAMERA->GetLookAt().x - WINSIZEX * 0.5f))
 	{
 		pBossBackgroundObj2->SetPos(pBossBackgroundObj1->GetPos().x + pBossBackgroundObj1->GetScale().x, 0);
 		pCurBackgroundObj = pBossBackgroundObj1;

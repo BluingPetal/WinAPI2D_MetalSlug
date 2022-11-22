@@ -224,7 +224,7 @@ void CSceneChooseChar::Update()
 		}
 		else if (m_fAccTime > 3.5f)
 		{
-			CAMERA->FadeOut(1.f);
+			CAMERA->FadeOut(0.8f);
 			DELAYCHANGESCENE(GroupScene::Stage01, 1.f);
 		}
 	}

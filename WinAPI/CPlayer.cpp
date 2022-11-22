@@ -397,6 +397,10 @@ void CPlayer::AnimatorUpdate()
 
 	switch (m_status)
 	{
+	case PlayerStatus::Prepare:
+		m_pAnimator1->Play(L"Player\\Idle\\EriIdleR_1");
+		m_pAnimator2->Play(L"Player\\Idle\\EriIdleR_2");
+		break;
 	case PlayerStatus::Idle:
 	{
 		if (m_vecLookDir.x > 0) // m_vecLookDir.x == 0인 경우는 없음
@@ -1628,6 +1632,8 @@ void CPlayer::BehaviorUpdate()
 {
 	switch (m_status)
 	{
+	case PlayerStatus::Prepare:
+		break;
 	case PlayerStatus::Idle:
 		break;
 	case PlayerStatus::Move:
@@ -1763,11 +1769,12 @@ void CPlayer::StatusUpdate()
 	switch (m_status)
 	{
 	case PlayerStatus::Prepare:
-		if (m_fAcctime > 3.0f)
+		if (m_fAcctime > 5.0f)
 		{
 			m_status = PlayerStatus::Idle;
 			m_fAcctime = 0;
 		}
+		break;
 	case PlayerStatus::Idle:
 		if (m_hp <=0)
 		{

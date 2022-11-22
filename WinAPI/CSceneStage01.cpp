@@ -649,6 +649,7 @@ void CSceneStage01::Update()
 		if (m_pPlayer->GetPos().x > 3300 && m_pPlayer->GetPos().x < 3400)
 		{
 			CAMERA->FadeOut(1.f);
+			m_pPlayer->SetStatus(PlayerStatus::Victory);
 			DELAYCHANGESCENE(GroupScene::Boss, 2.f);
 		}
 	}
