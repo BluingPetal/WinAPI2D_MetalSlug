@@ -20,6 +20,9 @@ CSceneBoss::CSceneBoss()
 	m_bBossAppear = false;
 	m_bVictory = false;
 	m_bVictorySoundPlay = false;
+	m_fTime = 60;
+	m_fAccTime = 0;
+	m_iTimeCount = 1;
 }
 
 CSceneBoss::~CSceneBoss()
@@ -46,6 +49,55 @@ void CSceneBoss::Init()
 	AddGameObject(pBossBackgroundObj1);
 	AddGameObject(pBossBackgroundObj2);
 	pCurBackgroundObj = pBossBackgroundObj1;
+
+	CImageObject* pPlayerStatusObj = new CImageObject;
+	CImage* pStatusImg = RESOURCE->LoadImg(L"PlayerStatus", L"Image\\Font\\PlayerStatus.png");
+	pPlayerStatusObj->SetImage(pStatusImg);
+	pPlayerStatusObj->SetExtension(4.25);
+	pPlayerStatusObj->SetFixed(true);
+	pPlayerStatusObj->SetLayer(Layer::ForeGround);
+	pPlayerStatusObj->SetPos(WINSIZEX * 0.25f, 20);
+	float sourcePlayerStatusInfo[4] = { 0, 0, 64, 19 };
+	pPlayerStatusObj->SetRenderAsFrame(true);
+	pPlayerStatusObj->SetSourceInfo(sourcePlayerStatusInfo[0], sourcePlayerStatusInfo[1], sourcePlayerStatusInfo[2], sourcePlayerStatusInfo[3]);
+	AddGameObject(pPlayerStatusObj);
+
+	CImageObject* pPlayerBarObj = new CImageObject;
+	pPlayerBarObj->SetImage(pStatusImg);
+	pPlayerBarObj->SetExtension(4.25);
+	pPlayerBarObj->SetFixed(true);
+	pPlayerBarObj->SetLayer(Layer::ForeGround);
+	pPlayerBarObj->SetPos(20, 20);
+	float sourcePlayerBarInfo[4] = { 0, 19, 63, 10 };
+	pPlayerBarObj->SetRenderAsFrame(true);
+	pPlayerBarObj->SetSourceInfo(sourcePlayerBarInfo[0], sourcePlayerBarInfo[1], sourcePlayerBarInfo[2], sourcePlayerBarInfo[3]);
+	AddGameObject(pPlayerBarObj);
+
+	m_pInsertCoinImgObj = new CFontImageObj;
+	m_pInsertCoinImgObj->SetFixed(true);
+	m_pInsertCoinImgObj->SetExtension(4.25);
+
+	m_pTimeImgObj = new CFontImageObj;
+	m_pTimeImgObj->SetFixed(true);
+	m_pTimeImgObj->SetExtension(3.75);
+
+	m_pBarFontObj = new CFontImageObj;
+	m_pBarFontObj->SetFixed(true);
+	m_pBarFontObj->SetExtension(2.25);
+
+	m_pBulletObj = new CFontImageObj;
+	m_pBulletObj->SetFixed(true);
+	m_pBulletObj->SetExtension(3.25);
+
+	m_pBombObj = new CFontImageObj;
+	m_pBombObj->SetFixed(true);
+	m_pBombObj->SetExtension(3.25);
+
+	AddGameObject(m_pInsertCoinImgObj);
+	AddGameObject(m_pTimeImgObj);
+	AddGameObject(m_pBarFontObj);
+	AddGameObject(m_pBulletObj);
+	AddGameObject(m_pBombObj);
 
 	m_pPlayer = new CPlayer;
 	m_pPlayer->SetExtension(extension);
@@ -106,10 +158,98 @@ void CSceneBoss::Enter()
 	pBridge->SetExtension(m_fExtension);
 	pBridge->SetLayer(Layer::BackGround);
 	AddGameObject(pBridge);
+
+	m_pInsertCoinImgObj->SetInterval(1.1f);
+	Vector startPos = Vector(WINSIZEX * 0.35f, WINSIZEY * 0.03f);
+	m_pInsertCoinImgObj->SetPos(startPos);
+	m_pInsertCoinImgObj->CreateImgObj(L"insert coin", startPos, 11, FontType::Coin);
+
+	m_pTimeImgObj->SetInterval(1.f);
+	Vector timeStartPos = Vector(WINSIZEX * 0.45f, 20);
+	m_pTimeImgObj->SetPos(timeStartPos);
+	wstring time = to_wstring(m_fTime);
+	m_pTimeImgObj->CreateImgObj(time, timeStartPos, time.size(), FontType::Time);
+
+	m_pBarFontObj->SetInterval(1.1f);
+	Vector startbarFontPos = Vector(-35, 65);
+	m_pBarFontObj->SetPos(startbarFontPos);
+	m_pBarFontObj->CreateImgObj(L"1up2", startbarFontPos, 4, FontType::Default);
+
+	m_pBulletObj->SetInterval(1.f);
+	Vector startBulletObjPos = Vector(WINSIZEX * 0.3, 60);
+	m_pBulletObj->SetPos(startBulletObjPos);
+	wstring bullet;
+	if (m_pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
+		bullet = L"z";
+	else if (m_pPlayer->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+	{
+		bullet = to_wstring(m_pPlayer->GetBullet());
+		if (bullet == L"0")
+			bullet = L"z";
+	}
+	m_pBulletObj->CreateImgObj(bullet, startBulletObjPos, bullet.size(), FontType::Score);
+
+	m_pBombObj->SetInterval(1.f);
+	Vector startBombObjPos = Vector(WINSIZEX * 0.37, 60);
+	m_pBombObj->SetPos(startBombObjPos);
+	wstring bomb = to_wstring(m_pPlayer->GetBomb());
+	m_pBombObj->CreateImgObj(bomb, startBombObjPos, bomb.size(), FontType::Score);
+
+	m_pInsertCoinImgObj->Show();
+	m_pTimeImgObj->Show();
+	m_pBarFontObj->Show();
+	m_pBulletObj->Show();
+	m_pBombObj->Show();
 }
 
 void CSceneBoss::Update()
 {
+	m_fAccTime += DT;
+	// insert coin 깜박거리는 효과
+	if (m_fAccTime >= 1.f)
+	{
+		vector<CImageObject*> vecInsertCoinImgObj = m_pInsertCoinImgObj->GetImageObj();
+		for (int i = 0; i < vecInsertCoinImgObj.size(); i++)
+		{
+			vecInsertCoinImgObj[i]->SetAlpha(!(vecInsertCoinImgObj[i]->GetAlpha()));
+		}
+		m_fAccTime = 0; m_iTimeCount++; // timeout 되면 gameover창
+
+		if (m_iTimeCount % 4 == 0)
+		{
+			m_fTime--;
+
+			wstring timeStr = to_wstring(m_fTime);
+			Vector timeStartPos = Vector(WINSIZEX * 0.45f, 20);
+			m_pTimeImgObj->DeleteObj();
+			m_pTimeImgObj->CreateImgObj(timeStr, timeStartPos, timeStr.size(), FontType::Time);
+			m_pTimeImgObj->Show();
+		}
+	}
+
+	Vector startBombObjPos = Vector(WINSIZEX * 0.37, 60);
+	wstring bomb = to_wstring(m_pPlayer->GetBomb());
+	m_pBombObj->DeleteObj();
+	m_pBombObj->CreateImgObj(bomb, startBombObjPos, bomb.size(), FontType::Score);
+	m_pBombObj->Show();
+
+	if (m_pPlayer->GetBulletDiff())
+	{
+		Vector startBulletObjPos = Vector(WINSIZEX * 0.3, 60);
+		wstring bullet;
+		if (m_pPlayer->GetCurWeapon() == PlayerWeapon::Pistol)
+			bullet = L"z";
+		else if (m_pPlayer->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+		{
+			bullet = to_wstring(m_pPlayer->GetBullet());
+			if (bullet == L"0")
+				bullet = L"z";
+		}
+		m_pBulletObj->DeleteObj();
+		m_pBulletObj->CreateImgObj(bullet, startBulletObjPos, bullet.size(), FontType::Score);
+		m_pBulletObj->Show();
+	}
+
 	if (pBoss->GetStatus() == BossStatus::Destroyed && !m_bVictory)
 	{
 		m_bVictory = true;

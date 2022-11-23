@@ -3,10 +3,14 @@
 
 #include "CGravity.h"
 #include "CPlayer.h"
+#include "CAniObject.h"
 
 CBossMissile::CBossMissile()
 {
 	m_layer = Layer::BossMissile;
+	m_fDisappearAccTime = 0;
+	m_reserveDelete = false;
+	m_bCreatedAni = false;
 }
 
 CBossMissile::~CBossMissile()
@@ -38,6 +42,9 @@ void CBossMissile::Init()
 		m_pGravity->SetGravity(1500);
 		AddComponent(m_pAnimator);
 	}
+
+	m_pEffectImage = new CImage;
+	m_pEffectImage = RESOURCE->LoadImg(L"MissileEffectImg", L"Image\\Effect\\MissileEffect.png");
 	
 	m_pExplode = RESOURCE->LoadSound(L"BossMissileExplode", L"Sound\\bossExplode.mp3");
 }
@@ -46,13 +53,56 @@ void CBossMissile::Update()
 {
 	m_vecPos += m_vecDir * m_fVelocity * DT;
 
+	if (m_reserveDelete && !m_bCreatedAni)
+	{
+		m_pAnimator->GetCurAni()->SetAlpha(0);
+		m_pAnimator->Stop();
+		m_bCreatedAni = true;
+		//if (m_strName == L"BossFireMissile")
+		//{
+		//	m_pFireMissileAniObj = new CAniObject;
+		//	m_pFireMissileAniObj->SetImage(m_pEffectImage);
+		//	m_pFireMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\PlayerMissileEffect", m_pEffectImage, 0.05f, false);
+		//	m_pFireMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
+		//	m_pFireMissileAniObj->SetExtension(m_fExtension);
+		//	m_pFireMissileAniObj->SetLayer(Layer::Effect);
+		//	ADDOBJECT(m_pFireMissileAniObj);
+		//}
+		//else if (m_strName == L"BossMissile")
+		//{
+			m_pMissileAniObj = new CAniObject;
+			m_pMissileAniObj->SetImage(m_pEffectImage);
+			m_pMissileAniObj->GetAnimator()->CreateAnimation(L"Effect\\PlayerMissileEffect", m_pEffectImage, 0.05f, false);
+			m_pMissileAniObj->GetAnimator()->Play(L"Effect\\PlayerMissileEffect");
+			m_pMissileAniObj->SetExtension(m_fExtension);
+			m_pMissileAniObj->SetLayer(Layer::Effect);
+			ADDOBJECT(m_pMissileAniObj);
+		//}
+
+		/*if (owner->GetCurWeapon() == PlayerWeapon::Pistol)
+			m_pMissileAniObj->SetPos(m_vecPos);
+		else if (owner->GetCurWeapon() == PlayerWeapon::HeavyMachineGun)
+		{
+			if (m_vecDir.x > 0)
+				m_pMissileAniObj->SetPos(m_vecPos + Vector(55, 0));
+			else if (m_vecDir.x < 0)
+				m_pMissileAniObj->SetPos(m_vecPos + Vector(-55, 0));
+
+			if (m_vecDir.y > 0 || m_vecDir.y < 0)
+			{
+				GetCollider()->SetScale(Vector(30, 110));
+				m_pMissileAniObj->SetPos(m_vecPos);
+			}*/
+		//}
+	}
+
 	// 화면밖으로 나갈경우 삭제
 	Vector cameraLookAt = CAMERA->GetLookAt();
 	if (m_vecPos.x < CAMERA->ScreenToWorldPoint(Vector(0, 0)).x ||
 		m_vecPos.x > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).x ||
 		m_vecPos.y < CAMERA->ScreenToWorldPoint(Vector(0, 0)).y ||
 		m_vecPos.y > CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY)).y)
-		DELETEOBJECT(this);
+		m_reserveDelete = true;
 
 	if (m_strName == L"BossFireMissile" && m_pOwner->GetName() == L"Boss")
 	{
@@ -70,6 +120,19 @@ void CBossMissile::Update()
 
 		m_pAnimator->ReversePlay(L"Boss\\BossMissile");
 		m_fAttackAccTime = 0;
+	}
+
+	if (m_reserveDelete && !this->GetReserveDelete())
+	{
+		m_fDisappearAccTime += DT;
+		if (m_fDisappearAccTime > 0.38f)
+		{
+			if (!this->GetReserveDelete())
+			{
+				DELETEOBJECT(this);
+				DELETEOBJECT(m_pMissileAniObj);
+			}
+		}
 	}
 }
 
@@ -91,14 +154,18 @@ void CBossMissile::OnCollisionEnter(CCollider* pOtherCollider)
 		if (pOtherCollider->GetObjName() == L"Player")
 		{
 			m_pGravity->SetVelocity(0);
+			m_pGravity->SetGravity(0);
 			CPlayer* pOtherObj = dynamic_cast<CPlayer*>(pOtherCollider->GetOwner());
 			pOtherObj->SetHp(pOtherObj->GetHp() - 5);
-			DELETEOBJECT(this);
+			m_fVelocity = 0;
+			m_reserveDelete = true;
 		}
 		else if (pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground")
 		{
 			m_pGravity->SetVelocity(0);
-			DELETEOBJECT(this);
+			m_pGravity->SetGravity(0);
+			m_fVelocity = 0;
+			m_reserveDelete = true;
 		}
 		//if (m_fAttackAccTime <= 0.4f)
 		//{
@@ -115,14 +182,18 @@ void CBossMissile::OnCollisionEnter(CCollider* pOtherCollider)
 		if (pOtherCollider->GetObjName() == L"Player")
 		{
 			m_pGravity->SetVelocity(0);
+			m_pGravity->SetGravity(0);
 			CPlayer* pOtherObj = dynamic_cast<CPlayer*>(pOtherCollider->GetOwner());
 			pOtherObj->SetHp(pOtherObj->GetHp() - 10);
-			DELETEOBJECT(this);
+			m_fVelocity = 0;
+			m_reserveDelete = true;
 		}
 		else if (pOtherCollider->GetObjName() == L"slopeGround" || pOtherCollider->GetObjName() == L"ground")
 		{
 			m_pGravity->SetVelocity(0);
-			DELETEOBJECT(this);
+			m_pGravity->SetGravity(0);
+			m_fVelocity = 0;
+			m_reserveDelete = true;
 		}
 		//if (m_fAttackAccTime <= 0.4f)
 		//{

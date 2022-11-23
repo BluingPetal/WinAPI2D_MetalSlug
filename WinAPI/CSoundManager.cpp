@@ -23,12 +23,12 @@ void CSoundManager::Play(CSound* pSound, float volume, bool loop)
 
 	FMOD_MODE mode;
 	result = pSound->m_pSound->getMode(&mode);
-	assert(FMOD_OK == result && L"Get mode failed");
+	//assert(FMOD_OK == result && L"Get mode failed");
 
 	if (mode & FMOD_LOOP_NORMAL && (pSound->IsPlaying() || pSound->IsPaused()))
 	{
 		result = pSound->m_pChannel->stop();
-		assert(FMOD_OK == result && L"Stop sound failed");
+		//assert(FMOD_OK == result && L"Stop sound failed");
 	}
 
 	if (loop)
@@ -36,13 +36,13 @@ void CSoundManager::Play(CSound* pSound, float volume, bool loop)
 	else
 		result = pSound->m_pSound->setMode(FMOD_LOOP_OFF);
 
-	assert(FMOD_OK == result && L"Set Loop failed");
+	//assert(FMOD_OK == result && L"Set Loop failed");
 
 	result = m_pSystem->playSound(pSound->m_pSound, nullptr, false, &(pSound->m_pChannel));
-	assert(FMOD_OK == result && L"Play sound failed");
+	//assert(FMOD_OK == result && L"Play sound failed");
 
 	result = pSound->m_pChannel->setVolume(volume);
-	assert(FMOD_OK == result && L"Set volume failed");
+	//assert(FMOD_OK == result && L"Set volume failed");
 }
 
 void CSoundManager::Stop(CSound* pSound)
@@ -60,7 +60,7 @@ void CSoundManager::Pause(CSound* pSound)
 		return;
 
 	FMOD_RESULT result = pSound->m_pChannel->setPaused(true);
-	assert(FMOD_OK == result && L"SetPaused failed");
+	//assert(FMOD_OK == result && L"SetPaused failed");
 }
 
 void CSoundManager::Resume(CSound* pSound)
@@ -69,7 +69,7 @@ void CSoundManager::Resume(CSound* pSound)
 		return;
 
 	FMOD_RESULT result = pSound->m_pChannel->setPaused(true);
-	assert(FMOD_OK == result && L"Resume failed");
+	//assert(FMOD_OK == result && L"Resume failed");
 }
 
 void CSoundManager::Init()
@@ -77,16 +77,16 @@ void CSoundManager::Init()
 	// 사운드 시스템 생성
 	FMOD_RESULT result;
 	result = System_Create(&m_pSystem);
-	assert(FMOD_OK == result && L"Create sound system falied");
+	//assert(FMOD_OK == result && L"Create sound system falied");
 
 	result = m_pSystem->init(35, FMOD_INIT_NORMAL, nullptr);
-	assert(FMOD_OK == result && L"Init sound system falied");
+	//assert(FMOD_OK == result && L"Init sound system falied");
 }
 
 void CSoundManager::Update()
 {
 	FMOD_RESULT result = m_pSystem->update();
-	assert(FMOD_OK == result && L"Update sound system falied");
+	//assert(FMOD_OK == result && L"Update sound system falied");
 }
 
 void CSoundManager::Release()

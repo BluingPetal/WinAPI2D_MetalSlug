@@ -33,15 +33,16 @@ private:
 	int congaCount;
 
 	int countBullet;
+	int m_credit;
 
 	CFontImageObj* m_pInsertCoinImgObj;
-
-	CFontImageObj* m_pMissionImgObj1;
-	CFontImageObj* m_pMissionImgObj2;
 	CFontImageObj* m_pTimeImgObj;
 	CFontImageObj* m_pBarFontObj;
 	CFontImageObj* m_pBulletObj;
 	CFontImageObj* m_pBombObj;
+
+	CFontImageObj* m_pMissionImgObj1;
+	CFontImageObj* m_pMissionImgObj2;
 	Vector m_vecStartPos1;
 	Vector m_vecStartPos2;
 

@@ -32,10 +32,19 @@ private:
 	Vector m_vecMissionCompleteStartPos1;
 	Vector m_vecMissionCompleteStartPos2;
 
+	CFontImageObj* m_pInsertCoinImgObj;
+	CFontImageObj* m_pTimeImgObj;
+	CFontImageObj* m_pBarFontObj;
+	CFontImageObj* m_pBulletObj;
+	CFontImageObj* m_pBombObj;
+
 	float m_fStartAccTime;
 	float m_fBossAppearAccTime;
 	float m_fExtension;
 	float m_fVictoryAccTime;
+	float m_fAccTime;
+	int m_iTimeCount;
+	int m_fTime;
 
 	bool m_bStart;
 	bool m_bBossAppear;

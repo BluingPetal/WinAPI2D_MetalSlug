@@ -39,7 +39,7 @@ bool CSound::IsPaused()
 	FMOD_RESULT result = m_pChannel->getPaused(&paused);
 	if (FMOD_ERR_INVALID_HANDLE == result)
 		return false;
-	assert(FMOD_OK == result && L"Channel getPaused failed");
+	//assert(FMOD_OK == result && L"Channel getPaused failed");
 	return paused;
 }
 
@@ -49,5 +49,5 @@ void CSound::Load(const wstring& soundName)
 	wcstombs_s(nullptr, str, soundName.c_str(), 255);
 
 	FMOD_RESULT result = SOUND->GetSystem()->createSound(str, FMOD_LOOP_OFF, 0, &m_pSound);
-	assert(FMOD_OK == result && L"System createSound failed");
+	//assert(FMOD_OK == result && L"System createSound failed");
 }

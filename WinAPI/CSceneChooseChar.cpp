@@ -18,6 +18,7 @@ CSceneChooseChar::CSceneChooseChar()
 	m_pEri2 = nullptr;
 	m_fAccTime = 0;
 	m_fExtension = 1;
+	m_credit = 0;
 	m_bSelectedChar = false;
 }
 
@@ -140,10 +141,22 @@ void CSceneChooseChar::Init()
 	m_pEri1->GetAnimator()->CreateAnimation(L"Player\\Idle\\EriIdleR_1", m_pEriIdle, 0.15f);
 	m_pEri2->GetAnimator()->CreateAnimation(L"Player\\Idle\\EriIdleR_2", m_pEriIdle, 0.15f);
 
+	fontImgCreditObj = new CFontImageObj;
+	fontImgCreditObj->SetExtension(1.9);
+	AddGameObject(fontImgCreditObj);
+	fontImgCreditObj->SetInterval(1.f);
+	fontImgCreditObj->CreateImgObj(L"credit", Vector(WINSIZEX * 0.6, WINSIZEY * 0.95), 6, FontType::Default);
+
+	fontImgCredit = new CFontImageObj;
+	fontImgCredit->SetExtension(1.9);
+	AddGameObject(fontImgCredit);
+	fontImgCredit->SetInterval(1.f);
+
 	m_pBackGround = RESOURCE->LoadSound(L"selectCharSound", L"Sound\\SelectChar.mp3");
 	m_pSelectEri = RESOURCE->LoadSound(L"selectEriSound", L"Sound\\selectEri.mp3");
 
 	m_fExtension = extension;
+	pCoinSound = RESOURCE->LoadSound(L"CoinSound", L"Sound\\score.mp3");
 
 	// AddObject
 	AddGameObject(pBlackObj);
@@ -168,6 +181,11 @@ void CSceneChooseChar::Enter()
 {
 	CAMERA->FadeIn(0.25f);
 	SOUND->Play(m_pBackGround, true);
+	m_credit = SCENE->GetCredit();
+	wstring creditStr = to_wstring(m_credit);
+	fontImgCredit->CreateImgObj(creditStr, Vector(WINSIZEX * 0.9, WINSIZEY * 0.95), 2, FontType::Default);
+	fontImgCredit->Show();
+	fontImgCreditObj->Show();
 }
 
 void CSceneChooseChar::Update()
@@ -231,7 +249,19 @@ void CSceneChooseChar::Update()
 		{
 			CAMERA->FadeOut(0.8f);
 			DELAYCHANGESCENE(GroupScene::Stage01, 1.f);
+			SOUND->Stop(pCoinSound);
 		}
+	}
+
+	if (BUTTONDOWN(VK_F3))
+	{
+		SOUND->Play(pCoinSound);
+		m_credit++;
+
+		wstring creditStr = to_wstring(m_credit);
+		fontImgCredit->DeleteObj();
+		fontImgCredit->CreateImgObj(creditStr, Vector(WINSIZEX * 0.9, WINSIZEY * 0.95), 2, FontType::Default);
+		fontImgCredit->Show();
 	}
 
 	Vector eriOffset = Vector(23, 24);

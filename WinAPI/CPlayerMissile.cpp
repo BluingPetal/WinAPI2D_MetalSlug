@@ -80,7 +80,6 @@ void CPlayerMissile::Update()
 		m_pMissileAniObj->SetExtension(m_fExtension);
 		m_pMissileAniObj->SetLayer(Layer::Effect);
 		ADDOBJECT(m_pMissileAniObj);
-		float m_duration = 0;
 	}
 
 	// 화면밖으로 나갈경우 삭제

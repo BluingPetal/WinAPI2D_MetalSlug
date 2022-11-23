@@ -27,12 +27,12 @@ enum class GroupScene
 {
 	Title,
 
-	TileTool,
-	AniTool,
-
 	SelectChar,
 	Stage01,
 	Boss,
+
+	TileTool,
+	AniTool,
 
 	Size,
 };

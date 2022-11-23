@@ -1,5 +1,8 @@
 #pragma once
 #include "CMissile.h"
+
+class CAniObject;
+
 class CBossMissile : public CMissile
 {
 public:
@@ -17,6 +20,15 @@ private:
 	//bool m_bIsEntered;
 	//CGravity* m_pGravity;
 	CSound* m_pExplode;
+
+	float m_fDisappearAccTime;
+	bool m_reserveDelete;
+	bool m_bCreatedAni;
+
+	CImage* m_pEffectImage;
+
+	//CAniObject* m_pFireMissileAniObj;
+	CAniObject* m_pMissileAniObj;
 
 private:
 	void Init() override;

@@ -4,6 +4,7 @@
 class CImage;
 class CImageObject;
 class CAniObject;
+class CFontImageObj;
 
 class CSceneChooseChar : public CScene
 {
@@ -20,13 +21,21 @@ private:
 	CAniObject* m_pEri1;
 	CAniObject* m_pEri2;
 
+	CFontImageObj* fontImgCredit;
+	CFontImageObj* fontImgCreditObj;
+
 	CSound* m_pBackGround;
 	CSound* m_pSelectEri;
+	CSound* pCoinSound;
 
 	float m_fAccTime;
 	float m_fExtension;
+	int m_credit;
 
 	bool m_bSelectedChar;
+
+public:
+	void SetCredit(int credit) { m_credit = credit; }
 
 private:
 	void Init()		override;

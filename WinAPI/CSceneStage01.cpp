@@ -181,15 +181,15 @@ void CSceneStage01::Init()
 	pWaterAniObj->GetAnimator()->Play(L"BackGround\\WaterAni");
 	pWaterAniObj->SetLayer(Layer::ForeGround);
 
-	m_pInsertCoinImgObj = new CFontImageObj;
-	m_pInsertCoinImgObj->SetFixed(true);
-	m_pInsertCoinImgObj->SetExtension(extension + 1);
-
 	m_pMissionImgObj1 = new CFontImageObj;
 	m_pMissionImgObj1->SetExtension(extension);
 
 	m_pMissionImgObj2 = new CFontImageObj;
 	m_pMissionImgObj2->SetExtension(extension);
+
+	m_pInsertCoinImgObj = new CFontImageObj;
+	m_pInsertCoinImgObj->SetFixed(true);
+	m_pInsertCoinImgObj->SetExtension(extension + 1);
 
 	m_pTimeImgObj = new CFontImageObj;
 	m_pTimeImgObj->SetFixed(true);
@@ -435,7 +435,7 @@ void CSceneStage01::Update()
 	Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
 
 	//prevBomb = m_pPlayer->GetBomb();
-	prevBullet = m_pPlayer->GetBullet();
+	//prevBullet = m_pPlayer->GetBullet();
 	
 	if (m_fPlayerMaxPosX > 900 && m_fPlayerMaxPosX < 1000 && !m_bCallObj)
 	{

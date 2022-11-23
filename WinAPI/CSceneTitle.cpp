@@ -144,6 +144,7 @@ void CSceneTitle::Update()
 			else
 			{
 				CAMERA->FadeOut(0.25f);
+				SCENE->SetCredit(m_credit);
 				DELAYCHANGESCENE(GroupScene::SelectChar, 0.25f);
 				SOUND->Stop(pBackGroundSound);
 				SOUND->Stop(pCoinSound);

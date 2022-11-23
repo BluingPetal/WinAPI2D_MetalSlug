@@ -20,6 +20,7 @@ private:
 
 	map<GroupScene, CScene*> m_mapScene;	// 게임씬들을 보관하는 자료구조
 	CScene* m_pCurScene;					// 현재 게임씬
+	int m_credit;
 
 	void Init();
 	void Update();
@@ -28,6 +29,8 @@ private:
 
 public:
 	CScene* GetCurScene();					// 현재 게임씬 반환
+	void SetCredit(int credit) { m_credit = credit; }
+	int GetCredit() { return m_credit; }
 	void ChangeScene(GroupScene scene);		// 게임씬 변경
 };
 
