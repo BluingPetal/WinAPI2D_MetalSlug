@@ -104,3 +104,5 @@ enum class PlayerWeapon
 	HeavyMachineGun,
 	Bomb,
 };
+
+static bool bShow;

@@ -44,12 +44,15 @@ void CAniObject::Update()
 
 void CAniObject::Render()
 {
-	AniFrame frame = m_pAnimator->GetFirstAniFrame();
-	RENDER->FrameRect(
-		m_vecPos.x + (-1 * frame.slice.x * 0.5f + frame.offset.x) * m_fExtension,
-		m_vecPos.y + (-1 * frame.slice.y * 0.5f + frame.offset.y) * m_fExtension,
-		m_vecPos.x + (frame.slice.x * 0.5f + frame.offset.x) * m_fExtension,
-		m_vecPos.y + (frame.slice.y * 0.5f + frame.offset.y) * m_fExtension);
+	if (bShow)
+	{
+		AniFrame frame = m_pAnimator->GetFirstAniFrame();
+		RENDER->FrameRect(
+			m_vecPos.x + (-1 * frame.slice.x * 0.5f + frame.offset.x) * m_fExtension,
+			m_vecPos.y + (-1 * frame.slice.y * 0.5f + frame.offset.y) * m_fExtension,
+			m_vecPos.x + (frame.slice.x * 0.5f + frame.offset.x) * m_fExtension,
+			m_vecPos.y + (frame.slice.y * 0.5f + frame.offset.y) * m_fExtension);
+	}
 }
 
 void CAniObject::Release()
