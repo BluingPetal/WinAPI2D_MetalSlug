@@ -344,7 +344,7 @@ void CSceneBoss::Update()
 	m_pObstacle->SetPos(CAMERA->ScreenToWorldPoint(Vector(WINSIZEX, WINSIZEY * 0.5f)));
 	m_pDeathObj->SetPos(CAMERA->ScreenToWorldPoint(Vector(WINSIZEX * 0.5f, WINSIZEY * 0.95f)));
 
-	Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
+	//Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
 }
 
 void CSceneBoss::Render()

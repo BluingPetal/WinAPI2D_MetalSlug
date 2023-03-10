@@ -86,7 +86,6 @@ void CConga::Update()
 			CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pTargetObj);
 			if (!pPlayer->GetIsDead())
 			{
-				m_fSpeed = 250.f;
 				if (m_pTargetObj->GetPos().x > m_vecPos.x)
 					m_vecMoveDir.x = m_vecLookDir.x = 1;
 				else if (m_pTargetObj->GetPos().x < m_vecPos.x)
@@ -99,13 +98,9 @@ void CConga::Update()
 			//	m_pTargetObj = nullptr;
 			//}
 		}
-		else
-		{
-			m_fSpeed = 200.f;
-		}
 	}
-	AnimationUpdate();
 	StateUpdate();
+	AnimationUpdate();
 }
 
 void CConga::Render()
@@ -161,22 +156,23 @@ void CConga::OnCollisionStay(CCollider* pOtherCollider)
 	}
 	if (pOtherCollider->GetObjName() == L"slopeGround")
 	{
-		m_pGravity->SetVelocity(0);
 		if (m_congaState == CongaStatus::Death)
 			m_fSpeed = 0;
+		m_pGravity->SetVelocity(0);
+
 		if (pOtherCollider->GetRotation() < 0)
 		{
-			if (m_vecMoveDir.x > 0)
-				m_vecPos.y += m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
-			else if (m_vecMoveDir.x < 0)
-				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+			if (m_vecLookDir.x > 0)
+				m_vecPos.y -= m_fSpeed * tanf(abs(pOtherCollider->GetRotation() / 180 * PI)) * DT;
+			else if (m_vecLookDir.x < 0)
+				m_vecPos.y += m_fSpeed * tanf(abs(pOtherCollider->GetRotation() / 180 * PI)) * DT;
 		}
 		else
 		{
-			if (m_vecMoveDir.x > 0)
-				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
-			else if (m_vecMoveDir.x < 0)
-				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+			if (m_vecLookDir.x > 0)
+				m_vecPos.y += m_fSpeed * tanf(abs(pOtherCollider->GetRotation() / 180 * PI)) * DT;
+			else if (m_vecLookDir.x < 0)
+				m_vecPos.y -= m_fSpeed * tanf(abs(pOtherCollider->GetRotation() / 180 * PI)) * DT;
 		}
 	}
 }
@@ -190,6 +186,7 @@ void CConga::StateUpdate()
 	switch (m_congaState)
 	{
 	case CongaStatus::Idle:
+		m_fSpeed = 0;
 		if (m_hp <= 0)
 		{
 			m_fAccTime = 0;
@@ -211,10 +208,12 @@ void CConga::StateUpdate()
 		}
 		if (m_pTargetObj != nullptr)
 		{
+			m_fSpeed = 250.f;
 			m_vecPos.x += m_vecLookDir.x * m_fSpeed * DT;
 		}
 		else
 		{
+			m_fSpeed = 200.f;
 			m_vecPos.x += m_vecLookDir.x * m_fSpeed * DT;
 			if (m_fAccTime >= 2.f)
 			{
@@ -225,13 +224,14 @@ void CConga::StateUpdate()
 		}
 		break;
 	case CongaStatus::NearAttack:
+		m_fSpeed = 0;
 		if (m_hp <= 0)
 		{
 			m_fAccTime = 0;
 			m_congaState = CongaStatus::Death;
 			break;
 		}
-		Logger::Debug(to_wstring(m_fAccTime));
+		//Logger::Debug(to_wstring(m_fAccTime));
 		if (m_fAccTime < 1.3f)
 		{
 			//if (dynamic_cast<CPlayer*>(m_pTargetObj)->GetIsDead())
@@ -247,7 +247,7 @@ void CConga::StateUpdate()
   				m_isAttack = true;
 	 			CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pTargetObj);
 				pPlayer->SetHp(dynamic_cast<CPlayer*>(m_pTargetObj)->GetHp() - 1);
-				Logger::Debug(to_wstring(pPlayer->GetHp()));
+				//Logger::Debug(to_wstring(pPlayer->GetHp()));
 			}
 		}
 		else//if (m_fAccTime >= 1.3f)
@@ -264,6 +264,7 @@ void CConga::StateUpdate()
 		}
 		break;
 	case CongaStatus::Death:
+		m_fSpeed = 0;
 		m_pTargetObj = nullptr;
 		DELETEOBJECT(m_pFarColliderObj);
 		DELETEOBJECT(m_pNearColliderObj);

@@ -31,7 +31,6 @@ void CAniObject::SetImage(CImage* pImage)
 void CAniObject::Init()
 {
 	AddComponent(m_pAnimator);
-	Logger::Debug(to_wstring(m_vecScale.x) + L", " + to_wstring(m_vecScale.y));
 }
 
 void CAniObject::Update()
@@ -65,8 +64,4 @@ void CAniObject::SetPosWithFirstLt()
 	// 좌표를 왼쪽 위 좌표로 설정할 수 있도록 변환
 	m_vecPos += (firstAniFrame.slice * 0.5f - firstAniFrame.offset+ m_vecOffset)* m_fExtension;
 	m_vecScale = firstAniFrame.slice * 0.5f * m_fExtension;
-	// Logger::Debug(to_wstring(firstAniFrame.lt.x) + L", " + to_wstring(firstAniFrame.lt.y));
-	// Logger::Debug(to_wstring(firstAniFrame.slice.x) + L", " + to_wstring(firstAniFrame.slice.y));
-	// Logger::Debug(to_wstring(firstAniFrame.offset.x) + L", " + to_wstring(firstAniFrame.offset.y));
-	// Logger::Debug(to_wstring(m_vecPos.x) + L", " + to_wstring(m_vecPos.y));
 }

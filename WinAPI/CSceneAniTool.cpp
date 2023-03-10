@@ -247,9 +247,6 @@ void CSceneAniTool::MakeFlipAni(Vector ltFliped)
 			fread(&lt, sizeof(Vector), 1, pFile);
 			fread(&slice, sizeof(Vector), 1, pFile);
 			fread(&offset, sizeof(Vector), 1, pFile);
-			Logger::Debug(L"R(" + to_wstring(lt.x) + L", " + to_wstring(lt.y) + L")");
-			Logger::Debug(L"R(" + to_wstring(slice.x) + L", " + to_wstring(slice.y) + L")");
-			Logger::Debug(L"R(" + to_wstring(offset.x) + L", " + to_wstring(offset.y) + L")");
 
 			if (i != 0)
 			{
@@ -268,10 +265,6 @@ void CSceneAniTool::MakeFlipAni(Vector ltFliped)
 				fwrite(&slice, sizeof(Vector), 1, pFileWrite);
 				offset.x *= -1;
 				fwrite(&offset, sizeof(Vector), 1, pFileWrite);
-
-				Logger::Debug(L"W(" + to_wstring(leftTopFliped.x) + L", " + to_wstring(leftTopFliped.y) + L")");
-				Logger::Debug(L"W(" + to_wstring(slice.x) + L", " + to_wstring(slice.y) + L")");
-				Logger::Debug(L"W(" + to_wstring(offset.x) + L", " + to_wstring(offset.y) + L")");
 		}
 
 		delete[] vecReadAni;

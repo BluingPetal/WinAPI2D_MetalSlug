@@ -432,7 +432,7 @@ void CSceneStage01::Update()
 {
 	m_fAccTime += DT;
 	
-	Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
+	//Logger::Debug(to_wstring(MOUSEWORLDPOS.x) + L", " + to_wstring(MOUSEWORLDPOS.y));
 
 	//prevBomb = m_pPlayer->GetBomb();
 	//prevBullet = m_pPlayer->GetBullet();

@@ -40,11 +40,11 @@ void CMonster::OnCollisionEnter(CCollider* pOtherCollider)
 {
 	if (pOtherCollider->GetObjName() == L"플레이어")
 	{
-		Logger::Debug(L"몬스터가 플레이어와 충돌진입");
+		//Logger::Debug(L"몬스터가 플레이어와 충돌진입");
 	}
 	else if (pOtherCollider->GetObjName() == L"미사일")
 	{
-		Logger::Debug(L"몬스터가 미사일과 충돌진입");
+		//Logger::Debug(L"몬스터가 미사일과 충돌진입");
 	}
 }
 
@@ -56,10 +56,10 @@ void CMonster::OnCollisionExit(CCollider* pOtherCollider)
 {
 	if (pOtherCollider->GetObjName() == L"플레이어")
 	{
-		Logger::Debug(L"몬스터가 플레이어와 충돌해제");
+		//Logger::Debug(L"몬스터가 플레이어와 충돌해제");
 	}
 	else if (pOtherCollider->GetObjName() == L"미사일")
 	{
-		Logger::Debug(L"몬스터가 미사일과 충돌해제");
+		//Logger::Debug(L"몬스터가 미사일과 충돌해제");
 	}
 }

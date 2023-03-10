@@ -1931,8 +1931,6 @@ void CPlayer::StatusUpdate()
 
 void CPlayer::CreateMissile()
 {
-	Logger::Debug(L"미사일 생성");
-
 	CPlayerMissile* m_pMissile = new CPlayerMissile;
 	m_pMissile->SetName(L"PlayerMissile");
 	m_pMissile->SetVelocity(1000);
@@ -2072,7 +2070,7 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 			{
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
-				m_vecPos.y += m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+				m_vecPos.y -= m_fSpeed * tanf(abs(pOtherCollider->GetRotation() / 180 * PI)) * DT;
 			}
 			else if (m_vecMoveDir.x == 0)
 			{
@@ -2084,7 +2082,7 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
 				if(!m_bIsSit)
-					m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+					m_vecPos.y += m_fSpeed * tanf(abs(pOtherCollider->GetRotation() / 180 * PI)) * DT;
 			}
 
 			if (m_bIsSit)
@@ -2096,7 +2094,7 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 			{
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
-				m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+				m_vecPos.y -= m_fSpeed * tanf(abs(pOtherCollider->GetRotation() / 180 * PI)) * DT;
 			}
 			else if (m_vecMoveDir.x == 0)
 			{
@@ -2108,7 +2106,7 @@ void CPlayer::OnCollisionStay(CCollider* pOtherCollider)
 				if (!m_bIsJump)
 					m_gravity->SetVelocity(0);
 				if (!m_bIsSit)
-					m_vecPos.y -= m_fSpeed * tanf(pOtherCollider->GetRotation() / 180 * PI) * DT;
+					m_vecPos.y += m_fSpeed * tanf(abs(pOtherCollider->GetRotation() / 180 * PI)) * DT;
 			}
 
 			if (m_bIsSit)

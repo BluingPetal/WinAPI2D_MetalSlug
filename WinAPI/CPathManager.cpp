@@ -16,8 +16,8 @@ void CPathManager::Init()
 	m_strPath = wstring(path);			// 문자열을 wstring 으로 변환
 	m_strPath += L"\\Resource\\";		// 경로뒤에 리소스 폴더를 추가
 
-	Logger::Debug(L"현재 경로");
-	Logger::Debug(m_strPath);
+	//Logger::Debug(L"현재 경로");
+	//Logger::Debug(m_strPath);
 }
 
 void CPathManager::Release()

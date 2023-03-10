@@ -41,7 +41,7 @@ void CSceneChooseChar::Init()
 	float extension = WINSIZEY / (float)sourceBackInfo[3];
 	pBackObj->SetPos((WINSIZEX - sourceBackInfo[2] * extension) * 0.5, 0);
 	pBackObj->SetExtension(extension);
-	Logger::Debug(to_wstring(sourceBackInfo[2] * extension));
+	//Logger::Debug(to_wstring(sourceBackInfo[2] * extension));
 
 	CImageObject* pSoldierSelect = new CImageObject;
 	pSoldierSelect->SetImage(pSelectCharImg);
